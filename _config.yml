@@ -6,6 +6,9 @@ email:            seanleeee13@gmail.com
 description: >
   프로그래밍 동아리
 
+future: true
+published: true
+
 version:          1.0
 gitbook_version:  3.2.3
 
