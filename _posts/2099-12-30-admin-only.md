@@ -21,7 +21,7 @@ Password: <input id="password" type="password" id="password"><br>
     if (pswd.value == "drowssap") {
       const div2 = document.createElement("div");
       div2.append("<a href=\"https://docs.google.com/forms/d/1dglxEnO3Uq9pGc56zSYoccN2YD5sWn0q3UxPcI6Z-c4/edit\">Link</a>");
-      div.append(div);
+      div.append(div2);
     } else {
       alert("Incorrect Password");
     }
