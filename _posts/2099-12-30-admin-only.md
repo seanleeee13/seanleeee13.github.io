@@ -8,7 +8,7 @@ layout: post
 
 <form>
 Password: <input id="password" type="password" id="password"><br>
-<input type="button" text="Confirm" id="confirm">
+<input type="button" value="Confirm" id="confirm">
 </form>
 <div id="div"></div>
 
