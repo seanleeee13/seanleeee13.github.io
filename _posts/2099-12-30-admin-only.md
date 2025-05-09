@@ -16,12 +16,11 @@ Password: <input id="password" type="password" id="password"><br>
   var btn = document.getElementById("confirm");
   var pswd = document.getElementById("password");
   var div = document.getElementById("div");
+  var add = false;
 
   btn.addEventListener("click", function() {
     if (pswd.value == "drowssap") {
-      const div2 = document.createElement("div");
-      div2.append("<a href=\"https://docs.google.com/forms/d/1dglxEnO3Uq9pGc56zSYoccN2YD5sWn0q3UxPcI6Z-c4/edit\">Link</a>");
-      div.append(div2);
+      div.innerHTML = "<a href=\"https://docs.google.com/forms/d/1dglxEnO3Uq9pGc56zSYoccN2YD5sWn0q3UxPcI6Z-c4/edit\">Link</a>"
     } else {
       alert("Incorrect Password");
     }
