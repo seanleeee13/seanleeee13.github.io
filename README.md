@@ -13,3 +13,4 @@ permalink: /
 - [5차시 수업 링크](/class/2025-05-08-5th-class.html)
 - [6차시 수업 링크](/class/2025-05-09-6th-class.html)
 - [7차시 수업 링크](/class/2025-05-15-7th-class.html)
+- [8차시 수업 링크](/class/2025-05-16-8th-class.html)
