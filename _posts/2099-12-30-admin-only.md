@@ -20,7 +20,7 @@ Password: <input id="password" type="password" id="password"><br>
 
   btn.addEventListener("click", function() {
     if (pswd.value == "drowssap") {
-      div.innerHTML = "<a href=\"https://docs.google.com/forms/d/1dglxEnO3Uq9pGc56zSYoccN2YD5sWn0q3UxPcI6Z-c4/edit\">Link</a>"
+      div.innerHTML = "<a href=\"https://docs.google.com/forms/d/1dglxEnO3Uq9pGc56zSYoccN2YD5sWn0q3UxPcI6Z-c4/edit\">Day 4 Quiz Link</a>"
     } else {
       alert("Incorrect Password");
     }
