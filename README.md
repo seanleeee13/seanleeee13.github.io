@@ -4,7 +4,7 @@ title: Seanleeee13 Github Pages
 permalink: /
 ---
 
-[3일차 Meet 링크](https://meet.google.com/ehz-uvsc-jpb)
+[4일차 Meet 링크](https://meet.google.com/axd-dpvs-muo)
 
 - 1차시 수업은 Meet 앱으로만 진행합니다.
 - [2차시 수업 링크](/class/2025-04-06-2nd-class.html)
