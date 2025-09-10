@@ -4,7 +4,7 @@ title: Seanleeee13 Github Pages
 permalink: /
 ---
 
-[5일차 Meet 링크](https://meet.google.com/axd-dpvs-muo)
+[6일차 Meet 링크](https://meet.google.com/axd-dpvs-muo)
 
 - 1차시 수업은 Meet 앱으로만 진행합니다.
 - [2차시 수업 링크](/class/2025-04-06-2nd-class.html)
@@ -15,3 +15,5 @@ permalink: /
 - [7차시 수업 링크](/class/2025-05-15-7th-class.html)
 - [8차시 수업 링크](/class/2025-05-16-8th-class.html)
 - [9차시 수업 링크](/class/2025-06-03-9th-class.html)
+- 10차시 수업은 과자 파티입니다.
+- [11차시 수업 링크](/class/2025-06-10-11th-class.html)
