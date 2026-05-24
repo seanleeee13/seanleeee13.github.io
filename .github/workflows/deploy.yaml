@@ -30,4 +30,3 @@ jobs:
           git config --global user.email "seanleeee13@gmail.com"
           git config --global user.name "seanleeee13"
           yarn deploy
-          # --repo https://x-access-token:$GITHUB_TOKEN@://github.com
