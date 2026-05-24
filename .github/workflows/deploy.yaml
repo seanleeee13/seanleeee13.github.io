@@ -7,21 +7,23 @@ on:
   workflow_dispatch:
 permissions:
   contents: write
+  pages: write
+  id-token: write
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
       - name: Set up Node.js Engine
-          uses: actions/setup-node@v4
-          with:
-            node-version: 20
-            cache: "yarn"
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: "yarn"
       - name: Install Dependencies
-          run: yarn install
+        run: yarn install
       - name: Build Files
-          run: yarn build
+        run: yarn build
       - name: Deploy Website
-          env:
-            GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          run: yarn deploy
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: yarn deploy
