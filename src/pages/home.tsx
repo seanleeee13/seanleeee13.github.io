@@ -19,27 +19,65 @@ import ListItem from "@mui/joy/ListItem";
 import ListItemButton from "@mui/joy/ListItemButton";
 import Divider from "@mui/joy/Divider";
 import ModalClose from "@mui/joy/ModalClose";
+import CircularProgress from "@mui/joy/CircularProgress";
 import DialogTitle from "@mui/joy/DialogTitle";
-import { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { supabase, type ListInterface, type PListInterface } from "../supabase_key";
 
 function Home() {
+    const [lists, setLists] = useState<ListInterface[]>([]);
+    const [plists, setPLists] = useState<PListInterface[]>([]);
+    const [loading, setLoading] = useState<boolean>(true);
     const [open, setOpen] = useState(false);
-    const data = [
-        [
-            ["FLL", "Friend Level List / 공식 레벨 순위"],
-            ["TLL", "Featured Level List / 피쳐드 레벨 순위"],
-            ["ELL", "Epic Level List / 에픽 레벨 순위"],
-            ["NLL", "Unfeatured Level List / 모든 레벨 순위"],
-            ["CLL", "Challenge Level List / 챌린지 레벨 순위"],
-            ["ULL", "Featured Level List / 언베리파이드 레벨 순위"],
-            ["ILL", "Impossible Level List / 불가능 레벨 순위"],
-            ["RLL", "Creating Level List / 레벨 크리에이팅 순위"]
-        ],
-        [
-            ["BLL", "Beated Level List / 깬 레벨 순위"],
-            ["BDL", "Beated Demon List / 깬 데몬 순위"]
-        ]
-    ];
+    useEffect(() => {
+        const fetchTableData = async () => {
+            try {
+                setLoading(true);
+                const [listResult, plistResult] = await Promise.all([
+                    supabase.from("list").select("*").order("parent"),
+                    supabase.from("plist").select("*")
+                ]);
+                if (listResult.error) {
+                    throw listResult.error;
+                }
+                if (plistResult.error) {
+                    throw plistResult.error;
+                }
+                if (listResult.data) {
+                    setLists(listResult.data as ListInterface[]); 
+                }
+                if (plistResult.data) {
+                    setPLists(plistResult.data as PListInterface[]); 
+                }
+            } catch (error) {
+                console.error("Error while loading list data: ", error);
+            } finally {
+                setLoading(false);
+            }
+        };
+        fetchTableData();
+    }, []);
+    let text;
+    const data = [];
+    let last_data = "";
+    let target;
+    for (let i = 0; i < lists.length; i++) {
+        text = lists[i];
+        if (last_data !== text.parent) {
+            last_data = text.parent;
+            target = plists.find((item) => item.name === last_data);
+            data.push([[target?.name, target?.long_name]]);
+        }
+        data[data.length - 1].push([text.name, text.long_name]);
+    }
+    if (loading) {
+        return (
+            <>
+                <CircularProgress />
+                <Typography level="h4">Loading...</Typography>
+            </>
+        );
+    }
     return (
         <>
             <Sheet
@@ -76,21 +114,21 @@ function Home() {
                         <br />
                         <Box role="presentation" sx={{p: 1}}>
                             {data.map((text, index) => (
-                                <>
+                                <React.Fragment key={`map-group-${index}`}>
                                     <List>
                                         <ListItem key={text[0][0]}>
                                             <Typography sx={{fontWeight: "lg"}}>{text[0][1]}</Typography>
                                         </ListItem>
                                         {text.slice(1).map((text_data) => (
                                             <ListItem key={text_data[0]}>
-                                                <ListItemButton component="a" href={"#/levels/" + text_data[0]}>{text_data[1]}</ListItemButton>
+                                                <ListItemButton component="a" href={"#/lists/" + text_data[0]}>{text_data[1]}</ListItemButton>
                                             </ListItem>
                                         ))}
                                     </List>
                                     {index < data.length - 1 && (
                                         <Divider />
                                     )}
-                                </>
+                                </React.Fragment>
                             ))}
                         </Box>
                     </Drawer>
@@ -113,13 +151,13 @@ function Home() {
                     }
                 }} color="primary" variant="outlined">
                     {data.map((text) => (
-                        <Accordion>
+                        <Accordion key={`map-group-${text}`}>
                             <AccordionSummary indicator={<ExpandMoreIcon />}>
                                 <Typography component="span">{text[0][1]} / {text[0][0]}</Typography>
                             </AccordionSummary>
                             <AccordionDetails>
                                 {text.slice(1).map((text_data) => (
-                                    <Link href={"#/levels/" + text_data[0]}>{text_data[1]} / {text_data[0]}</Link>
+                                    <Link href={"#/lists/" + text_data[0]} key={`map-map-group-${text_data}`}>{text_data[1]} / {text_data[0]}</Link>
                                 ))}
                             </AccordionDetails>
                         </Accordion>

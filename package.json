@@ -17,6 +17,7 @@
     "@fontsource/roboto": "^5.2.10",
     "@mui/joy": "^5.0.0-beta.52",
     "@mui/material": "^9.0.1",
+    "@supabase/supabase-js": "^2.106.1",
     "react": "^19.2.6",
     "react-dom": "^19.2.6",
     "react-router-dom": "^7.15.1"
