@@ -23,7 +23,7 @@ export interface LevelInterface {
 export interface ListInterface {
     name: string;
     long_name: string;
-    levels: number[];
+    levels: [number, string][];
     parent: string;
 }
 

@@ -206,7 +206,7 @@ function Lists() {
                 </Stack>
             </Sheet>
             {lists.find((item) => item.name === level_list)?.levels.map((text, index) => {
-                let sel_level = levels.find((item) => item.level_id === text);
+                let sel_level = levels.find((item) => item.level_id === text[0]);
                 let diff = cdavg(sel_level?.difficulty_votes);
                 return (
                     sel_level ? (
@@ -235,9 +235,10 @@ function Lists() {
                                             {`ID: ${sel_level.level_id}`}
                                             {
                                                 `${pdavg(diff) !== "na" && diff ?
-                                                ` / Difficulty: ${pdavg(diff)} (${diff[1]} / ${diff[2]})` :
-                                                " / Difficulty: N/A"}`
+                                                ` / 난이도: ${pdavg(diff)}` :
+                                                " / 난이도: N/A"}`
                                             }
+                                            {text[1] === "" ? "" : ` / 1위 ${text[1]}`}
                                         </Typography>
                                     </Stack>
                                 </Stack>

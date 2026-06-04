@@ -15,6 +15,7 @@ import ModalClose from "@mui/joy/ModalClose";
 import DialogTitle from "@mui/joy/DialogTitle";
 import CircularProgress from "@mui/joy/CircularProgress";
 import Table from "@mui/joy/Table";
+import Tooltip from "@mui/joy/Tooltip";
 import { useParams } from "react-router-dom";
 import React, { useEffect, useState } from "react";
 import { supabase, type LevelInterface, type ListInterface, type PListInterface } from "../supabase_key";
@@ -166,26 +167,39 @@ function Levels() {
             <Stack sx={{ p: 4, mx: "auto", my: 5, maxWidth: 1000, alignItems: "center" }} spacing={3}>
                 <Typography level="h1">{level_info.level_name}</Typography>
                 <Typography level="h4">
-                    by {level_info.host}{level_info.co_creators.length === 0 ? " / " : " and more / "}
-                    published by {level_info.publish} / verified by {level_info.verifier}
+                    제작: {level_info.host}{
+                        level_info.co_creators.length === 0 ? " / " :
+                        (
+                            <>
+                                {" and "}
+                                <Tooltip title={level_info.co_creators.join(", ")} arrow>
+                                    <Typography level="h4" sx={{textDecoration: "underline"}}>
+                                        more
+                                    </Typography>
+                                </Tooltip>
+                                {" / "}
+                            </>
+                        )
+                    }
+                    레벨 배포: {level_info.publish} / 베리파이: {level_info.verifier}
                     {level_info.progress === 100 ? "" : ` (progress: ${level_info.progress}%)`}
                 </Typography>
                 <Typography level="title-md">{level_info.description ? `\"${level_info.description}\"` : ""}</Typography>
                 <Box
                     component="img" src={level_info.image}
-                    sx={{aspectRatio: "16 / 9", width: "45%"}}
+                    sx={{aspectRatio: "16 / 9", width: "55%"}}
                 />
                 <Typography level="title-md">
                     ID: {level_info.level_id}
                     {
                         pdavg(diff) !== "na" && diff ?
-                        ` / Difficulty: ${pdavg(diff)} (${diff[1]} / ${diff[2]}) / ` :
-                        " / Difficulty: N/A / "
+                        ` / 난이도: ${pdavg(diff)} (${diff[1]} / ${diff[2]}) / ` :
+                        " / 난이도: N/A / "
                     }
-                    Upload Date: {level_info.upload_time.split("T")[0]}
+                    등재일: {level_info.upload_time.split("T")[0]}
                 </Typography>
                 {
-                    level_info.victory.length === 0 ? null :
+                    level_info.victory.length === 0 ? <Typography level="h3">클리어자 없음</Typography> :
                     <>
                         <Typography level="h3">클리어자</Typography>
                         <Table color="primary" variant="outlined">
