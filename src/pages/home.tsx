@@ -34,8 +34,8 @@ function Home() {
             try {
                 setLoading(true);
                 const [listResult, plistResult] = await Promise.all([
-                    supabase.from("list").select("*").order("parent"),
-                    supabase.from("plist").select("*")
+                    supabase.from("list").select("*").order("id"),
+                    supabase.from("plist").select("*").order("id")
                 ]);
                 if (listResult.error) {
                     throw listResult.error;

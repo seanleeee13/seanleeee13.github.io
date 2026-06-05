@@ -29,6 +29,7 @@ export interface ListInterface {
 }
 
 export interface PListInterface {
+    id: number;
     name: string;
     long_name: string;
     childs: string[];
