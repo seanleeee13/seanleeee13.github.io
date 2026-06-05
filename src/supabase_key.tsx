@@ -21,6 +21,7 @@ export interface LevelInterface {
 }
 
 export interface ListInterface {
+    id: int;
     name: string;
     long_name: string;
     levels: [number, string][];
