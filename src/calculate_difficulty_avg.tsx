@@ -16,6 +16,9 @@ function cdavg(difficulty_votes: Record<string, number[]> | undefined) {
             (1 <= difficulty_votes[key][1] && difficulty_votes[key][1] <= 9 && difficulty_votes[key][0] === 0)
             || (1 <= difficulty_votes[key][1] && difficulty_votes[key][1] <= 39 && difficulty_votes[key][0] === 1)
         )) {
+            if (difficulty_votes[key][3] === 1) {
+                dv_ipp.push(difficulty_votes[key][3]);
+            }
             continue;
         }
         if (!(0 <= difficulty_votes[key][2] && difficulty_votes[key][2] <= 4)) {
