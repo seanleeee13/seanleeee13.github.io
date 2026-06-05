@@ -48,7 +48,7 @@ function Lists() {
             try {
                 setLoading(true);
                 const [levelResult, listResult, plistResult] = await Promise.all([
-                    supabase.from("level").select("*").order("id"),
+                    supabase.from("level").select("*"),
                     supabase.from("list").select("*").order("id"),
                     supabase.from("plist").select("*").order("id")
                 ]);
