@@ -21,7 +21,7 @@ import { useParams } from "react-router-dom";
 import React, { useState, useEffect } from "react";
 import { supabase, type LevelInterface, type ListInterface, type PListInterface } from "../supabase_key";
 import { cdavg, pdavg } from "../calculate_difficulty_avg";
-import ExpandMoreIcon from "../assets/expand_more";
+// import ExpandMoreIcon from "../assets/expand_more";
 
 function Lists() {
     const [levels, setLevels] = useState<LevelInterface[]>([]);
