@@ -21,6 +21,7 @@ import { useParams } from "react-router-dom";
 import React, { useState, useEffect } from "react";
 import { supabase, type LevelInterface, type ListInterface, type PListInterface } from "../supabase_key";
 import { cdavg, pdavg } from "../calculate_difficulty_avg";
+import ExpandMoreIcon from "../assets/expand_more";
 
 function Lists() {
     const [levels, setLevels] = useState<LevelInterface[]>([]);
@@ -186,7 +187,8 @@ function Lists() {
                                                 <Typography sx={{fontWeight: "lg"}}>{text[0][1]}</Typography>
                                             </ListItem>
                                             {text.slice(1).map((text_data) => (
-                                                <ListItem key={text_data[0]}><ListItemButton component="a" href={"#/levels/" + text_data[0]}>
+                                                <ListItem key={text_data[0]}>
+                                                <ListItemButton component="a" onClick={() => {setOpen(false)}} href={"#/lists/" + text_data[0]}>
                                                     {text_data[1]}
                                                 </ListItemButton></ListItem>
                                             ))}
@@ -202,7 +204,7 @@ function Lists() {
                     <IconButton variant="plain" size="md" component="a" href="/">
                         <GFFIcon />
                     </IconButton>
-                    <Button variant="plain" color="neutral" component="a" href="/">Main</Button>
+                    <Button variant="plain" color="neutral" component="a" href="/">GFF</Button>
                 </Stack>
             </Sheet>
             {lists.find((item) => item.name === level_list)?.levels.map((text, index) => {

@@ -121,7 +121,9 @@ function Home() {
                                         </ListItem>
                                         {text.slice(1).map((text_data) => (
                                             <ListItem key={text_data[0]}>
-                                                <ListItemButton component="a" href={"#/lists/" + text_data[0]}>{text_data[1]}</ListItemButton>
+                                                <ListItemButton component="a" onClick={() => {setOpen(false)}} href={"#/lists/" + text_data[0]}>
+                                                    {text_data[1]}
+                                                </ListItemButton>
                                             </ListItem>
                                         ))}
                                     </List>
@@ -135,7 +137,7 @@ function Home() {
                     <IconButton variant="plain" size="md" component="a" href="/">
                         <GFFIcon />
                     </IconButton>
-                    <Button variant="plain" color="neutral" component="a" href="/">Main</Button>
+                    <Button variant="plain" color="neutral" component="a" href="/">GFF</Button>
                 </Stack>
             </Sheet>
             <Stack sx={{ p: 4, mx: "auto", my: 5, maxWidth: 1000 }} spacing={3}>
@@ -164,7 +166,7 @@ function Home() {
                     ))}
                 </AccordionGroup>
                 <Typography level="h3">2. 참여자 목록</Typography>
-                <Typography level="title-md">이 프로젝트에는 이슬우, 정민준, 최윤호, 박서후, 정하민이 참가하였습니다.</Typography>
+                <Typography level="title-md">이 프로젝트에는 seanleeee13, problem73481, yunho0927, glowingberri가 참가하였습니다.</Typography>
             </Stack>
         </>
     );
