@@ -1,69 +1,47 @@
+import Accordion from "@mui/joy/Accordion";
+import AccordionSummary from "@mui/joy/AccordionSummary";
+import accordionSummaryClasses from "@mui/joy/AccordionSummary/accordionSummaryClasses";
+import AccordionDetails from "@mui/joy/AccordionDetails";
+import AccordionGroup from "@mui/joy/AccordionGroup";
 import Typography from "@mui/joy/Typography";
+import ExpandMoreIcon from "../assets/expand_more";
 import MenuIcon from "../assets/menu";
 import GFFIcon from "../assets/gff";
+import Link from "@mui/joy/Link";
 import Stack from "@mui/joy/Stack";
 import Sheet from "@mui/joy/Sheet"
 import IconButton from "@mui/joy/IconButton"
 import Button from "@mui/joy/Button"
 import Drawer from "@mui/joy/Drawer";
 import Box from "@mui/joy/Box";
-import Card from "@mui/joy/Card";
-import CardContent from "@mui/joy/CardContent";
 import List from "@mui/joy/List";
 import ListItem from "@mui/joy/ListItem";
 import ListItemButton from "@mui/joy/ListItemButton";
-import Link from "@mui/joy/Link";
 import Divider from "@mui/joy/Divider";
 import ModalClose from "@mui/joy/ModalClose";
-import DialogTitle from "@mui/joy/DialogTitle";
 import CircularProgress from "@mui/joy/CircularProgress";
-import { useParams } from "react-router-dom";
+import DialogTitle from "@mui/joy/DialogTitle";
 import React, { useState, useEffect } from "react";
-import { supabase, type LevelInterface, type ListInterface, type PListInterface } from "../utils/supabase_key";
-import { cdavg, pdavg } from "../utils/calculate_difficulty_avg";
-import ExpandMoreIcon from "../assets/expand_more";
+import { supabase, type ListInterface, type PListInterface } from "../utils/supabase_key";
 
-function Lists() {
-    const [levels, setLevels] = useState<LevelInterface[]>([]);
+function ListsMain() {
     const [lists, setLists] = useState<ListInterface[]>([]);
     const [plists, setPLists] = useState<PListInterface[]>([]);
     const [loading, setLoading] = useState<boolean>(true);
-    const { level_list } = useParams<{ level_list: string }>();
     const [open, setOpen] = useState(false);
-    const [dimensions, setDimensions] = useState({
-        width: window.innerWidth,
-        height: window.innerHeight
-    });
-    useEffect(() => {
-        const handleResize = () => {
-            setDimensions({
-                width: window.innerWidth,
-                height: window.innerHeight
-            });
-        };
-        window.addEventListener("resize", handleResize);
-        return () => window.removeEventListener("resize", handleResize);
-    }, []);
     useEffect(() => {
         const fetchTableData = async () => {
             try {
                 setLoading(true);
-                const [levelResult, listResult, plistResult] = await Promise.all([
-                    supabase.from("level").select("*"),
+                const [listResult, plistResult] = await Promise.all([
                     supabase.from("list").select("*").order("id"),
                     supabase.from("plist").select("*").order("id")
                 ]);
-                if (levelResult.error) {
-                    throw levelResult.error;
-                }
                 if (listResult.error) {
                     throw listResult.error;
                 }
                 if (plistResult.error) {
                     throw plistResult.error;
-                }
-                if (levelResult.data) {
-                    setLevels(levelResult.data as LevelInterface[]); 
                 }
                 if (listResult.data) {
                     setLists(listResult.data as ListInterface[]); 
@@ -79,34 +57,18 @@ function Lists() {
         };
         fetchTableData();
     }, []);
-    const ratio = dimensions.width / dimensions.height;
-    let cardSize: {width: number | string, height: number | string, side: "row" | "column"} = {width: 0, height: 0, side: "row"};
-    let fontSizeA: "h4" | "title-lg" | "title-md";
-    let fontSizeB: "title-md" | "title-sm" | "body-lg";
-    let fontSizeC: "body-sm" | "body-xs";
-    if (ratio >= 2) {
-        cardSize = {width: "70%", height: 135, side: "row"};
-    } else if (ratio >= 1.2) {
-        cardSize = {width: dimensions.height * 0.75, height: 135, side: "row"};
-    } else if (ratio >= 1.0) {
-        cardSize = {width: "62%", height: 135, side: "row"};
-    } else if (ratio >= 0.7) {
-        cardSize = {width: "90%", height: 135, side: "row"};
-    } else {
-        cardSize = {width: "90%", height: "auto", side: "column"};
-    }
-    if (dimensions.width >= 1118.4) {
-        fontSizeA = "h4";
-        fontSizeB = "title-md";
-        fontSizeC = "body-sm";
-    } else if (dimensions.width >= 932) {
-        fontSizeA = "h4";
-        fontSizeB = "title-sm";
-        fontSizeC = "body-xs";
-    } else {
-        fontSizeA = "h4";
-        fontSizeB = "title-sm";
-        fontSizeC = "body-xs";
+    let text;
+    const data = [];
+    let last_data = "";
+    let target;
+    for (let i = 0; i < lists.length; i++) {
+        text = lists[i];
+        if (last_data !== text.parent) {
+            last_data = text.parent;
+            target = plists.find((item) => item.name === last_data);
+            data.push([[target?.name, target?.long_name]]);
+        }
+        data[data.length - 1].push([text.name, text.long_name]);
     }
     if (loading) {
         return (
@@ -115,29 +77,6 @@ function Lists() {
                 <Typography level="h4">Loading...</Typography>
             </>
         );
-    }
-    if (!level_list) {
-        return;
-    }
-    let text;
-    const data = [];
-    let last_data = "";
-    let flag = false;
-    let target;
-    for (let i = 0; i < lists.length; i++) {
-        text = lists[i];
-        if (text.name === level_list) {
-            flag = true;
-        }
-        if (last_data !== text.parent) {
-            last_data = text.parent;
-            target = plists.find((item) => item.name === last_data);
-            data.push([[target?.name, target?.long_name]]);
-        }
-        data[data.length - 1].push([text.name, text.long_name]);
-    }
-    if (!flag) {
-        return;
     }
     return (
         <>
@@ -214,54 +153,37 @@ function Lists() {
                     <Button variant="plain" color="neutral" component="a" href="/">GFF</Button>
                     <Typography sx={{transform: "rotate(270deg)"}}><ExpandMoreIcon /></Typography>
                     <Button variant="plain" color="neutral" component="a" href="/#/lists">List</Button>
-                    <Typography sx={{transform: "rotate(270deg)"}}><ExpandMoreIcon /></Typography>
-                    <Button variant="plain" color="neutral" component="a" href={`/#/lists/${level_list}`}>{level_list}</Button>
                 </Stack>
             </Sheet>
-            {lists.find((item) => item.name === level_list)?.levels.map((text, index) => {
-                let sel_level = levels.find((item) => item.level_id === text[0]);
-                let diff = cdavg(sel_level?.difficulty_votes);
-                return (
-                    sel_level ? (
-                        <Card
-                            key={`map-card-${index}`}
-                            sx={{
-                                width: cardSize.width, display: "flex", justifySelf: "center",
-                                my: 5, height: cardSize.height, overflow: "hidden", p: 0
-                            }}
-                        >
-                            <CardContent sx={{height: "100%"}}>
-                                <Stack spacing={1} direction={cardSize.side} sx={{height: "100%"}}>
-                                    <Box
-                                        component="img" src={sel_level.image}
-                                        sx={{aspectRatio: "16 / 9", height: "100%"}}
-                                    />
-                                    <Stack spacing={1} sx={{p: 2}}>
-                                        <Link
-                                            level={fontSizeA} fontWeight="xl" href={"/#/levels/" + level_list + "/" + sel_level?.level_id}
-                                            sx={{color: "black", "&:hover": {textDecorationColor: "black"}}}
-                                        >{`#${index + 1} - ${sel_level.level_name}`}</Link>
-                                        <Typography level={fontSizeB} fontWeight="lg">
-                                            {`Host: ${sel_level.host} / Verify: ${sel_level.verifier}`}
-                                        </Typography>
-                                        <Typography level={fontSizeC} fontWeight="md">
-                                            {`ID: ${sel_level.level_id}`}
-                                            {
-                                                `${pdavg(diff) !== "na" && diff ?
-                                                ` / 난이도: ${pdavg(diff)}` :
-                                                " / 난이도: N/A"}`
-                                            }
-                                            {text[1] === "" ? "" : ` / 1위 ${text[1]}`}
-                                        </Typography>
-                                    </Stack>
-                                </Stack>
-                            </CardContent>
-                        </Card>
-                    ) : <React.Fragment key={`map-card-${index}`} />
-                );
-            })}
+            <Stack sx={{ p: 4, mx: "auto", my: 5, maxWidth: 1000 }} spacing={3}>
+                <Typography level="h3">리스트 목록</Typography>
+                <AccordionGroup sx={{
+                    maxWidth: 400,
+                    [`& .${accordionSummaryClasses.indicator}`]: {
+                        transition: "0.2s",
+                    },
+                    [`& [aria-expanded="true"] .${accordionSummaryClasses.indicator}`]: {
+                        transform: "rotate(180deg)",
+                    }
+                }} color="primary" variant="outlined">
+                    {data.map((text) => (
+                        <Accordion key={`map-group-${text}`}>
+                            <AccordionSummary indicator={<ExpandMoreIcon />}>
+                                <Typography component="span">{text[0][1]} / {text[0][0]}</Typography>
+                            </AccordionSummary>
+                            <AccordionDetails>
+                                {text.slice(1).map((text_data) => (
+                                    <Link href={"#/lists/" + text_data[0]} key={`map-map-group-${text_data}`}>
+                                        {text_data[1]} / {text_data[0]}
+                                    </Link>
+                                ))}
+                            </AccordionDetails>
+                        </Accordion>
+                    ))}
+                </AccordionGroup>
+            </Stack>
         </>
     );
 }
 
-export default Lists;
+export default ListsMain;

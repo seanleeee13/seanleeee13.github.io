@@ -38,9 +38,9 @@ function cdavg(difficulty_votes: Record<string, number[]> | undefined) {
     if (dv_diff.length === 0) {
         return undefined;
     }
-    let difficulty = Math.round(dv_diff.reduce((a, b) => a + b, 0) / dv_diff.length);
-    let featured = Math.round(dv_ft.reduce((a, b) => a + b, 0) / dv_ft.length);
-    let ipp = Math.round(dv_ipp.reduce((a, b) => a + b, 0) / dv_ipp.length);
+    let difficulty = Math.round(100 * dv_diff.reduce((a, b) => a + b, 0) / dv_diff.length) / 100;
+    let featured = Math.round(100 * dv_ft.reduce((a, b) => a + b, 0) / dv_ft.length) / 100;
+    let ipp = Math.round(100 * dv_ipp.reduce((a, b) => a + b, 0) / dv_ipp.length) / 100;
     if (10 <= difficulty) {
         return [1, difficulty - 9, featured, ipp];
     } else {
@@ -55,6 +55,9 @@ function pdavg(difficulty: number[] | undefined) {
     if (difficulty.length !== 4) {
         return undefined;
     }
+    difficulty[1] = Math.round(difficulty[1]);
+    difficulty[2] = Math.round(difficulty[2]);
+    difficulty[3] = Math.round(difficulty[3]);
     let ft = difficulty[2] === 0 ? "nf" :
         difficulty[2] === 1 ? "ft" :
         difficulty[2] === 2 ? "ep" :

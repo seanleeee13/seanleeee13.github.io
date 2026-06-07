@@ -22,13 +22,13 @@ import ModalClose from "@mui/joy/ModalClose";
 import CircularProgress from "@mui/joy/CircularProgress";
 import DialogTitle from "@mui/joy/DialogTitle";
 import React, { useState, useEffect } from "react";
-import { supabase, type ListInterface, type PListInterface } from "../supabase_key";
+import { supabase, type ListInterface, type PListInterface } from "../utils/supabase_key";
 
 function Home() {
     const [lists, setLists] = useState<ListInterface[]>([]);
     const [plists, setPLists] = useState<PListInterface[]>([]);
     const [loading, setLoading] = useState<boolean>(true);
-    const [open, setOpen] = useState(false);
+    const [open, setOpen] = useState<boolean>(false);
     useEffect(() => {
         const fetchTableData = async () => {
             try {
@@ -127,11 +127,24 @@ function Home() {
                                             </ListItem>
                                         ))}
                                     </List>
-                                    {index < data.length - 1 && (
-                                        <Divider />
-                                    )}
+                                    <Divider />
                                 </React.Fragment>
                             ))}
+                            <List>
+                                <ListItem>
+                                    <Typography sx={{fontWeight: "lg"}}>모든 기능</Typography>
+                                </ListItem>
+                                <ListItem>
+                                    <ListItemButton component="a" onClick={() => {setOpen(false)}} href={"#/lists/"}>
+                                        리스트 목록
+                                    </ListItemButton>
+                                </ListItem>
+                                <ListItem>
+                                    <ListItemButton component="a" onClick={() => {setOpen(false)}} href={"#/levels/"}>
+                                        레벨 검색하기
+                                    </ListItemButton>
+                                </ListItem>
+                            </List>
                         </Box>
                     </Drawer>
                     <IconButton variant="plain" size="md" component="a" href="/">
@@ -159,13 +172,20 @@ function Home() {
                             </AccordionSummary>
                             <AccordionDetails>
                                 {text.slice(1).map((text_data) => (
-                                    <Link href={"#/lists/" + text_data[0]} key={`map-map-group-${text_data}`}>{text_data[1]} / {text_data[0]}</Link>
+                                    <Link href={"#/lists/" + text_data[0]} key={`map-map-group-${text_data}`}>
+                                        {text_data[1]} / {text_data[0]}
+                                    </Link>
                                 ))}
                             </AccordionDetails>
                         </Accordion>
                     ))}
                 </AccordionGroup>
-                <Typography level="h3">2. 참여자 목록</Typography>
+                <Typography level="h3">2. 모든 기능</Typography>
+                <Stack direction="row" spacing={1}>
+                    <Button component="a" href="/#/lists" variant="outlined">리스트 목록</Button>
+                    <Button component="a" href="/#/levels" variant="outlined">레벨 검색하기</Button>
+                </Stack>
+                <Typography level="h3">3. 참여자 목록</Typography>
                 <Typography level="title-md">이 프로젝트에는 seanleeee13, problem73481, yunho0927, glowingberri가 참가하였습니다.</Typography>
             </Stack>
         </>

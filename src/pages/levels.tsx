@@ -18,8 +18,9 @@ import Table from "@mui/joy/Table";
 import Tooltip from "@mui/joy/Tooltip";
 import { useParams } from "react-router-dom";
 import React, { useEffect, useState } from "react";
-import { supabase, type LevelInterface, type ListInterface, type PListInterface } from "../supabase_key";
-import { cdavg, pdavg } from "../calculate_difficulty_avg";
+import { supabase, type LevelInterface, type ListInterface, type PListInterface } from "../utils/supabase_key";
+import { cdavg, pdavg } from "../utils/calculate_difficulty_avg";
+import ExpandMoreIcon from "../assets/expand_more";
 
 function Levels() {
     const [levels, setLevels] = useState<LevelInterface[]>([]);
@@ -27,7 +28,7 @@ function Levels() {
     const [plists, setPLists] = useState<PListInterface[]>([]);
     const [loading, setLoading] = useState<boolean>(true);
     const [open, setOpen] = useState(false);
-    const { level_id } = useParams<{ level_id: string }>();
+    const { level_id, level_list } = useParams<{ level_id: string, level_list: string }>();
     if (!level_id) {
         return;
     }
@@ -77,15 +78,22 @@ function Levels() {
     let text;
     const data = [];
     let last_data = "";
+    let flag = false;
     let target;
     for (let i = 0; i < lists.length; i++) {
         text = lists[i];
+        if (text.name === level_list) {
+            flag = true;
+        }
         if (last_data !== text.parent) {
             last_data = text.parent;
             target = plists.find((item) => item.name === last_data);
             data.push([[target?.name, target?.long_name]]);
         }
         data[data.length - 1].push([text.name, text.long_name]);
+    }
+    if (level_list !== undefined && !flag) {
+        return;
     }
     const diff = cdavg(level_info.difficulty_votes);
     if (loading) {
@@ -96,7 +104,6 @@ function Levels() {
             </>
         );
     }
-    console.log(level_info.co_creators);
     return (
         <>
             <Sheet
@@ -132,41 +139,66 @@ function Levels() {
                         </DialogTitle>
                         <br />
                         <Box role="presentation" sx={{p: 1}}>
-                            {
-                                loading ? (
-                                    <>
-                                        <CircularProgress />
-                                        <Typography level="h4">Loading...</Typography>
-                                    </>
-                                ) : data.map((text, index) => (
-                                    <React.Fragment key={`map-group-${index}`}>
-                                        <List>
-                                            <ListItem key={text[0][0]}>
-                                                <Typography sx={{fontWeight: "lg"}}>{text[0][1]}</Typography>
-                                            </ListItem>
-                                            {text.slice(1).map((text_data) => (
-                                                <ListItem key={text_data[0]}>
-                                                    <ListItemButton
-                                                        component="a" onClick={() => {setOpen(false)}}
-                                                        href={"#/lists/" + text_data[0]}
-                                                    >
+                            {data.map((text, index) => (
+                                <React.Fragment key={`map-group-${index}`}>
+                                    <List>
+                                        <ListItem key={text[0][0]}>
+                                            <Typography sx={{fontWeight: "lg"}}>{text[0][1]}</Typography>
+                                        </ListItem>
+                                        {text.slice(1).map((text_data) => (
+                                            <ListItem key={text_data[0]}>
+                                                <ListItemButton component="a" onClick={() => {setOpen(false)}} href={"#/lists/" + text_data[0]}>
                                                     {text_data[1]}
-                                                    </ListItemButton>
-                                                </ListItem>
-                                            ))}
-                                        </List>
-                                        {index < data.length - 1 && (
-                                            <Divider />
-                                        )}
-                                    </React.Fragment>
-                                ))
-                            }
+                                                </ListItemButton>
+                                            </ListItem>
+                                        ))}
+                                    </List>
+                                    <Divider />
+                                </React.Fragment>
+                            ))}
+                            <List>
+                                <ListItem>
+                                    <Typography sx={{fontWeight: "lg"}}>모든 기능</Typography>
+                                </ListItem>
+                                <ListItem>
+                                    <ListItemButton component="a" onClick={() => {setOpen(false)}} href={"#/lists/"}>
+                                        리스트 목록
+                                    </ListItemButton>
+                                </ListItem>
+                                <ListItem>
+                                    <ListItemButton component="a" onClick={() => {setOpen(false)}} href={"#/levels/"}>
+                                        레벨 검색하기
+                                    </ListItemButton>
+                                </ListItem>
+                            </List>
                         </Box>
                     </Drawer>
                     <IconButton variant="plain" size="md" component="a" href="/">
                         <GFFIcon />
                     </IconButton>
-                    <Button variant="plain" color="neutral" component="a" href="/">GFF</Button>
+                    {
+                        level_list === undefined ?
+                        <>
+                            <Button variant="plain" color="neutral" component="a" href="/">GFF</Button>
+                            <Typography sx={{transform: "rotate(270deg)"}}><ExpandMoreIcon /></Typography>
+                            <Button variant="plain" color="neutral" component="a" href="/#/levels">Level</Button>
+                            <Typography sx={{transform: "rotate(270deg)"}}><ExpandMoreIcon /></Typography>
+                            <Button variant="plain" color="neutral" component="a" href={`/#/levels/${level_id}`}>
+                                {level_info.level_name}
+                            </Button>
+                        </> :
+                        <>
+                            <Button variant="plain" color="neutral" component="a" href="/">GFF</Button>
+                            <Typography sx={{transform: "rotate(270deg)"}}><ExpandMoreIcon /></Typography>
+                            <Button variant="plain" color="neutral" component="a" href="/#/lists">List</Button>
+                            <Typography sx={{transform: "rotate(270deg)"}}><ExpandMoreIcon /></Typography>
+                            <Button variant="plain" color="neutral" component="a" href={`/#/lists/${level_list}`}>{level_list}</Button>
+                            <Typography sx={{transform: "rotate(270deg)"}}><ExpandMoreIcon /></Typography>
+                            <Button variant="plain" color="neutral" component="a" href={`/#/levels/${level_id}`}>
+                                {level_info.level_name}
+                            </Button>
+                        </>
+                    }
                 </Stack>
             </Sheet>
             <Stack sx={{ p: 4, mx: "auto", my: 5, maxWidth: 1000, alignItems: "center" }} spacing={3}>
@@ -187,7 +219,7 @@ function Levels() {
                         )
                     }
                     레벨 배포: {level_info.publish} / 베리파이: {level_info.verifier}
-                    {level_info.progress === 100 ? "" : ` (progress: ${level_info.progress}%)`}
+                    {level_info.progress === null ? "" : ` (progress: ${level_info.progress}%)`}
                 </Typography>
                 <Typography level="title-md">{level_info.description ? `\"${level_info.description}\"` : ""}</Typography>
                 <Box
@@ -202,6 +234,12 @@ function Levels() {
                         " / 난이도: N/A / "
                     }
                     등재일: {level_info.upload_time.split("T")[0]}
+                    {
+                        level_list ?
+                        ` / ${level_list} 1위 기간: `
+                        + `${lists.find((item) => item.name === level_list)?.levels.find((item) => item[0] === +level_id)?.[1]}`
+                        : ""
+                    }
                 </Typography>
                 {
                     level_info.victory.length === 0 ? <Typography level="h3">클리어자 없음</Typography> :
