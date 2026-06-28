@@ -222,25 +222,22 @@ function Levels() {
                     {level_info.progress === null ? "" : ` (progress: ${level_info.progress}%)`}
                 </Typography>
                 <Typography level="title-md">{level_info.description ? `\"${level_info.description}\"` : ""}</Typography>
-                <Box
-                    sx={{aspectRatio: "16 / 9", width: "55%"}}
-                >
-                    {
-                        level_info.imbed_image === null || level_info.imbed_image === "" ?
-                        <Box component="img" src={level_info.image}/> :
-                        (
-                            level_info.imbed_image.includes("youtu.be") || level_info.imbed_image.includes("youtube.com") ?
-                            <iframe
-                                src={level_info.imbed_image}
-                                title="YouTube video player"
-                                style={{border: 0}}
-                                allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                                allowFullScreen
-                            /> :
-                            <Box component="img" src={level_info.imbed_image}/>
-                        )
-                    }
-                </Box>
+                {
+                    level_info.imbed_image === null || level_info.imbed_image === "" ?
+                    <Box component="img" src={level_info.image} sx={{width: "55%", aspectRatio: "16 / 9"}} /> :
+                    (
+                        level_info.imbed_image.includes("youtu.be") || level_info.imbed_image.includes("youtube.com") ?
+                        <iframe
+                            src={level_info.imbed_image}
+                            title="YouTube video player"
+                            style={{border: 0, aspectRatio: "16 / 9"}}
+                            allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                            allowFullScreen
+                            width="55%"
+                        /> :
+                        <Box component="img" src={level_info.imbed_image} sx={{width: "55%", aspectRatio: "16 / 9"}} />
+                    )
+                }
                 <Typography level="title-md">
                     ID: {level_info.level_id}
                     {
