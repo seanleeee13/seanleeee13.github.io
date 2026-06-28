@@ -226,15 +226,19 @@ function Levels() {
                     sx={{aspectRatio: "16 / 9", width: "55%"}}
                 >
                     {
-                        level_info.image.includes("youtu.be") || level_info.image.includes("youtube.com") ?
-                        <iframe
-                            src={level_info.image}
-                            title="YouTube video player"
-                            style={{border: 0}}
-                            allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                            allowFullScreen
-                        /> :
-                        <Box component="img" src={level_info.image}/>
+                        level_info.imbed_image === null || level_info.imbed_image === "" ?
+                        <Box component="img" src={level_info.image}/> :
+                        (
+                            level_info.imbed_image.includes("youtu.be") || level_info.imbed_image.includes("youtube.com") ?
+                            <iframe
+                                src={level_info.imbed_image}
+                                title="YouTube video player"
+                                style={{border: 0}}
+                                allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                                allowFullScreen
+                            /> :
+                            <Box component="img" src={level_info.imbed_image}/>
+                        )
                     }
                 </Box>
                 <Typography level="title-md">

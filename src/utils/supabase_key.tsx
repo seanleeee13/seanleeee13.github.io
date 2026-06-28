@@ -18,6 +18,7 @@ export interface LevelInterface {
     victory: string[];
     image: string;
     upload_time: string;
+    imbed_image: string;
 }
 
 export interface ListInterface {
