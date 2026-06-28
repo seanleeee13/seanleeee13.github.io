@@ -223,9 +223,20 @@ function Levels() {
                 </Typography>
                 <Typography level="title-md">{level_info.description ? `\"${level_info.description}\"` : ""}</Typography>
                 <Box
-                    component="img" src={level_info.image}
                     sx={{aspectRatio: "16 / 9", width: "55%"}}
-                />
+                >
+                    {
+                        level_info.image.includes("youtu.be") || level_info.image.includes("youtube.com") ?
+                        <iframe
+                            src={level_info.image}
+                            title="YouTube video player"
+                            style={{border: 0}}
+                            allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                            allowFullScreen
+                        /> :
+                        <Box component="img" src={level_info.image}/>
+                    }
+                </Box>
                 <Typography level="title-md">
                     ID: {level_info.level_id}
                     {
