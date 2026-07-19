@@ -1,9 +1,9 @@
 import Typography from "@mui/joy/Typography";
 import MenuIcon from "../assets/menu.tsx";
 import ReactLogoIcon from "../assets/react_logo.tsx";
+import ExpandMoreIcon from "../assets/expand_more";
 import Stack from "@mui/joy/Stack";
 import Sheet from "@mui/joy/Sheet"
-import { keyframes } from "@emotion/react";
 import IconButton from "@mui/joy/IconButton"
 import Button from "@mui/joy/Button"
 import Drawer from "@mui/joy/Drawer";
@@ -14,23 +14,12 @@ import ListItemButton from "@mui/joy/ListItemButton";
 import Divider from "@mui/joy/Divider";
 import ModalClose from "@mui/joy/ModalClose";
 import DialogTitle from "@mui/joy/DialogTitle";
-import backgroundImage from "../assets/bg.png"; 
 import { useState } from "react";
 
-function Home() {
+function Play() {
     const [open, setOpen] = useState<boolean>(false);
-    const fadeIn = keyframes`
-        from { opacity: 0; scale: 0 }
-        to { opacity: 1; scale: 1 }
-    `;
     return (
-        <Box sx={{
-            backgroundImage: `url("${backgroundImage}")`,
-            backgroundSize: "cover",
-            backgroundPosition: "center",
-            backgroundRepeat: "no-repeat",
-            height: "100vw"
-        }}>
+        <>
             <Sheet
             variant="solid"
             color="neutral"
@@ -92,39 +81,15 @@ function Home() {
                         <ReactLogoIcon />
                     </IconButton>
                     <Button variant="plain" color="neutral" component="a" href="/">Something</Button>
+                    <Typography sx={{transform: "rotate(270deg)"}}><ExpandMoreIcon /></Typography>
+                    <Button variant="plain" color="neutral" component="a" href="/">Play</Button>
                 </Stack>
             </Sheet>
-            <Stack sx={{
-                p: 4, mx: "auto", my: 5, maxWidth: 1000, marginTop: "8vw"
-            }} spacing={3}>
-                <Box sx={{
-                    width: "fit-content"
-                }}>
-                    <Typography level="h1" textColor="common.white" sx={{
-                        animation: `${fadeIn} 0.5s ease-out forwards`
-                    }}>SOMETHING</Typography>
-                </Box>
-                <Box sx={{
-                    width: "fit-content"
-                }}>
-                    <Typography level="h3" textColor="common.white" sx={{
-                        animation: `${fadeIn} 0.5s ease-out forwards`
-                    }}>Play Chess with Something AI</Typography>
-                </Box>
-                <Box>
-                    <Button component="a" variant="plain" href="/play/" size="lg" sx={{
-                        backgroundColor: "common.white",
-                        color: "neutral.800",
-                        transition: "all 0.4s ease",
-                        "&:hover": {
-                            transform: "scale(1.1)", backgroundColor: "neutral.100"
-                        },
-                        animation: `${fadeIn} 0.5s ease-out forwards`
-                    }}>Play</Button>
-                </Box>
+            <Stack sx={{ p: 4, mx: "auto", my: 5, maxWidth: 1000 }} spacing={3}>
+                <Typography level="h1">PLAY</Typography>
             </Stack>
-        </Box>
+        </>
     );
 }
 
-export default Home;
+export default Play;
