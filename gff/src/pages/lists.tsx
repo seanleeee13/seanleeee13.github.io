@@ -182,7 +182,7 @@ function Lists() {
                                         </ListItem>
                                         {text.slice(1).map((text_data) => (
                                             <ListItem key={text_data[0]}>
-                                                <ListItemButton component="a" onClick={() => {setOpen(false)}} href={"#/lists/" + text_data[0]}>
+                                                <ListItemButton component="a" onClick={() => {setOpen(false)}} href={"gff/#/lists/" + text_data[0]}>
                                                     {text_data[1]}
                                                 </ListItemButton>
                                             </ListItem>
@@ -196,12 +196,12 @@ function Lists() {
                                     <Typography sx={{fontWeight: "lg"}}>모든 기능</Typography>
                                 </ListItem>
                                 <ListItem>
-                                    <ListItemButton component="a" onClick={() => {setOpen(false)}} href={"#/lists/"}>
+                                    <ListItemButton component="a" onClick={() => {setOpen(false)}} href={"gff/#/lists/"}>
                                         리스트 목록
                                     </ListItemButton>
                                 </ListItem>
                                 <ListItem>
-                                    <ListItemButton component="a" onClick={() => {setOpen(false)}} href={"#/levels/"}>
+                                    <ListItemButton component="a" onClick={() => {setOpen(false)}} href={"gff/#/levels/"}>
                                         레벨 검색하기
                                     </ListItemButton>
                                 </ListItem>
@@ -211,11 +211,11 @@ function Lists() {
                     <IconButton variant="plain" size="md" component="a" href="/">
                         <GFFIcon />
                     </IconButton>
-                    <Button variant="plain" color="neutral" component="a" href="/">GFF</Button>
+                    <Button variant="plain" color="neutral" component="a" href="/gff/">GFF</Button>
                     <Typography sx={{transform: "rotate(270deg)"}}><ExpandMoreIcon /></Typography>
-                    <Button variant="plain" color="neutral" component="a" href="/#/lists">List</Button>
+                    <Button variant="plain" color="neutral" component="a" href="/gff/#/lists">List</Button>
                     <Typography sx={{transform: "rotate(270deg)"}}><ExpandMoreIcon /></Typography>
-                    <Button variant="plain" color="neutral" component="a" href={`/#/lists/${level_list}`}>{level_list}</Button>
+                    <Button variant="plain" color="neutral" component="a" href={`/gff/#/lists/${level_list}`}>{level_list}</Button>
                 </Stack>
             </Sheet>
             {lists.find((item) => item.name === level_list)?.levels.map((text, index) => {
@@ -238,7 +238,7 @@ function Lists() {
                                     />
                                     <Stack spacing={1} sx={{p: 2}}>
                                         <Link
-                                            level={fontSizeA} fontWeight="xl" href={"/#/levels/" + level_list + "/" + sel_level?.level_id}
+                                            level={fontSizeA} fontWeight="xl" href={"/gff/#/levels/" + level_list + "/" + sel_level?.level_id}
                                             sx={{color: "black", "&:hover": {textDecorationColor: "black"}}}
                                         >{`#${index + 1} - ${sel_level.level_name}`}</Link>
                                         <Typography level={fontSizeB} fontWeight="lg">

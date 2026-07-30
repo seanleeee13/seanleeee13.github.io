@@ -121,7 +121,7 @@ function ListsMain() {
                                         </ListItem>
                                         {text.slice(1).map((text_data) => (
                                             <ListItem key={text_data[0]}>
-                                                <ListItemButton component="a" onClick={() => {setOpen(false)}} href={"#/lists/" + text_data[0]}>
+                                                <ListItemButton component="a" onClick={() => {setOpen(false)}} href={"gff/#/lists/" + text_data[0]}>
                                                     {text_data[1]}
                                                 </ListItemButton>
                                             </ListItem>
@@ -135,12 +135,12 @@ function ListsMain() {
                                     <Typography sx={{fontWeight: "lg"}}>모든 기능</Typography>
                                 </ListItem>
                                 <ListItem>
-                                    <ListItemButton component="a" onClick={() => {setOpen(false)}} href={"#/lists/"}>
+                                    <ListItemButton component="a" onClick={() => {setOpen(false)}} href={"gff/#/lists/"}>
                                         리스트 목록
                                     </ListItemButton>
                                 </ListItem>
                                 <ListItem>
-                                    <ListItemButton component="a" onClick={() => {setOpen(false)}} href={"#/levels/"}>
+                                    <ListItemButton component="a" onClick={() => {setOpen(false)}} href={"gff/#/levels/"}>
                                         레벨 검색하기
                                     </ListItemButton>
                                 </ListItem>
@@ -150,9 +150,9 @@ function ListsMain() {
                     <IconButton variant="plain" size="md" component="a" href="/">
                         <GFFIcon />
                     </IconButton>
-                    <Button variant="plain" color="neutral" component="a" href="/">GFF</Button>
+                    <Button variant="plain" color="neutral" component="a" href="/gff/">GFF</Button>
                     <Typography sx={{transform: "rotate(270deg)"}}><ExpandMoreIcon /></Typography>
-                    <Button variant="plain" color="neutral" component="a" href="/#/lists">List</Button>
+                    <Button variant="plain" color="neutral" component="a" href="/gff/#/lists">List</Button>
                 </Stack>
             </Sheet>
             <Stack sx={{ p: 4, mx: "auto", my: 5, maxWidth: 1000 }} spacing={3}>
@@ -173,7 +173,7 @@ function ListsMain() {
                             </AccordionSummary>
                             <AccordionDetails>
                                 {text.slice(1).map((text_data) => (
-                                    <Link href={"#/lists/" + text_data[0]} key={`map-map-group-${text_data}`}>
+                                    <Link href={"gff/#/lists/" + text_data[0]} key={`map-map-group-${text_data}`}>
                                         {text_data[1]} / {text_data[0]}
                                     </Link>
                                 ))}

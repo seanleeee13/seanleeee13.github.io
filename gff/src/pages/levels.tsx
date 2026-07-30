@@ -147,7 +147,7 @@ function Levels() {
                                         </ListItem>
                                         {text.slice(1).map((text_data) => (
                                             <ListItem key={text_data[0]}>
-                                                <ListItemButton component="a" onClick={() => {setOpen(false)}} href={"#/lists/" + text_data[0]}>
+                                                <ListItemButton component="a" onClick={() => {setOpen(false)}} href={"gff/#/lists/" + text_data[0]}>
                                                     {text_data[1]}
                                                 </ListItemButton>
                                             </ListItem>
@@ -161,12 +161,12 @@ function Levels() {
                                     <Typography sx={{fontWeight: "lg"}}>모든 기능</Typography>
                                 </ListItem>
                                 <ListItem>
-                                    <ListItemButton component="a" onClick={() => {setOpen(false)}} href={"#/lists/"}>
+                                    <ListItemButton component="a" onClick={() => {setOpen(false)}} href={"gff/#/lists/"}>
                                         리스트 목록
                                     </ListItemButton>
                                 </ListItem>
                                 <ListItem>
-                                    <ListItemButton component="a" onClick={() => {setOpen(false)}} href={"#/levels/"}>
+                                    <ListItemButton component="a" onClick={() => {setOpen(false)}} href={"gff/#/levels/"}>
                                         레벨 검색하기
                                     </ListItemButton>
                                 </ListItem>
@@ -179,22 +179,22 @@ function Levels() {
                     {
                         level_list === undefined ?
                         <>
-                            <Button variant="plain" color="neutral" component="a" href="/">GFF</Button>
+                            <Button variant="plain" color="neutral" component="a" href="/gff/">GFF</Button>
                             <Typography sx={{transform: "rotate(270deg)"}}><ExpandMoreIcon /></Typography>
-                            <Button variant="plain" color="neutral" component="a" href="/#/levels">Level</Button>
+                            <Button variant="plain" color="neutral" component="a" href="/gff/#/levels">Level</Button>
                             <Typography sx={{transform: "rotate(270deg)"}}><ExpandMoreIcon /></Typography>
-                            <Button variant="plain" color="neutral" component="a" href={`/#/levels/${level_id}`}>
+                            <Button variant="plain" color="neutral" component="a" href={`/gff/#/levels/${level_id}`}>
                                 {level_info.level_name}
                             </Button>
                         </> :
                         <>
-                            <Button variant="plain" color="neutral" component="a" href="/">GFF</Button>
+                            <Button variant="plain" color="neutral" component="a" href="/gff/">GFF</Button>
                             <Typography sx={{transform: "rotate(270deg)"}}><ExpandMoreIcon /></Typography>
-                            <Button variant="plain" color="neutral" component="a" href="/#/lists">List</Button>
+                            <Button variant="plain" color="neutral" component="a" href="/gff/#/lists">List</Button>
                             <Typography sx={{transform: "rotate(270deg)"}}><ExpandMoreIcon /></Typography>
-                            <Button variant="plain" color="neutral" component="a" href={`/#/lists/${level_list}`}>{level_list}</Button>
+                            <Button variant="plain" color="neutral" component="a" href={`/gff/#/lists/${level_list}`}>{level_list}</Button>
                             <Typography sx={{transform: "rotate(270deg)"}}><ExpandMoreIcon /></Typography>
-                            <Button variant="plain" color="neutral" component="a" href={`/#/levels/${level_id}`}>
+                            <Button variant="plain" color="neutral" component="a" href={`/gff/#/levels/${level_id}`}>
                                 {level_info.level_name}
                             </Button>
                         </>

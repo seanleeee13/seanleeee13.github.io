@@ -214,7 +214,7 @@ function LevelsMain() {
                                         </ListItem>
                                         {text.slice(1).map((text_data) => (
                                             <ListItem key={text_data[0]}>
-                                                <ListItemButton component="a" onClick={() => {setOpen(false)}} href={"#/lists/" + text_data[0]}>
+                                                <ListItemButton component="a" onClick={() => {setOpen(false)}} href={"gff/#/lists/" + text_data[0]}>
                                                     {text_data[1]}
                                                 </ListItemButton>
                                             </ListItem>
@@ -228,12 +228,12 @@ function LevelsMain() {
                                     <Typography sx={{fontWeight: "lg"}}>모든 기능</Typography>
                                 </ListItem>
                                 <ListItem>
-                                    <ListItemButton component="a" onClick={() => {setOpen(false)}} href={"#/lists/"}>
+                                    <ListItemButton component="a" onClick={() => {setOpen(false)}} href={"gff/#/lists/"}>
                                         리스트 목록
                                     </ListItemButton>
                                 </ListItem>
                                 <ListItem>
-                                    <ListItemButton component="a" onClick={() => {setOpen(false)}} href={"#/levels/"}>
+                                    <ListItemButton component="a" onClick={() => {setOpen(false)}} href={"gff/#/levels/"}>
                                         레벨 검색하기
                                     </ListItemButton>
                                 </ListItem>
@@ -243,9 +243,9 @@ function LevelsMain() {
                     <IconButton variant="plain" size="md" component="a" href="/">
                         <GFFIcon />
                     </IconButton>
-                    <Button variant="plain" color="neutral" component="a" href="/">GFF</Button>
+                    <Button variant="plain" color="neutral" component="a" href="/gff/">GFF</Button>
                     <Typography sx={{transform: "rotate(270deg)"}}><ExpandMoreIcon /></Typography>
-                    <Button variant="plain" color="neutral" component="a" href="/#/levels">Level</Button>
+                    <Button variant="plain" color="neutral" component="a" href="/gff/#/levels">Level</Button>
                 </Stack>
             </Sheet>
             <Stack spacing={2} sx={{pb: 7, pt: 5, px: "12.5%"}}>
@@ -338,7 +338,7 @@ function LevelsMain() {
                                                 />
                                                 <Stack spacing={1} sx={{p: 2}}>
                                                     <Link
-                                                        level={fontSizeA} fontWeight="xl" href={"/#/levels/" + sel_level?.level_id}
+                                                        level={fontSizeA} fontWeight="xl" href={"/gff/#/levels/" + sel_level?.level_id}
                                                         sx={{color: "black", "&:hover": {textDecorationColor: "black"}}}
                                                     >{sel_level.level_name}</Link>
                                                     <Typography level={fontSizeB} fontWeight="lg">
