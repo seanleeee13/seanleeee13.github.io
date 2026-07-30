@@ -22,11 +22,11 @@ jobs:
           node-version: 20
           cache: "yarn"
           cache-dependency-path: gff/yarn.lock
-      - name: Install Dependencies
+      - name: GFF Install Dependencies
         run: |
           cd gff
           yarn install
-      - name: Build Files
+      - name: GFF Build Files
         run: |
           cd gff
           yarn build
