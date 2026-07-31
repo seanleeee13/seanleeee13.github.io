@@ -24,6 +24,10 @@ import Input from "@mui/joy/Input";
 import Snackbar from "@mui/joy/Snackbar";
 import Link from "@mui/joy/Link";
 
+function getQueryURL(link: string) {
+    return `${link}${window.location.hash.includes("?") ? "?" + window.location.hash.split("?")[1] : window.location.search === "" || window.location.search === "?" ? "/" : window.location.search}`;
+}
+
 function Login() {
     const [open, setOpen] = useState(false);
     const [openSnackbar, setOpenSnackbar] = useState(false);
@@ -106,17 +110,24 @@ function Login() {
                     <Drawer open={open} onClose={() => setOpen(false)} size="sm">
                         <ModalClose />
                         <DialogTitle>
-                            <Box sx={{fontSize: "xl"}}>
-                                <GFFIcon />
+                            <Box>
+                                <IconButton sx={{
+                                    width: "35px",height: "35px",
+                                    "& svg": {
+                                    fontSize: "30px"
+                                    }
+                                }} component="a" href="/">
+                                    <GFFIcon />
+                                </IconButton>
                             </Box>
                         </DialogTitle>
                         <br />
                         <Box role="presentation" sx={{p: 1}}>
                             <List>
-                                <ListItemButton component="a" onClick={() => {setOpen(false)}} href="/#/login/">
+                                <ListItemButton component="a" onClick={() => {setOpen(false)}} href={getQueryURL("/#/login")}>
                                     Log In
                                 </ListItemButton>
-                                <ListItemButton component="a" onClick={() => {setOpen(false)}} href="/#/signup/">
+                                <ListItemButton component="a" onClick={() => {setOpen(false)}} href={getQueryURL("/#/signup")}>
                                     Sign Up
                                 </ListItemButton>
                             </List>
@@ -125,7 +136,17 @@ function Login() {
                     <IconButton variant="plain" size="md" component="a" href="/">
                         <GFFIcon />
                     </IconButton>
-                    <Button variant="plain" color="neutral" component="a" href="/#/login/">Log In</Button>
+                    <Divider orientation="vertical" />
+                    <Button variant="plain" color="neutral" component="a" href={getQueryURL("/#/login")}>Log In</Button>
+                </Stack>
+                <Stack
+                    direction="row-reverse"
+                    alignItems="center"
+                    spacing={2}
+                    sx={{width: "100%"}}
+                >
+                    <Button variant="solid" color="neutral" component="a" href={getQueryURL("/#/signup")}>Sign Up</Button>
+                    <Button variant="outlined" color="neutral" component="a" href={getQueryURL("/#/login")}>Log In</Button>
                 </Stack>
             </Sheet>
             <Stack
@@ -200,7 +221,7 @@ function Login() {
                         >
                             Log In
                         </Button>
-                        <Typography level="title-sm">Don't have an account? <Link component="a" href="/#/signup/">Sign Up</Link></Typography>
+                        <Typography level="title-sm">Don't have an account? <Link component="a" href={getQueryURL("/#/signup")}>Sign Up</Link></Typography>
                     </Box>
                     <Divider sx={{ my: 3, textTransform: "lowercase", color: "text.tertiary" }}>
                         or
