@@ -39,7 +39,7 @@ function Login() {
     const [password, setPassword] = useState("");
     const [error1, setError1] = useState(false);
     const [error2, setError2] = useState(false);
-    const [searchParams, setSearchParams] = useSearchParams();
+    const [searchParams, _] = useSearchParams();
     const redirectURL = searchParams.get("redirectURL") || "/";
     useEffect(() => {
         const handleResize = () => {

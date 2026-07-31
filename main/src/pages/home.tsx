@@ -16,11 +16,7 @@ import { supabase, type UserInterface } from "../utils/supabase_key.tsx";
 import Divider from "@mui/joy/Divider";
 import { type ColorPaletteProp } from "@mui/joy";
 import Chip from "@mui/joy/Chip";
-import Card from "@mui/joy/Card";
 import { useNavigate } from "react-router-dom";
-import GithubIcon from "../assets/github.tsx";
-import Input from "@mui/joy/Input";
-import Snackbar from "@mui/joy/Snackbar";
 import Link from "@mui/joy/Link";
 
 function MyPage() {

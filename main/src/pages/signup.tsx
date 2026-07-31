@@ -43,7 +43,7 @@ function SignUp() {
     const [error3, setError3] = useState(false);
     const [error4, setError4] = useState(false);
     const [error5, setError5] = useState(false);
-    const [searchParams, setSearchParams] = useSearchParams();
+    const [searchParams, _] = useSearchParams();
     const redirectURL = searchParams.get("redirectURL") || "/";
     useEffect(() => {
         const handleResize = () => {

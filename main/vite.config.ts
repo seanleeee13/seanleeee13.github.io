@@ -10,8 +10,8 @@ export default defineConfig({
       '/gff': {
         target: "http://localhost:5174",
         changeOrigin: true,
-        configure: (proxy, options) => {
-          proxy.on('proxyReq', (proxyReq, req, res) => {
+        configure: (proxy, _) => {
+          proxy.on('proxyReq', (__, req, res) => {
             if (req.url === '/gff') {
               res.writeHead(301, { Location: '/gff/' });
               res.end();
