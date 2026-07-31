@@ -1,14 +1,13 @@
 {
-  "name": "github-page-gff",
+  "name": "main",
   "private": true,
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "yarn vite",
+    "dev": "vite",
     "build": "tsc -b && vite build",
-    "lint": "eslint .",
-    "preview": "yarn vite preview",
-    "deploy": "gh-pages -d dist -b main"
+    "lint": "oxlint",
+    "preview": "vite preview"
   },
   "dependencies": {
     "@emotion/react": "^11.14.0",
@@ -28,9 +27,7 @@
     "@types/react": "^19.2.14",
     "@types/react-dom": "^19.2.3",
     "@vitejs/plugin-react": "^6.0.1",
-    "eslint": "^10.3.0",
-    "eslint-plugin-react-hooks": "^7.1.1",
-    "eslint-plugin-react-refresh": "^0.5.2",
+    "eslint": "^1.71.0",
     "gh-pages": "^6.3.0",
     "globals": "^17.6.0",
     "typescript": "~6.0.2",

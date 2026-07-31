@@ -1,0 +1,149 @@
+import Typography from "@mui/joy/Typography";
+import Button from "@mui/joy/Button";
+import MenuIcon from "../assets/menu.tsx";
+import GFFIcon from "../assets/gff.tsx";
+import Stack from "@mui/joy/Stack";
+import Sheet from "@mui/joy/Sheet";
+import IconButton from "@mui/joy/IconButton";
+import Drawer from "@mui/joy/Drawer";
+import Box from "@mui/joy/Box";
+import List from "@mui/joy/List";
+import ListItemButton from "@mui/joy/ListItemButton";
+import ModalClose from "@mui/joy/ModalClose";
+import DialogTitle from "@mui/joy/DialogTitle";
+import React, { useState, useEffect } from "react";
+import { supabase, type UserInterface } from "../utils/supabase_key.tsx";
+import Divider from "@mui/joy/Divider";
+import { type ColorPaletteProp } from "@mui/joy";
+import Chip from "@mui/joy/Chip";
+import Card from "@mui/joy/Card";
+import { useNavigate } from "react-router-dom";
+import GithubIcon from "../assets/github.tsx";
+import Input from "@mui/joy/Input";
+import Snackbar from "@mui/joy/Snackbar";
+import Link from "@mui/joy/Link";
+
+function MyPage() {
+    const [open, setOpen] = useState(false);
+    const [loading, setLoading] = useState(true);
+    const [users, setUsers] = useState<UserInterface>();
+    const navigate = useNavigate();
+    useEffect(() => {
+        const fetchTableData = async () => {
+            try {
+                const { data: { session } } = await supabase.auth.getSession();
+                if (session?.user) {
+                    const userResult = await supabase.from("user").select("*").eq("id", session.user.id).single();
+                    if (userResult.error) {
+                        throw userResult.error;
+                    }
+                    if (userResult.data) {
+                        setUsers(userResult.data as UserInterface);
+                    }
+                }
+            } catch (error) {
+                console.error("Error while loading list data: ", error);
+            } finally {
+                setLoading(false);
+            }
+        };
+        fetchTableData();
+    }, [navigate]);
+    const colormap: Record<string, ColorPaletteProp> = {admin: "primary", gff: "warning"};
+    if (loading) {
+        return null;
+    }
+    return (
+        <>
+            <Sheet
+            variant="solid"
+            color="neutral"
+            sx={{
+                top: 0,
+                zIndex: 1100,
+                width: "100%",
+                height: "64px",
+                px: 2,
+                display: "flex",
+                alignItems: "center",
+                borderBottom: "1.5px solid #bcbfb6",
+                borderColor: "divider",
+                bgcolor: "#f6f8fa",
+            }}>
+                <Stack
+                    direction="row"
+                    alignItems="center"
+                    spacing={1}
+                    sx={{width: "100%"}}
+                >
+                    <IconButton variant="outlined" color="neutral" size="md" onClick={() => setOpen(true)}>
+                        <MenuIcon />
+                    </IconButton>
+                    <Drawer open={open} onClose={() => setOpen(false)} size="sm">
+                        <ModalClose />
+                        <DialogTitle>
+                                <Box>
+                            <IconButton sx={{
+                                width: "35px",height: "35px",
+                                "& svg": {
+                                fontSize: "30px"
+                                }
+                            }} component="a" href="/">
+                                    <GFFIcon />
+                            </IconButton>
+                                </Box>
+                        </DialogTitle>
+                        <br />
+                        <Box role="presentation" sx={{p: 1}}>
+                            <List>
+                                {users?.role.map((text) => <ListItemButton component="a" onClick={() => {setOpen(false)}} href={`/${text[0]}/`} key={`listitembutton-${text[0]}`}>{text[1]}</ListItemButton>)}
+                            </List>
+                            <Divider />
+                            <List>
+                                <ListItemButton component="a" onClick={() => {setOpen(false)}} href="/#/logout/">
+                                    Log Out
+                                </ListItemButton>
+                            </List>
+                        </Box>
+                    </Drawer>
+                    <IconButton variant="plain" size="md" component="a" href="/">
+                        <GFFIcon />
+                    </IconButton>
+                </Stack>
+            </Sheet>
+            <Stack direction="column" spacing={3} sx={{ p: 4, mx: "auto", my: 5, maxWidth: 1000 }}>
+                <Typography level="h1">환영합니다!</Typography>
+                <Typography level="body-xs">로그인은 영어인데 갑자기 한국어로 변하면 좀 그런가...</Typography>
+                <Stack direction="row" spacing={1}><Typography level="h3">가진 권한: </Typography>{users?.role.map((text) => <React.Fragment key={`chip-${text[0]}`}><Chip size="md" variant="soft" color={colormap[text[0]]} slotProps={{ action: { component: 'a', href: `/${text[0]}/` } }}>{text[1]}</Chip></React.Fragment>)}</Stack>
+            </Stack>
+        </>
+    );
+}
+
+function IntroPage() {
+    return <></>;
+}
+
+function Home() {
+    const [loading, setLoading] = useState(true);
+    const [hasSession, setHasSession] = useState(false);
+    const navigate = useNavigate();
+    useEffect(() => {
+        const checkLoggedUser = async () => {
+            const { data: { session } } = await supabase.auth.getSession();
+            if (session) {
+                setHasSession(true);
+            } else {
+                setHasSession(false);
+            }
+            setLoading(false);
+        };
+        checkLoggedUser();
+    }, [navigate]);
+    if (loading) {
+        return null;
+    }
+    return hasSession ? <MyPage /> : <IntroPage />;
+}
+
+export default Home;

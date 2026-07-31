@@ -1,0 +1,24 @@
+node_modules
+.vscode/*
+
+# gff
+gff/logs
+gff/*.log
+gff/npm-debug.log*
+gff/yarn-debug.log*
+gff/yarn-error.log*
+gff/pnpm-debug.log*
+gff/lerna-debug.log*
+gff/node_modules
+gff/dist
+gff/dist-ssr
+gff/*.local
+gff/.vscode/*
+gff/!.vscode/extensions.json
+gff/.idea
+gff/.DS_Store
+gff/*.suo
+gff/*.ntvs*
+gff/*.njsproj
+gff/*.sln
+gff/*.sw?

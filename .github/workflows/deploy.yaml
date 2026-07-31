@@ -22,6 +22,14 @@ jobs:
           node-version: 20
           cache: "yarn"
           cache-dependency-path: gff/yarn.lock
+      - name: Main Install Dependencies
+        run: |
+          cd main
+          yarn install
+      - name: Main Build Files
+        run: |
+          cd main
+          yarn build
       - name: GFF Install Dependencies
         run: |
           cd gff
@@ -30,8 +38,11 @@ jobs:
         run: |
           cd gff
           yarn build
-      - name: Move GFF Build to Subdirectory
-        run: cp -r ./gff/dist ./dist/gff
+      - name: Assemble Public Directory
+        run: |
+          mkdir -p dist
+          cp -r ./main/dist/* ./dist/
+          cp -r ./gff/dist ./dist/gff
       - name: Deploy Website
         uses: peaceiris/actions-gh-pages@v4
         env:
