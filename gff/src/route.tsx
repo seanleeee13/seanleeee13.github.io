@@ -4,6 +4,9 @@ import Lists from "./pages/lists.tsx"
 import Levels from "./pages/levels.tsx"
 import ListsMain from "./pages/lists_main.tsx";
 import LevelsMain from "./pages/levels_main.tsx";
+import { supabase, type UserInterface } from "./utils/supabase_key.tsx";
+import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 
 const router = createHashRouter([
     { path: "/", element: <Home /> },
@@ -15,6 +18,33 @@ const router = createHashRouter([
 ]);
 
 function Router() {
+    const [loading, setLoading] = useState(true);
+    const [users, setUsers] = useState<UserInterface>();
+    const navigate = useNavigate();
+    useEffect(() => {
+        const fetchTableData = async () => {
+            try {
+                const { data: { session } } = await supabase.auth.getSession();
+                if (session?.user) {
+                    const userResult = await supabase.from("user").select("*").eq("id", session.user.id).single();
+                    if (userResult.error) {
+                        throw userResult.error;
+                    }
+                    if (userResult.data) {
+                        setUsers(userResult.data as UserInterface);
+                    }
+                }
+            } catch (err) {
+                console.error("Error while loading list data: ", err);
+            } finally {
+                setLoading(false);
+            }
+        };
+        fetchTableData();
+    }, [navigate]);
+    if (loading || !users?.role.find((value) => (value[0] === "gff"))) {
+        return null;
+    }
     return (
         <RouterProvider router={router} />
     );

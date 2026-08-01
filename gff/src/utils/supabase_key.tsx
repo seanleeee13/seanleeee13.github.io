@@ -36,6 +36,12 @@ export interface PListInterface {
     childs: string[];
 }
 
+export interface UserInterface {
+    id: string;
+    role: [string, string][];
+    vrole: [string, string][];
+    name: string | null;
+}
 
 // const data = [
 //     [

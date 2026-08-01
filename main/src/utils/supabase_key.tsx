@@ -8,4 +8,6 @@ export const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 export interface UserInterface {
     id: string;
     role: [string, string][];
+    vrole: [string, string][];
+    name: string | null;
 }

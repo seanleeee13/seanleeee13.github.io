@@ -238,6 +238,15 @@ function LevelsMain() {
                                     </ListItemButton>
                                 </ListItem>
                             </List>
+                            <Divider />
+                            <List>
+                                <ListItem>
+                                    <Typography sx={{fontWeight: "lg"}}>공통 기능</Typography>
+                                </ListItem>
+                                <ListItemButton component="a" onClick={() => {setOpen(false)}} href="/#/logout/">
+                                    로그아웃
+                                </ListItemButton>
+                            </List>
                         </Box>
                     </Drawer>
                     <IconButton variant="plain" size="md" component="a" href="/">
@@ -246,6 +255,14 @@ function LevelsMain() {
                     <Button variant="plain" color="neutral" component="a" href="/gff/">GFF</Button>
                     <Typography sx={{transform: "rotate(270deg)"}}><ExpandMoreIcon /></Typography>
                     <Button variant="plain" color="neutral" component="a" href="/gff/#/levels">Level</Button>
+                </Stack>
+                <Stack
+                    direction="row-reverse"
+                    alignItems="center"
+                    spacing={2}
+                    sx={{width: "100%"}}
+                >
+                    <Button variant="plain" color="neutral" component="a" href="/#/logout/">Log Out</Button>
                 </Stack>
             </Sheet>
             <Stack spacing={2} sx={{pb: 7, pt: 5, px: "12.5%"}}>
