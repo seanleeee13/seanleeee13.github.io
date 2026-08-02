@@ -6,7 +6,6 @@ import ListsMain from "./pages/lists_main.tsx";
 import LevelsMain from "./pages/levels_main.tsx";
 import { supabase, type UserInterface } from "./utils/supabase_key.tsx";
 import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
 
 const router = createHashRouter([
     { path: "/", element: <Home /> },
@@ -20,7 +19,6 @@ const router = createHashRouter([
 function Router() {
     const [loading, setLoading] = useState(true);
     const [users, setUsers] = useState<UserInterface>();
-    const navigate = useNavigate();
     useEffect(() => {
         const fetchTableData = async () => {
             try {
@@ -41,7 +39,7 @@ function Router() {
             }
         };
         fetchTableData();
-    }, [navigate]);
+    }, []);
     if (loading || !users?.role.find((value) => (value[0] === "gff"))) {
         return null;
     }

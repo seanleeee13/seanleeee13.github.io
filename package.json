@@ -3,7 +3,7 @@
     "version": "1.0.0",
     "private": true,
     "scripts": {
-        "dev": "yarn concurrently \"cd main && yarn dev\" \"cd gff && yarn dev\""
+        "dev": "yarn concurrently \"cd main && yarn dev\" \"cd gff && yarn dev\" \"cd something && yarn dev\""
     },
     "devDependencies": {
         "concurrently": "^10.8.0"

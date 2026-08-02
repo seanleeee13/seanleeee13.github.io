@@ -18,6 +18,18 @@ export default defineConfig({
             }
           });
         }
+      },
+      '/something': {
+        target: "http://localhost:5175",
+        changeOrigin: true,
+        configure: (proxy, _) => {
+          proxy.on('proxyReq', (__, req, res) => {
+            if (req.url === '/something') {
+              res.writeHead(301, { Location: '/something/' });
+              res.end();
+            }
+          });
+        }
       }
     }
   }

@@ -21,6 +21,9 @@ import { useNavigate } from "react-router-dom";
 import FormControl from "@mui/joy/FormControl";
 import FormHelperText from "@mui/joy/FormHelperText";
 
+const colormap: Record<string, ColorPaletteProp> = {admin: "primary", gff: "warning", something: "success"};
+const usable = [["something", "Something"]];
+
 function MyPage() {
     const [open, setOpen] = useState(false);
     const [loading, setLoading] = useState(true);
@@ -50,7 +53,6 @@ function MyPage() {
         };
         fetchTableData();
     }, [navigate]);
-    const colormap: Record<string, ColorPaletteProp> = {admin: "primary", gff: "warning"};
     if (loading) {
         return null;
     }
@@ -217,7 +219,7 @@ function MyPage() {
                             <List>
                                 {users?.role.map((text) => <ListItemButton component="a" onClick={() => {setOpen(false)}} href={`/${text[0]}/`} key={`listitembutton-${text[0]}`}>{text[1]}</ListItemButton>)}
                             </List>
-                            <Divider />
+                            {users?.role.length === 0 ? null : <Divider />}
                             <List>
                                 <ListItem>
                                     공통 기능
@@ -246,6 +248,10 @@ function MyPage() {
                 <Typography level="body-xs">로그인은 영어인데 갑자기 한국어로 변하면 좀 그런가...</Typography>
                 <Stack direction="row" spacing={1}><Typography level="h3">가진 권한: {users?.role.length === 0 ? "없음" : ""}</Typography>{users?.role.map((text) => <React.Fragment key={`chip1-${text[0]}`}><Chip size="md" variant="soft" color={colormap[text[0]]} slotProps={{ action: { component: 'a', href: `/${text[0]}/` } }}>{text[1]}</Chip></React.Fragment>)}</Stack>
                 <Stack direction="row" spacing={1}><Typography level="h3">가진 보기 권한: {users?.vrole.length === 0 ? "없음" : ""}</Typography>{users?.vrole.map((text) => <React.Fragment key={`chip2-${text[0]}`}><Chip size="md" variant="soft" color={colormap[text[0]]} slotProps={{ action: { component: 'a', href: `/${text[0]}/` } }}>{text[1]}</Chip></React.Fragment>)}</Stack>
+                <Stack direction="row" spacing={1}>
+                    <Typography level="h3">사용 가능 컨텐츠:</Typography>
+                    {usable.map((text) => <React.Fragment key={`chip2-${text[0]}`}><Chip size="md" variant="soft" color={colormap[text[0]]} slotProps={{ action: { component: 'a', href: `/${text[0]}/` } }}>{text[1]}</Chip></React.Fragment>)}
+                </Stack>
             </Stack>
         </>
     );
@@ -331,6 +337,10 @@ function IntroPage() {
                 >
                     <Button variant="solid" color="neutral" component="a" href="/#/signup/">Sign Up</Button>
                     <Button variant="outlined" color="neutral" component="a" href="/#/login/">Log In</Button>
+                </Stack>
+                <Stack direction="row" spacing={1}>
+                    <Typography level="h3">사용 가능 컨텐츠:</Typography>
+                    {usable.map((text) => <React.Fragment key={`chip2-${text[0]}`}><Chip size="md" variant="soft" color={colormap[text[0]]} slotProps={{ action: { component: 'a', href: `/${text[0]}/` } }}>{text[1]}</Chip></React.Fragment>)}
                 </Stack>
             </Stack>
         </>

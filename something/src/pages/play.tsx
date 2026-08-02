@@ -11,13 +11,32 @@ import Box from "@mui/joy/Box";
 import List from "@mui/joy/List";
 import ListItem from "@mui/joy/ListItem";
 import ListItemButton from "@mui/joy/ListItemButton";
-import Divider from "@mui/joy/Divider";
 import ModalClose from "@mui/joy/ModalClose";
 import DialogTitle from "@mui/joy/DialogTitle";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { supabase } from "../utils/supabase_key.tsx";
+import { useNavigate } from "react-router-dom";
 
 function Play() {
     const [open, setOpen] = useState<boolean>(false);
+    const [loading, setLoading] = useState(true);
+    const [hasSession, setHasSession] = useState(false);
+    const navigate = useNavigate();
+    useEffect(() => {
+        const checkLoggedUser = async () => {
+            const { data: { session } } = await supabase.auth.getSession();
+            if (session) {
+                setHasSession(true);
+            } else {
+                setHasSession(false);
+            }
+            setLoading(false);
+        };
+        checkLoggedUser();
+    }, [navigate]);
+    if (loading) {
+        return null;
+    }
     return (
         <>
             <Sheet
@@ -47,8 +66,15 @@ function Play() {
                     <Drawer open={open} onClose={() => setOpen(false)} size="sm">
                         <ModalClose />
                         <DialogTitle>
-                            <Box sx={{fontSize: "xl"}}>
-                                <ReactLogoIcon />
+                            <Box>
+                                <IconButton sx={{
+                                    width: "35px",height: "35px",
+                                    "& svg": {
+                                    fontSize: "30px"
+                                    }
+                                }} component="a" href="/">
+                                    <ReactLogoIcon />
+                                </IconButton>
                             </Box>
                         </DialogTitle>
                         <br />
@@ -58,31 +84,39 @@ function Play() {
                                     <Typography sx={{fontWeight: "lg"}}>기본 기능</Typography>
                                 </ListItem>
                                 <ListItem>
-                                    <ListItemButton component="a" onClick={() => {setOpen(false)}} href="/">
+                                    <ListItemButton component="a" onClick={() => {setOpen(false)}} href="/something/">
                                         Home
                                     </ListItemButton>
                                 </ListItem>
-                            </List>
-                            <Divider />
-                            <List>
                                 <ListItem>
-                                    <Typography sx={{fontWeight: "lg"}}>추가 기능</Typography>
-                                </ListItem>
-                                <ListItem>
-                                    <ListItemButton component="a" onClick={() => {setOpen(false)}} href="/play/">
+                                    <ListItemButton component="a" onClick={() => {setOpen(false)}} href="/something/#/play/">
                                         Play
                                     </ListItemButton>
                                 </ListItem>
                             </List>
-                            <Divider />
                         </Box>
                     </Drawer>
                     <IconButton variant="plain" size="md" component="a" href="/">
                         <ReactLogoIcon />
                     </IconButton>
-                    <Button variant="plain" color="neutral" component="a" href="/">Something</Button>
+                    <Button variant="plain" color="neutral" component="a" href="/something/">Something</Button>
                     <Typography sx={{transform: "rotate(270deg)"}}><ExpandMoreIcon /></Typography>
-                    <Button variant="plain" color="neutral" component="a" href="/">Play</Button>
+                    <Button variant="plain" color="neutral" component="a" href="/something/#/play/">Play</Button>
+                </Stack>
+                <Stack
+                    direction="row-reverse"
+                    alignItems="center"
+                    spacing={1}
+                    sx={{width: "100%"}}
+                >
+                    {
+                        hasSession ?
+                        <Button variant="plain" color="neutral" component="a" href="/#/logout/">Log Out</Button> :
+                        <>
+                            <Button variant="solid" color="neutral" component="a" href="/#/signup/">Sign Up</Button>
+                            <Button variant="outlined" color="neutral" component="a" href="/#/login/">Log In</Button>
+                        </>
+                    }
                 </Stack>
             </Sheet>
             <Stack sx={{ p: 4, mx: "auto", my: 5, maxWidth: 1000 }} spacing={3}>

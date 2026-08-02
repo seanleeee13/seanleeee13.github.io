@@ -133,8 +133,15 @@ function Levels() {
                     <Drawer open={open} onClose={() => setOpen(false)} size="sm">
                         <ModalClose />
                         <DialogTitle>
-                            <Box sx={{fontSize: "xl"}}>
-                                <GFFIcon />
+                            <Box>
+                                <IconButton sx={{
+                                    width: "35px",height: "35px",
+                                    "& svg": {
+                                    fontSize: "30px"
+                                    }
+                                }} component="a" href="/">
+                                    <GFFIcon />
+                                </IconButton>
                             </Box>
                         </DialogTitle>
                         <br />
@@ -185,6 +192,7 @@ function Levels() {
                     <IconButton variant="plain" size="md" component="a" href="/">
                         <GFFIcon />
                     </IconButton>
+                    <Divider orientation="vertical" />
                     {
                         level_list === undefined ?
                         <>

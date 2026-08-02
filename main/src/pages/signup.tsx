@@ -153,6 +153,7 @@ function SignUp() {
                     <IconButton variant="plain" size="md" component="a" href="/">
                         <GFFIcon />
                     </IconButton>
+                    <Divider orientation="vertical" />
                     <Button variant="plain" color="neutral" component="a" href={getQueryURL("/#/signup")}>Sign Up</Button>
                 </Stack>
                 <Stack
