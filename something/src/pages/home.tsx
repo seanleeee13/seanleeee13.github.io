@@ -48,7 +48,8 @@ function Home() {
             backgroundSize: "cover",
             backgroundPosition: "center",
             backgroundRepeat: "no-repeat",
-            height: "100vw"
+            height: "100vh", 
+            width: "100vw"
         }}>
             <Sheet
             variant="solid"
@@ -146,7 +147,7 @@ function Home() {
                     }}>Play Chess with Something AI</Typography>
                 </Box>
                 <Box>
-                    <Button component="a" variant="plain" href="/play/" size="lg" sx={{
+                    <Button component="a" variant="plain" href="/something/#/play/" size="lg" sx={{
                         backgroundColor: "common.white",
                         color: "neutral.800",
                         transition: "all 0.4s ease",
