@@ -38,11 +38,20 @@ jobs:
         run: |
           cd gff
           yarn build
+      - name: Something Install Dependencies
+        run: |
+          cd something
+          yarn install
+      - name: Something Build Files
+        run: |
+          cd something
+          yarn build
       - name: Assemble Public Directory
         run: |
           mkdir -p dist
           cp -r ./main/dist/* ./dist/
           cp -r ./gff/dist ./dist/gff
+          cp -r ./something/dist ./dist/something
       - name: Deploy Website
         uses: peaceiris/actions-gh-pages@v4
         env:
