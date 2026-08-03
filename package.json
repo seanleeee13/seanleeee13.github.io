@@ -3,6 +3,9 @@
     "version": "1.0.0",
     "private": true,
     "scripts": {
-        "dev": "yarn concurrently \"cd main && yarn dev\" \"cd gff && yarn dev\" \"cd something && yarn dev\""
+        "dev:main": "pnpm --filter main dev",
+        "dev:gff": "pnpm --filter github-page-gff dev",
+        "dev:something": "pnpm --filter something dev",
+        "dev:all": "pnpm --parallel --filter main --filter github-page-gff --filter something dev"
     }
 }
