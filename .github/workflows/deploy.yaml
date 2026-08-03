@@ -14,22 +14,22 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Create Base Deploy Directory
-        run: mkdir -p dist
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 11
       - name: Set up Node.js Engine
         uses: actions/setup-node@v4
         with:
           node-version: 22
           cache: "pnpm"
           cache-dependency-path: pnpm-lock.yaml
+      - name: Create Base Deploy Directory
+        run: mkdir -p dist
       - name: Install Dependencies
-        run: |
-          cd main
-          pnpm install
+        run: pnpm install
       - name: Build Files
-        run: |
-          cd main
-          pnpm -r build
+        run: pnpm -r build
       - name: Assemble Public Directory
         run: |
           mkdir -p dist
