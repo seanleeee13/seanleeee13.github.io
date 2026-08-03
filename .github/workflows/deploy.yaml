@@ -7,8 +7,6 @@ on:
   workflow_dispatch:
 permissions:
   contents: write
-  pages: write
-  id-token: write
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -24,8 +22,6 @@ jobs:
           node-version: 22
           cache: "pnpm"
           cache-dependency-path: pnpm-lock.yaml
-      - name: Create Base Deploy Directory
-        run: mkdir -p dist
       - name: Install Dependencies
         run: pnpm install
       - name: Build Files
@@ -33,9 +29,9 @@ jobs:
       - name: Assemble Public Directory
         run: |
           mkdir -p dist
-          cp -r ./main/dist/* ./dist/
-          cp -r ./gff/dist ./dist/gff
-          cp -r ./something/dist ./dist/something
+          cp -r main/dist/. dist/
+          cp -r gff/dist dist/gff
+          cp -r something/dist dist/something
       - name: Deploy Website
         uses: peaceiris/actions-gh-pages@v4
         env:
