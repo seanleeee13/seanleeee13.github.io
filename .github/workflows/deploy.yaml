@@ -20,32 +20,16 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 22
-          cache: "yarn"
-          cache-dependency-path: gff/yarn.lock
-      - name: Main Install Dependencies
+          cache: "pnpm"
+          cache-dependency-path: pnpm-lock.yaml
+      - name: Install Dependencies
         run: |
           cd main
-          yarn install
-      - name: Main Build Files
+          pnpm install
+      - name: Build Files
         run: |
           cd main
-          yarn build
-      - name: GFF Install Dependencies
-        run: |
-          cd gff
-          yarn install
-      - name: GFF Build Files
-        run: |
-          cd gff
-          yarn build
-      - name: Something Install Dependencies
-        run: |
-          cd something
-          yarn install
-      - name: Something Build Files
-        run: |
-          cd something
-          yarn build
+          pnpm -r build
       - name: Assemble Public Directory
         run: |
           mkdir -p dist
