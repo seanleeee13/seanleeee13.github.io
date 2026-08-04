@@ -2,3 +2,4 @@ packages:
   - 'main'
   - 'gff'
   - 'something'
+minimumReleaseAge: 0
