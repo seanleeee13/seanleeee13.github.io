@@ -16,6 +16,7 @@ import DialogTitle from "@mui/joy/DialogTitle";
 import { useState, useEffect } from "react";
 import { supabase } from "../utils/supabase_key.tsx";
 import { useNavigate } from "react-router-dom";
+import Divider from "@mui/joy/Divider";
 
 function Play() {
     const [open, setOpen] = useState<boolean>(false);
@@ -99,6 +100,7 @@ function Play() {
                     <IconButton variant="plain" size="md" component="a" href="/">
                         <ReactLogoIcon />
                     </IconButton>
+                    <Divider orientation="vertical" />
                     <Button variant="plain" color="neutral" component="a" href="/something/">Something</Button>
                     <Typography sx={{transform: "rotate(270deg)"}}><ExpandMoreIcon /></Typography>
                     <Button variant="plain" color="neutral" component="a" href="/something/#/play/">Play</Button>

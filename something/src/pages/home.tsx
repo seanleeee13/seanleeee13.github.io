@@ -17,6 +17,7 @@ import backgroundImage from "../assets/bg.png";
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "../utils/supabase_key.tsx";
+import Divider from "@mui/joy/Divider";
 
 function Home() {
     const [open, setOpen] = useState<boolean>(false);
@@ -111,6 +112,7 @@ function Home() {
                     <IconButton variant="plain" size="md" component="a" href="/">
                         <ReactLogoIcon />
                     </IconButton>
+                    <Divider orientation="vertical" />
                     <Button variant="plain" color="neutral" component="a" href="/something/">Something</Button>
                 </Stack>
                 <Stack
