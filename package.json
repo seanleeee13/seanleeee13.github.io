@@ -5,8 +5,8 @@
     "packageManager": "pnpm@11.19.0",
     "scripts": {
         "dev:main": "pnpm --filter main dev",
-        "dev:gff": "pnpm --filter github-page-gff dev",
+        "dev:gff": "pnpm --filter gff dev",
         "dev:something": "pnpm --filter something dev",
-        "dev:all": "pnpm --parallel --filter main --filter github-page-gff --filter something dev"
+        "dev:all": "pnpm -r --parallel dev"
     }
 }

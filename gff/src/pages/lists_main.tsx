@@ -128,7 +128,7 @@ function ListsMain() {
                                         </ListItem>
                                         {text.slice(1).map((text_data) => (
                                             <ListItem key={text_data[0]}>
-                                                <ListItemButton component="a" onClick={() => {setOpen(false)}} href={"gff/#/lists/" + text_data[0]}>
+                                                <ListItemButton component="a" onClick={() => {setOpen(false)}} href={"/gff/#/lists/" + text_data[0]}>
                                                     {text_data[1]}
                                                 </ListItemButton>
                                             </ListItem>
@@ -142,12 +142,12 @@ function ListsMain() {
                                     <Typography sx={{fontWeight: "lg"}}>모든 기능</Typography>
                                 </ListItem>
                                 <ListItem>
-                                    <ListItemButton component="a" onClick={() => {setOpen(false)}} href={"gff/#/lists/"}>
+                                    <ListItemButton component="a" onClick={() => {setOpen(false)}} href={"/gff/#/lists/"}>
                                         리스트 목록
                                     </ListItemButton>
                                 </ListItem>
                                 <ListItem>
-                                    <ListItemButton component="a" onClick={() => {setOpen(false)}} href={"gff/#/levels/"}>
+                                    <ListItemButton component="a" onClick={() => {setOpen(false)}} href={"/gff/#/levels/"}>
                                         레벨 검색하기
                                     </ListItemButton>
                                 </ListItem>

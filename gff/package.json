@@ -1,13 +1,13 @@
 {
-  "name": "github-page-gff",
+  "name": "gff",
   "private": true,
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "yarn vite",
+    "dev": "vite",
     "build": "tsc -b && vite build",
     "lint": "eslint .",
-    "preview": "yarn vite preview",
+    "preview": "vite preview",
     "deploy": "gh-pages -d dist -b main"
   },
   "dependencies": {
