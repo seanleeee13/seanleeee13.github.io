@@ -151,6 +151,11 @@ function Home() {
                                         레벨 검색하기
                                     </ListItemButton>
                                 </ListItem>
+                                <ListItem>
+                                    <ListItemButton component="a" onClick={() => {setOpen(false)}} href={"/gff/#/upload/"}>
+                                        레벨 업로드하기
+                                    </ListItemButton>
+                                </ListItem>
                             </List>
                             <Divider />
                             <List>
@@ -207,8 +212,9 @@ function Home() {
                 </AccordionGroup>
                 <Typography level="h3">2. 모든 기능</Typography>
                 <Stack direction="row" spacing={1}>
-                    <Button component="a" href="/gff/#/lists" variant="outlined">리스트 목록</Button>
-                    <Button component="a" href="/gff/#/levels" variant="outlined">레벨 검색하기</Button>
+                    <Button component="a" href="/gff/#/lists/" variant="outlined">리스트 목록</Button>
+                    <Button component="a" href="/gff/#/levels/" variant="outlined">레벨 검색하기</Button>
+                    <Button component="a" href="/gff/#/upload/" variant="outlined">레벨 업로드하기</Button>
                 </Stack>
                 <Typography level="h3">3. 참여자 목록</Typography>
                 <Typography level="title-md">이 프로젝트에는 seanleeee13, problem73481, yunho0927, glowingberri가 참가하였습니다.</Typography>

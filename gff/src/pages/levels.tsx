@@ -177,6 +177,11 @@ function Levels() {
                                         레벨 검색하기
                                     </ListItemButton>
                                 </ListItem>
+                                <ListItem>
+                                    <ListItemButton component="a" onClick={() => {setOpen(false)}} href={"/gff/#/upload/"}>
+                                        레벨 업로드하기
+                                    </ListItemButton>
+                                </ListItem>
                             </List>
                             <Divider />
                             <List>

@@ -41,6 +41,7 @@ export interface UserInterface {
     role: [string, string][];
     vrole: [string, string][];
     name: string | null;
+    user_metadata: {"gff:id": string, [key: string]: any};
 }
 
 // const data = [
