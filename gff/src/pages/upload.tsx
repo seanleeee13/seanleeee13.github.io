@@ -280,7 +280,7 @@ function Upload() {
                                             ))}
                                         </Select>
                                     </FormControl>
-                                    <FormControl error={levelUploadErrorData.publish} sx={{ position: 'relative', zIndex: 10 }}>
+                                    <FormControl error={levelUploadErrorData.publish}>
                                         <Select
                                             placeholder="Publish" endDecorator={<Typography textColor="red">*</Typography>}
                                             value={levelUploadInputData.publish} onChange={((_, newValue) => {
@@ -294,7 +294,7 @@ function Upload() {
                                             ))}
                                         </Select>
                                     </FormControl>
-                                    <FormControl error={levelUploadErrorData.co_creators} sx={{ position: 'relative', zIndex: 5 }}>
+                                    <FormControl error={levelUploadErrorData.co_creators}>
                                         <Select
                                             placeholder="Co-creators" multiple
                                             value={levelUploadInputData.co_creators} onChange={((_, newValue) => {
