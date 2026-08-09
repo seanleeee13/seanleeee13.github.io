@@ -3,7 +3,6 @@ import MenuIcon from "../assets/menu.tsx";
 import ReactLogoIcon from "../assets/react_logo.tsx";
 import Stack from "@mui/joy/Stack";
 import Sheet from "@mui/joy/Sheet"
-import { keyframes } from "@emotion/react";
 import IconButton from "@mui/joy/IconButton"
 import Button from "@mui/joy/Button"
 import Drawer from "@mui/joy/Drawer";
@@ -13,18 +12,15 @@ import ListItem from "@mui/joy/ListItem";
 import ListItemButton from "@mui/joy/ListItemButton";
 import ModalClose from "@mui/joy/ModalClose";
 import DialogTitle from "@mui/joy/DialogTitle";
-import backgroundImage from "../assets/bg.png";
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "../utils/supabase_key.tsx";
 import Divider from "@mui/joy/Divider";
+import bannerImage from "../assets/banner.png";
+import Link from "@mui/joy/Link";
 
 function Home() {
     const [open, setOpen] = useState<boolean>(false);
-    const fadeIn = keyframes`
-        from { opacity: 0; scale: 0 }
-        to { opacity: 1; scale: 1 }
-    `;
     const [loading, setLoading] = useState(true);
     const [hasSession, setHasSession] = useState(false);
     const navigate = useNavigate();
@@ -44,14 +40,7 @@ function Home() {
         return null;
     }
     return (
-        <Box sx={{
-            backgroundImage: `url("${backgroundImage}")`,
-            backgroundSize: "cover",
-            backgroundPosition: "center",
-            backgroundRepeat: "no-repeat",
-            height: "100vh",
-            width: "100vw"
-        }}>
+        <>
             <Sheet
             variant="solid"
             color="neutral"
@@ -97,13 +86,8 @@ function Home() {
                                     <Typography sx={{fontWeight: "lg"}}>기본 기능</Typography>
                                 </ListItem>
                                 <ListItem>
-                                    <ListItemButton component="a" onClick={() => {setOpen(false)}} href="/something/">
+                                    <ListItemButton component="a" onClick={() => {setOpen(false)}} href="/stage/">
                                         Home
-                                    </ListItemButton>
-                                </ListItem>
-                                <ListItem>
-                                    <ListItemButton component="a" onClick={() => {setOpen(false)}} href="/something/#/play/">
-                                        Play
                                     </ListItemButton>
                                 </ListItem>
                             </List>
@@ -113,7 +97,7 @@ function Home() {
                         <ReactLogoIcon />
                     </IconButton>
                     <Divider orientation="vertical" />
-                    <Button variant="plain" color="neutral" component="a" href="/something/">Something</Button>
+                    <Button variant="plain" color="neutral" component="a" href="/stage/">Stage</Button>
                 </Stack>
                 <Stack
                     direction="row-reverse"
@@ -131,36 +115,35 @@ function Home() {
                     }
                 </Stack>
             </Sheet>
-            <Stack sx={{
-                p: 4, mx: "auto", my: 5, maxWidth: 1000, marginTop: "8vw"
-            }} spacing={3}>
-                <Box sx={{
-                    width: "fit-content"
-                }}>
-                    <Typography level="h1" textColor="common.white" sx={{
-                        animation: `${fadeIn} 0.5s ease-out forwards`
-                    }}>SOMETHING</Typography>
-                </Box>
-                <Box sx={{
-                    width: "fit-content"
-                }}>
-                    <Typography level="h3" textColor="common.white" sx={{
-                        animation: `${fadeIn} 0.5s ease-out forwards`
-                    }}>Play Chess with Something AI</Typography>
-                </Box>
-                <Box>
-                    <Button component="a" variant="plain" href="/something/#/play/" size="lg" sx={{
-                        backgroundColor: "common.white",
-                        color: "neutral.800",
-                        transition: "all 0.4s ease",
-                        "&:hover": {
-                            transform: "scale(1.1)", backgroundColor: "neutral.100"
-                        },
-                        animation: `${fadeIn} 0.5s ease-out forwards`
-                    }}>Play</Button>
-                </Box>
+            <Stack sx={{ p: 4, mx: "auto", alignItems: "center" }} spacing={4}>
+                <Link href="/stage/" sx={{
+                    backgroundImage: `url("${bannerImage}")`,
+                    backgroundSize: "cover",
+                    backgroundPosition: "center",
+                    backgroundRepeat: "no-repeat",
+                    width: "70vw",
+                    aspectRatio: "3 / 1",
+                    display: "block",
+                    "&:hover": { textDecoration: "none" }
+                }} />
+                <Stack spacing={1} direction="row" width="70vw">
+                    <Stack direction="column" spacing={1} divider={<Divider />} width="64px" border="1.5px solid">
+                        와! 카페
+                    </Stack>
+                    <Stack sx={{
+                        alignItems: "center", border: "1.5px solid",
+                        borderColor: "black", borderRadius: "sm",
+                        p: 6
+                    }} spacing={3}>
+                        <Typography level="h3">프로젝트 108</Typography>
+                        <Box sx={{ alignItems: "center" }}>
+                            <Typography level="title-md">이 프로젝트는 이해하기 어렵고 복잡한 과학 이론과 그 역사를 쉽고 재미있게 소개하는 프로젝트입니다.</Typography>
+                            <Typography level="title-md">여러가지 창작물을 통해 과학 개념을 새로운 방식으로 보여주고 과학을 더욱 친근하게 전달해 줍니다.</Typography>
+                        </Box>
+                    </Stack>
+                </Stack>
             </Stack>
-        </Box>
+        </>
     );
 }
 

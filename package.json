@@ -2,11 +2,12 @@
     "name": "seanleeee13-github-pages",
     "version": "1.0.0",
     "private": true,
-    "packageManager": "pnpm@11.19.0",
+    "packageManager": "pnpm@11.20.0",
     "scripts": {
         "dev:main": "pnpm --filter main dev",
         "dev:gff": "pnpm --filter gff dev",
         "dev:something": "pnpm --filter something dev",
+        "dev:stage": "pnpm --filter stage dev",
         "dev:all": "pnpm -r --parallel dev"
     }
 }
