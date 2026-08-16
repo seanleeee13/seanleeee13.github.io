@@ -12,6 +12,10 @@ permissions:
   contents: write
   pages: write
   id-token: write
+concurrency:
+  group: "pages-deploy"
+  cancel-in-progress: false
+  queue: max
 jobs:
   deploy:
     environment:
@@ -35,12 +39,15 @@ jobs:
       #   run: pnpm --filter stage lint
       - name: Build Project
         run: pnpm --filter stage build
-      - name: Deploy Stage
-        uses: s0/git-publish-subdir-action@v2.6.0
-        env:
-          REPO: self
-          BRANCH: gh-pages
-          FOLDER: stage/dist
-          TARGET_DIR: stage
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          CLEAR_GLOBS: "stage/**"
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: "./stage/dist"
+      - name: Deploy Website
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./stage/dist
+          publish_branch: gh-pages
+          destination_dir: stage
+          keep_files: true

@@ -12,6 +12,10 @@ permissions:
   contents: write
   pages: write
   id-token: write
+concurrency:
+  group: "pages-deploy"
+  cancel-in-progress: false
+  queue: max
 jobs:
   deploy:
     environment:
@@ -35,12 +39,15 @@ jobs:
       #   run: pnpm --filter gff lint
       - name: Build Project
         run: pnpm --filter gff build
-      - name: Deploy Gff
-        uses: s0/git-publish-subdir-action@v2.6.0
-        env:
-          REPO: self
-          BRANCH: gh-pages
-          FOLDER: gff/dist
-          TARGET_DIR: gff
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          CLEAR_GLOBS: "gff/**"
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: "./gff/dist"
+      - name: Deploy Website
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./gff/dist
+          publish_branch: gh-pages
+          destination_dir: gff
+          keep_files: true

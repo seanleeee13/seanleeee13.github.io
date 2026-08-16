@@ -12,6 +12,10 @@ permissions:
   contents: write
   pages: write
   id-token: write
+concurrency:
+  group: "pages-deploy"
+  cancel-in-progress: false
+  queue: max
 jobs:
   deploy:
     environment:
@@ -39,11 +43,10 @@ jobs:
         uses: actions/upload-pages-artifact@v3
         with:
           path: "./main/dist"
-      - name: Deploy Main
-        uses: s0/git-publish-subdir-action@v2.6.0
-        env:
-          REPO: self
-          BRANCH: gh-pages
-          FOLDER: main/dist
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          CLEAR_GLOBS: "assets,index.html"
+      - name: Deploy Website
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./main/dist
+          publish_branch: gh-pages
+          keep_files: true
