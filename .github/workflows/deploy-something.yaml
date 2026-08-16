@@ -9,7 +9,7 @@ on:
       - ".github/workflows/deploy-something.yaml"
       - "apply-change"
 permissions:
-  contents: read
+  contents: write
   pages: write
   id-token: write
 jobs:
