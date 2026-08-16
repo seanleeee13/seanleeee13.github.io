@@ -39,7 +39,7 @@ function Upload() {
     const [plists, setPLists] = useState<PListInterface[]>([]);
     const [users, setUsers] = useState<UserInterface | null>(null);
     const [userNameList, setUserNameList] = useState<string[]>([]);
-    const [levelUploadInputData, __] = useState({
+    const [levelUploadInputData, setLevelUploadInputData] = useState({
         id: "",
         name: "",
         host: "",
@@ -49,7 +49,7 @@ function Upload() {
         verified: true,
         progress: null as null | number,
     });
-    const [levelUploadErrorData, setLevelUploadErrorData] = useState({
+    const [levelUploadErrorData, __] = useState({
         id: false,
         name: false,
         host: false,

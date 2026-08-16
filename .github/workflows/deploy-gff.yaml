@@ -45,7 +45,7 @@ jobs:
         uses: peaceiris/actions-gh-pages@v4
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./main/dist
+          publish_dir: ./gff/dist
           publish_branch: gh-pages
           destination_dir: gff
           force_orphan: true
