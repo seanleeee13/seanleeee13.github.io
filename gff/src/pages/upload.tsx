@@ -26,6 +26,7 @@ import TabPanel from "@mui/joy/TabPanel";
 import Tab from "@mui/joy/Tab";
 import React, { useState, useEffect } from "react";
 import { supabase, type LevelInterface, type ListInterface, type PListInterface, type UserInterface } from "../utils/supabase_key";
+import Checkbox from "@mui/joy/Checkbox";
 
 function Upload() {
     const [levels, setLevels] = useState<LevelInterface[]>([]);
@@ -40,6 +41,8 @@ function Upload() {
         publish: "",
         co_creators: [] as string[],
         verifier: "",
+        verified: true,
+        progress: null as null | number,
     });
     const [levelUploadErrorData, setLevelUploadErrorData] = useState({
         id: false,
@@ -48,6 +51,8 @@ function Upload() {
         publish: false,
         co_creators: false,
         verifier: false,
+        verified: false,
+        progress: false,
     });
     const [loading, setLoading] = useState<boolean>(true);
     const [open, setOpen] = useState<boolean>(false);
@@ -322,6 +327,37 @@ function Upload() {
                                             ))}
                                         </Select>
                                     </FormControl>
+                                    <Stack spacing={1} direction="row" alignItems="center">
+                                        <Checkbox label="Verified"
+                                            checked={levelUploadInputData.verified}
+                                            onChange={(event) => {
+                                                setLevelUploadInputData({
+                                                    ...levelUploadInputData,
+                                                    verified: event.target.checked,
+                                                    progress: (
+                                                        !event.target.checked ?
+                                                        levelUploadInputData.progress :
+                                                        null
+                                                    )
+                                                });
+                                            }}
+                                        />
+                                        <Input
+                                            placeholder="Progress" disabled={levelUploadInputData.verified}
+                                            endDecorator={!levelUploadInputData.verified ? null : <Typography textColor="red">*</Typography>}
+                                            type="number"
+                                            value={levelUploadInputData.progress === null ? "" : levelUploadInputData.progress}
+                                            onChange={(event) => {
+                                                if (+event.target.value >= 100 || +event.target.value < 0) {
+                                                    return;
+                                                }
+                                                setLevelUploadInputData({
+                                                    ...levelUploadInputData,
+                                                    progress: (event.target.value === "" ? null : +event.target.value)
+                                                });
+                                            }}
+                                        />
+                                    </Stack>
                                 </Stack>
                             </Box>
                         </Stack>
