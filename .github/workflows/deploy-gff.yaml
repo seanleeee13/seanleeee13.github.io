@@ -1,0 +1,52 @@
+name: Deploy Workspace [gff] to GitHub Pages
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - "gff/**"
+      - "pnpm-lock.yaml"
+      - ".github/workflows/deploy-gff.yaml"
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+concurrency:
+  group: "pages-gff"
+  cancel-in-progress: true
+jobs:
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 11
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: "pnpm"
+          cache-dependency-path: pnpm-lock.yaml
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+      # - name: Run Linter
+      #   run: pnpm --filter gff lint
+      - name: Build Project
+        run: pnpm --filter gff build
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: "./gff/dist"
+      - name: Deploy Website
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./main/dist
+          publish_branch: gh-pages
+          destination_dir: gff

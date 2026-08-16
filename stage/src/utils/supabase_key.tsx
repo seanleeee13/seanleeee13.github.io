@@ -10,5 +10,5 @@ export interface UserInterface {
     role: [string, string][];
     vrole: [string, string][];
     name: string | null;
-    user_metadata: {[key: string]: any};
+    user_metadata: { [key: string]: unknown };
 }

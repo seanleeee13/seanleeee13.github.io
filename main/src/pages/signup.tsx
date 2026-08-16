@@ -11,7 +11,7 @@ import List from "@mui/joy/List";
 import ListItemButton from "@mui/joy/ListItemButton";
 import ModalClose from "@mui/joy/ModalClose";
 import DialogTitle from "@mui/joy/DialogTitle";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { supabase } from "../utils/supabase_key";
 import { signUpWithEmail, loginWithGitHub } from "../utils/login.tsx";
 import Divider from "@mui/joy/Divider";
@@ -85,11 +85,15 @@ function SignUp() {
             }
         }
     };
+    const redirectRef = useRef(redirectURL);
+    redirectRef.current = redirectURL;
     useEffect(() => {
         const checkLoggedUser = async () => {
-            const { data: { session } } = await supabase.auth.getSession();
+            const {
+                data: { session },
+            } = await supabase.auth.getSession();
             if (session) {
-                navigate(redirectURL);
+                navigate(redirectRef.current);
             }
             setLoading(false);
         };
@@ -101,50 +105,68 @@ function SignUp() {
     return (
         <>
             <Sheet
-            variant="solid"
-            color="neutral"
-            sx={{
-                top: 0,
-                zIndex: 1100,
-                width: "100%",
-                height: "64px",
-                px: 2,
-                display: "flex",
-                alignItems: "center",
-                borderBottom: "1.5px solid #bcbfb6",
-                borderColor: "divider",
-                bgcolor: "#f6f8fa",
-            }}>
-                <Stack
-                    direction="row"
-                    alignItems="center"
-                    spacing={1}
-                    sx={{width: "100%"}}
-                >
-                    <IconButton variant="outlined" color="neutral" size="md" onClick={() => setOpen(true)}>
+                variant="solid"
+                color="neutral"
+                sx={{
+                    top: 0,
+                    zIndex: 1100,
+                    width: "100%",
+                    height: "64px",
+                    px: 2,
+                    display: "flex",
+                    alignItems: "center",
+                    borderBottom: "1.5px solid #bcbfb6",
+                    borderColor: "divider",
+                    bgcolor: "#f6f8fa",
+                }}
+            >
+                <Stack direction="row" alignItems="center" spacing={1} sx={{ width: "100%" }}>
+                    <IconButton
+                        variant="outlined"
+                        color="neutral"
+                        size="md"
+                        onClick={() => setOpen(true)}
+                    >
                         <MenuIcon />
                     </IconButton>
                     <Drawer open={open} onClose={() => setOpen(false)} size="sm">
                         <ModalClose />
                         <DialogTitle>
                             <Box>
-                                <IconButton sx={{
-                                    width: "35px",height: "35px",
-                                    "& svg": {
-                                    fontSize: "30px"
-                                    }
-                                }} component="a" href="/">
+                                <IconButton
+                                    sx={{
+                                        width: "35px",
+                                        height: "35px",
+                                        "& svg": {
+                                            fontSize: "30px",
+                                        },
+                                    }}
+                                    component="a"
+                                    href="/"
+                                >
                                     <GFFIcon />
                                 </IconButton>
                             </Box>
                         </DialogTitle>
                         <br />
-                        <Box role="presentation" sx={{p: 1}}>
+                        <Box role="presentation" sx={{ p: 1 }}>
                             <List>
-                                <ListItemButton component="a" onClick={() => {setOpen(false)}} href={getQueryURL("/#/login")}>
+                                <ListItemButton
+                                    component="a"
+                                    onClick={() => {
+                                        setOpen(false);
+                                    }}
+                                    href={getQueryURL("/#/login")}
+                                >
                                     Log In
                                 </ListItemButton>
-                                <ListItemButton component="a" onClick={() => {setOpen(false)}} href={getQueryURL("/#/signup")}>
+                                <ListItemButton
+                                    component="a"
+                                    onClick={() => {
+                                        setOpen(false);
+                                    }}
+                                    href={getQueryURL("/#/signup")}
+                                >
                                     Sign Up
                                 </ListItemButton>
                             </List>
@@ -154,16 +176,37 @@ function SignUp() {
                         <GFFIcon />
                     </IconButton>
                     <Divider orientation="vertical" />
-                    <Button variant="plain" color="neutral" component="a" href={getQueryURL("/#/signup")}>Sign Up</Button>
+                    <Button
+                        variant="plain"
+                        color="neutral"
+                        component="a"
+                        href={getQueryURL("/#/signup")}
+                    >
+                        Sign Up
+                    </Button>
                 </Stack>
                 <Stack
                     direction="row-reverse"
                     alignItems="center"
                     spacing={2}
-                    sx={{width: "100%"}}
+                    sx={{ width: "100%" }}
                 >
-                    <Button variant="solid" color="neutral" component="a" href={getQueryURL("/#/signup")}>Sign Up</Button>
-                    <Button variant="outlined" color="neutral" component="a" href={getQueryURL("/#/login")}>Log In</Button>
+                    <Button
+                        variant="solid"
+                        color="neutral"
+                        component="a"
+                        href={getQueryURL("/#/signup")}
+                    >
+                        Sign Up
+                    </Button>
+                    <Button
+                        variant="outlined"
+                        color="neutral"
+                        component="a"
+                        href={getQueryURL("/#/login")}
+                    >
+                        Log In
+                    </Button>
                 </Stack>
             </Sheet>
             <Stack
@@ -174,7 +217,7 @@ function SignUp() {
                     height: "calc(100dvh - 64px)",
                     overflow: "hidden",
                     boxSizing: "border-box",
-                    px: 0
+                    px: 0,
                 }}
             >
                 <Card
@@ -186,10 +229,10 @@ function SignUp() {
                         borderRadius: "xl",
                         boxShadow: "md",
                         borderColor: "neutral.outlinedBorder",
-                        transform: `scale(${currentScale})`, 
+                        transform: `scale(${currentScale})`,
                         transformOrigin: "center",
                         transition: "transform 0.1s ease-out",
-                        flexShrink: 0
+                        flexShrink: 0,
                     }}
                 >
                     <Typography
@@ -208,7 +251,10 @@ function SignUp() {
                                 variant="outlined"
                                 size="md"
                                 value={email}
-                                onChange={(event) => {setEmail(event.target.value); setError1(false)}}
+                                onChange={(event) => {
+                                    setEmail(event.target.value);
+                                    setError1(false);
+                                }}
                                 sx={{ borderRadius: "md" }}
                             />
                             <FormHelperText>
@@ -222,11 +268,22 @@ function SignUp() {
                                 variant="outlined"
                                 size="md"
                                 value={password}
-                                onChange={(event) => {setPassword(event.target.value); setError2(false); setError4(false); setError5(false)}}
+                                onChange={(event) => {
+                                    setPassword(event.target.value);
+                                    setError2(false);
+                                    setError4(false);
+                                    setError5(false);
+                                }}
                                 sx={{ borderRadius: "md" }}
                             />
                             <FormHelperText>
-                                {error2 ? "Please enter your password." : error4 ? "Passwords do not match. Please check again." : error5 ? "Password must be at least 6 characters and contain both letters and numbers." : "\u00A0"}
+                                {error2
+                                    ? "Please enter your password."
+                                    : error4
+                                      ? "Passwords do not match. Please check again."
+                                      : error5
+                                        ? "Password must be at least 6 characters and contain both letters and numbers."
+                                        : "\u00A0"}
                             </FormHelperText>
                         </FormControl>
                         <FormControl error={error3 || error4 || error5}>
@@ -236,11 +293,22 @@ function SignUp() {
                                 variant="outlined"
                                 size="md"
                                 value={confirmPassword}
-                                onChange={(event) => {setConfirmPassword(event.target.value); setError3(false); setError4(false); setError5(false)}}
+                                onChange={(event) => {
+                                    setConfirmPassword(event.target.value);
+                                    setError3(false);
+                                    setError4(false);
+                                    setError5(false);
+                                }}
                                 sx={{ borderRadius: "md" }}
                             />
                             <FormHelperText>
-                                {error3 ? "Please enter your password." : error4 ? "Passwords do not match. Please check again." : error5 ? "" : "\u00A0"}
+                                {error3
+                                    ? "Please enter your password."
+                                    : error4
+                                      ? "Passwords do not match. Please check again."
+                                      : error5
+                                        ? ""
+                                        : "\u00A0"}
                             </FormHelperText>
                         </FormControl>
                         <Button
@@ -252,7 +320,12 @@ function SignUp() {
                         >
                             Sign Up
                         </Button>
-                        <Typography level="title-sm">Already have an account? <Link component="a" href={getQueryURL("/#/login")}>Log In</Link></Typography>
+                        <Typography level="title-sm">
+                            Already have an account?{" "}
+                            <Link component="a" href={getQueryURL("/#/login")}>
+                                Log In
+                            </Link>
+                        </Typography>
                     </Box>
                     <Divider sx={{ my: 3, textTransform: "lowercase", color: "text.tertiary" }}>
                         or
@@ -273,8 +346,8 @@ function SignUp() {
                             },
                             "& svg": {
                                 color: "#ffffff !important",
-                                fill: "#ffffff !important"
-                            }
+                                fill: "#ffffff !important",
+                            },
                         }}
                     >
                         Continue with Github
@@ -284,7 +357,9 @@ function SignUp() {
             <Snackbar
                 anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
                 open={openSnackbar}
-                onClose={() => {setOpenSnackbar(false)}}
+                onClose={() => {
+                    setOpenSnackbar(false);
+                }}
                 color="danger"
                 variant="outlined"
                 autoHideDuration={2000}

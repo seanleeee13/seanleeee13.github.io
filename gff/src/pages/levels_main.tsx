@@ -2,9 +2,9 @@ import Typography from "@mui/joy/Typography";
 import MenuIcon from "../assets/menu";
 import GFFIcon from "../assets/gff";
 import Stack from "@mui/joy/Stack";
-import Sheet from "@mui/joy/Sheet"
-import IconButton from "@mui/joy/IconButton"
-import Button from "@mui/joy/Button"
+import Sheet from "@mui/joy/Sheet";
+import IconButton from "@mui/joy/IconButton";
+import Button from "@mui/joy/Button";
 import Drawer from "@mui/joy/Drawer";
 import Box from "@mui/joy/Box";
 import Card from "@mui/joy/Card";
@@ -22,11 +22,17 @@ import Input from "@mui/joy/Input";
 import Select from "@mui/joy/Select";
 import Option from "@mui/joy/Option";
 import ToggleButtonGroup from "@mui/joy/ToggleButtonGroup";
-import selectClasses from "@mui/joy/Select/selectClasses";import Accordion from "@mui/joy/Accordion";
+import selectClasses from "@mui/joy/Select/selectClasses";
+import Accordion from "@mui/joy/Accordion";
 import AccordionDetails from "@mui/joy/AccordionDetails";
 import AccordionGroup from "@mui/joy/AccordionGroup";
 import React, { useState, useEffect } from "react";
-import { supabase, type LevelInterface, type ListInterface, type PListInterface } from "../utils/supabase_key";
+import {
+    supabase,
+    type LevelInterface,
+    type ListInterface,
+    type PListInterface,
+} from "../utils/supabase_key";
 import { cdavg, pdavg } from "../utils/calculate_difficulty_avg";
 import ExpandMoreIcon from "../assets/expand_more";
 import FilterListIcon from "../assets/filter_list";
@@ -38,19 +44,21 @@ function LevelsMain() {
     const [plists, setPLists] = useState<PListInterface[]>([]);
     const [loading, setLoading] = useState<boolean>(true);
     const [open, setOpen] = useState(false);
-    const [sortType, setSortType] = useState<"id" | "name" | "rating" | "featured" | "vote" | string>("id");
+    const [sortType, setSortType] = useState<
+        "id" | "name" | "rating" | "featured" | "vote" | string
+    >("id");
     const [sortAsc, setSortAsc] = React.useState<"asc" | "desc">("desc");
     const [searchData, setSearchData] = React.useState<string>("");
     const [isFilterOpen, setIsFilterOpen] = useState(false);
     const [dimensions, setDimensions] = useState({
         width: window.innerWidth,
-        height: window.innerHeight
+        height: window.innerHeight,
     });
     useEffect(() => {
         const handleResize = () => {
             setDimensions({
                 width: window.innerWidth,
-                height: window.innerHeight
+                height: window.innerHeight,
             });
         };
         window.addEventListener("resize", handleResize);
@@ -61,9 +69,9 @@ function LevelsMain() {
             try {
                 setLoading(true);
                 const [levelResult, listResult, plistResult] = await Promise.all([
-                    supabase.from("level").select("*").order("level_id", {ascending: false}),
+                    supabase.from("level").select("*").order("level_id", { ascending: false }),
                     supabase.from("list").select("*").order("id"),
-                    supabase.from("plist").select("*").order("id")
+                    supabase.from("plist").select("*").order("id"),
                 ]);
                 if (levelResult.error) {
                     throw levelResult.error;
@@ -75,13 +83,13 @@ function LevelsMain() {
                     throw plistResult.error;
                 }
                 if (levelResult.data) {
-                    setLevels(levelResult.data as LevelInterface[]); 
+                    setLevels(levelResult.data as LevelInterface[]);
                 }
                 if (listResult.data) {
-                    setLists(listResult.data as ListInterface[]); 
+                    setLists(listResult.data as ListInterface[]);
                 }
                 if (plistResult.data) {
-                    setPLists(plistResult.data as PListInterface[]); 
+                    setPLists(plistResult.data as PListInterface[]);
                 }
             } catch (error) {
                 console.error("Error while loading list data: ", error);
@@ -92,20 +100,24 @@ function LevelsMain() {
         fetchTableData();
     }, []);
     const ratio = dimensions.width / dimensions.height;
-    let cardSize: {width: number | string, height: number | string, side: "row" | "column"} = {width: 0, height: 0, side: "row"};
+    let cardSize: { width: number | string; height: number | string; side: "row" | "column" } = {
+        width: 0,
+        height: 0,
+        side: "row",
+    };
     let fontSizeA: "h4" | "title-lg" | "title-md";
     let fontSizeB: "title-md" | "title-sm" | "body-lg";
     let fontSizeC: "body-sm" | "body-xs";
     if (ratio >= 2) {
-        cardSize = {width: "40vw", height: 135, side: "row"};
+        cardSize = { width: "40vw", height: 135, side: "row" };
     } else if (ratio >= 1.5) {
-        cardSize = {width: "35vw", height: 135, side: "row"};
+        cardSize = { width: "35vw", height: 135, side: "row" };
     } else if (ratio >= 1.0) {
-        cardSize = {width: "62vw", height: 135, side: "row"};
+        cardSize = { width: "62vw", height: 135, side: "row" };
     } else if (ratio >= 0.6) {
-        cardSize = {width: "40vw", height: "auto", side: "column"};
+        cardSize = { width: "40vw", height: "auto", side: "column" };
     } else {
-        cardSize = {width: "80vw", height: "auto", side: "column"};
+        cardSize = { width: "80vw", height: "auto", side: "column" };
     }
     if (dimensions.width >= 1118.4) {
         fontSizeA = "h4";
@@ -128,22 +140,26 @@ function LevelsMain() {
             </>
         );
     }
-    let text;
+    let text_val;
     const data = [];
     let last_data = "";
     let target;
     for (let i = 0; i < lists.length; i++) {
-        text = lists[i];
-        if (last_data !== text.parent) {
-            last_data = text.parent;
+        text_val = lists[i];
+        if (last_data !== text_val.parent) {
+            last_data = text_val.parent;
             target = plists.find((item) => item.name === last_data);
             data.push([[target?.name, target?.long_name]]);
         }
-        data[data.length - 1].push([text.name, text.long_name]);
+        data[data.length - 1].push([text_val.name, text_val.long_name]);
     }
     let sorted = levels
-        .filter((level) => level.level_name.toLowerCase().includes(searchData.toLowerCase()) || level.level_id === +searchData)
-        .sort((a, b) => {
+        .filter(
+            (level) =>
+                level.level_name.toLowerCase().includes(searchData.toLowerCase()) ||
+                level.level_id === +searchData,
+        )
+        .toSorted((a, b) => {
             if (sortType === "id") {
                 return a.level_id - b.level_id;
             } else if (sortType === "name") {
@@ -161,67 +177,84 @@ function LevelsMain() {
                     return 9 * ad[0] + ad[1] - 9 * bd[0] - bd[1];
                 }
             } else if (sortType === "featured") {
-                return (cdavg(a.difficulty_votes)?.[2] ?? 0)
-                    - (cdavg(b.difficulty_votes)?.[2] ?? 0);
+                return (
+                    (cdavg(a.difficulty_votes)?.[2] ?? 0) - (cdavg(b.difficulty_votes)?.[2] ?? 0)
+                );
             } else if (sortType === "vote") {
-                return Object.keys(a.difficulty_votes).length - Object.keys(b.difficulty_votes).length
+                return (
+                    Object.keys(a.difficulty_votes).length - Object.keys(b.difficulty_votes).length
+                );
             }
             return 0;
-        })
+        });
     if (sortAsc === "desc") {
-        sorted = sorted.reverse()
+        sorted = sorted.toReversed();
     }
     return (
         <>
             <Sheet
-            variant="solid"
-            color="neutral"
-            sx={{
-                top: 0,
-                zIndex: 1100,
-                width: "100%",
-                height: "64px",
-                px: 2,
-                display: "flex",
-                alignItems: "center",
-                borderBottom: "1.5px solid #bcbfb6",
-                borderColor: "divider",
-                bgcolor: "#f6f8fa",
-            }}>
-                <Stack
-                    direction="row"
-                    alignItems="center"
-                    spacing={1}
-                    sx={{width: "100%"}}
-                >
-                    <IconButton variant="outlined" color="neutral" size="md" onClick={() => setOpen(true)}>
+                variant="solid"
+                color="neutral"
+                sx={{
+                    top: 0,
+                    zIndex: 1100,
+                    width: "100%",
+                    height: "64px",
+                    px: 2,
+                    display: "flex",
+                    alignItems: "center",
+                    borderBottom: "1.5px solid #bcbfb6",
+                    borderColor: "divider",
+                    bgcolor: "#f6f8fa",
+                }}
+            >
+                <Stack direction="row" alignItems="center" spacing={1} sx={{ width: "100%" }}>
+                    <IconButton
+                        variant="outlined"
+                        color="neutral"
+                        size="md"
+                        onClick={() => setOpen(true)}
+                    >
                         <MenuIcon />
                     </IconButton>
                     <Drawer open={open} onClose={() => setOpen(false)} size="sm">
                         <ModalClose />
                         <DialogTitle>
                             <Box>
-                                <IconButton sx={{
-                                    width: "35px",height: "35px",
-                                    "& svg": {
-                                    fontSize: "30px"
-                                    }
-                                }} component="a" href="/">
+                                <IconButton
+                                    sx={{
+                                        width: "35px",
+                                        height: "35px",
+                                        "& svg": {
+                                            fontSize: "30px",
+                                        },
+                                    }}
+                                    component="a"
+                                    href="/"
+                                >
                                     <GFFIcon />
                                 </IconButton>
                             </Box>
                         </DialogTitle>
                         <br />
-                        <Box role="presentation" sx={{p: 1}}>
+                        <Box role="presentation" sx={{ p: 1 }}>
                             {data.map((text, index) => (
                                 <React.Fragment key={`map-group-${index}`}>
                                     <List>
                                         <ListItem key={text[0][0]}>
-                                            <Typography sx={{fontWeight: "lg"}}>{text[0][1]}</Typography>
+                                            <Typography sx={{ fontWeight: "lg" }}>
+                                                {text[0][1]}
+                                            </Typography>
                                         </ListItem>
                                         {text.slice(1).map((text_data) => (
                                             <ListItem key={text_data[0]}>
-                                                <ListItemButton component="a" onClick={() => {setOpen(false)}} href={"/gff/#/lists/" + text_data[0]}>
+                                                <ListItemButton
+                                                    component="a"
+                                                    onClick={() => {
+                                                        setOpen(false);
+                                                    }}
+                                                    href={"/gff/#/lists/" + text_data[0]}
+                                                >
                                                     {text_data[1]}
                                                 </ListItemButton>
                                             </ListItem>
@@ -232,20 +265,38 @@ function LevelsMain() {
                             ))}
                             <List>
                                 <ListItem>
-                                    <Typography sx={{fontWeight: "lg"}}>모든 기능</Typography>
+                                    <Typography sx={{ fontWeight: "lg" }}>모든 기능</Typography>
                                 </ListItem>
                                 <ListItem>
-                                    <ListItemButton component="a" onClick={() => {setOpen(false)}} href={"/gff/#/lists/"}>
+                                    <ListItemButton
+                                        component="a"
+                                        onClick={() => {
+                                            setOpen(false);
+                                        }}
+                                        href={"/gff/#/lists/"}
+                                    >
                                         리스트 목록
                                     </ListItemButton>
                                 </ListItem>
                                 <ListItem>
-                                    <ListItemButton component="a" onClick={() => {setOpen(false)}} href={"/gff/#/levels/"}>
+                                    <ListItemButton
+                                        component="a"
+                                        onClick={() => {
+                                            setOpen(false);
+                                        }}
+                                        href={"/gff/#/levels/"}
+                                    >
                                         레벨 검색하기
                                     </ListItemButton>
                                 </ListItem>
                                 <ListItem>
-                                    <ListItemButton component="a" onClick={() => {setOpen(false)}} href={"/gff/#/upload/"}>
+                                    <ListItemButton
+                                        component="a"
+                                        onClick={() => {
+                                            setOpen(false);
+                                        }}
+                                        href={"/gff/#/upload/"}
+                                    >
                                         레벨 업로드하기
                                     </ListItemButton>
                                 </ListItem>
@@ -253,9 +304,15 @@ function LevelsMain() {
                             <Divider />
                             <List>
                                 <ListItem>
-                                    <Typography sx={{fontWeight: "lg"}}>공통 기능</Typography>
+                                    <Typography sx={{ fontWeight: "lg" }}>공통 기능</Typography>
                                 </ListItem>
-                                <ListItemButton component="a" onClick={() => {setOpen(false)}} href="/#/logout/">
+                                <ListItemButton
+                                    component="a"
+                                    onClick={() => {
+                                        setOpen(false);
+                                    }}
+                                    href="/#/logout/"
+                                >
                                     로그아웃
                                 </ListItemButton>
                             </List>
@@ -265,22 +322,34 @@ function LevelsMain() {
                         <GFFIcon />
                     </IconButton>
                     <Divider orientation="vertical" />
-                    <Button variant="plain" color="neutral" component="a" href="/gff/">GFF</Button>
-                    <Typography sx={{transform: "rotate(270deg)"}}><ExpandMoreIcon /></Typography>
-                    <Button variant="plain" color="neutral" component="a" href="/gff/#/levels">Level</Button>
+                    <Button variant="plain" color="neutral" component="a" href="/gff/">
+                        GFF
+                    </Button>
+                    <Typography sx={{ transform: "rotate(270deg)" }}>
+                        <ExpandMoreIcon />
+                    </Typography>
+                    <Button variant="plain" color="neutral" component="a" href="/gff/#/levels">
+                        Level
+                    </Button>
                 </Stack>
                 <Stack
                     direction="row-reverse"
                     alignItems="center"
                     spacing={2}
-                    sx={{width: "100%"}}
+                    sx={{ width: "100%" }}
                 >
-                    <Button variant="plain" color="neutral" component="a" href="/#/logout/">Log Out</Button>
+                    <Button variant="plain" color="neutral" component="a" href="/#/logout/">
+                        Log Out
+                    </Button>
                 </Stack>
             </Sheet>
-            <Stack spacing={2} sx={{pb: 7, pt: 5, px: "12.5%"}}>
+            <Stack spacing={2} sx={{ pb: 7, pt: 5, px: "12.5%" }}>
                 <Typography level="h3">레벨 검색</Typography>
-                <Stack direction="row" spacing={1} sx={{width: "fit-content", mx: "auto", justifyItems: "center"}}>
+                <Stack
+                    direction="row"
+                    spacing={1}
+                    sx={{ width: "fit-content", mx: "auto", justifyItems: "center" }}
+                >
                     <Input
                         color="primary"
                         disabled={false}
@@ -288,20 +357,42 @@ function LevelsMain() {
                         size="lg"
                         variant="outlined"
                         value={searchData}
-                        onChange={(event) => {setSearchData(event.target.value)}}
-                        startDecorator={<IconButton onClick={() => {setIsFilterOpen(!isFilterOpen)}}><FilterListIcon /></IconButton>}
-                        sx={{width: "75vw", "--Input-focusedThickness": "0rem"}}
+                        onChange={(event) => {
+                            setSearchData(event.target.value);
+                        }}
+                        startDecorator={
+                            <IconButton
+                                onClick={() => {
+                                    setIsFilterOpen(!isFilterOpen);
+                                }}
+                            >
+                                <FilterListIcon />
+                            </IconButton>
+                        }
+                        sx={{ width: "75vw", "--Input-focusedThickness": "0rem" }}
                     />
-                    <IconButton variant="solid" color="primary" sx={{width: "45px", height: "45px"}}><SearchIcon /></IconButton>
+                    <IconButton
+                        variant="solid"
+                        color="primary"
+                        sx={{ width: "45px", height: "45px" }}
+                    >
+                        <SearchIcon />
+                    </IconButton>
                 </Stack>
-                <AccordionGroup transition={{
-                    initial: "0.2s ease-out",
-                    expanded: "0.2s ease"
-                }} sx={{width: "75vw", position: "relative", overflow: "hidden", p: 0}}>
-                    <Accordion expanded={isFilterOpen} sx={{width: "100%", padding: 0, minHeight: 0}}>
-                        <AccordionDetails sx={{padding: 0}}>
-                            <Box sx={{pb: 1.5, pt: 0.5}}>
-                                <Card sx={{width: "100%"}}>
+                <AccordionGroup
+                    transition={{
+                        initial: "0.2s ease-out",
+                        expanded: "0.2s ease",
+                    }}
+                    sx={{ width: "75vw", position: "relative", overflow: "hidden", p: 0 }}
+                >
+                    <Accordion
+                        expanded={isFilterOpen}
+                        sx={{ width: "100%", padding: 0, minHeight: 0 }}
+                    >
+                        <AccordionDetails sx={{ padding: 0 }}>
+                            <Box sx={{ pb: 1.5, pt: 0.5 }}>
+                                <Card sx={{ width: "100%" }}>
                                     <Stack spacing={2}>
                                         <Typography level="h4">필터</Typography>
                                         <Typography level="body-xs">나중에 할거임</Typography>
@@ -318,7 +409,9 @@ function LevelsMain() {
                         defaultValue="id"
                         indicator={<ExpandMoreIcon />}
                         value={sortType}
-                        onChange={(_, value) => {if (value) setSortType(value)}}
+                        onChange={(_, value) => {
+                            if (value) setSortType(value);
+                        }}
                         sx={{
                             [`& .${selectClasses.indicator}`]: {
                                 transition: "0.2s",
@@ -338,56 +431,79 @@ function LevelsMain() {
                         color="primary"
                         variant="outlined"
                         value={sortAsc}
-                        onChange={(_, value) => {if (value) setSortAsc(value)}}
+                        onChange={(_, value) => {
+                            if (value) setSortAsc(value);
+                        }}
                     >
                         <Button value="asc">Asc</Button>
                         <Button value="desc">Desc</Button>
                     </ToggleButtonGroup>
                 </Stack>
             </Stack>
-            <Box sx={{px: 5}}>
-                <Grid container spacing={4} sx={{width: "fit-content", mx: "auto", justifyContent: "center", flexGrow: 1}}>
+            <Box sx={{ px: 5 }}>
+                <Grid
+                    container
+                    spacing={4}
+                    sx={{ width: "fit-content", mx: "auto", justifyContent: "center", flexGrow: 1 }}
+                >
                     {sorted.map((text, index) => {
                         let sel_level = levels.find((item) => item.level_id === text.level_id);
                         let diff = cdavg(sel_level?.difficulty_votes);
-                        return (
-                            sel_level ? (
-                                <Grid sx={{width: "fit-content"}}>
-                                    <Card
-                                        key={`map-card-${index}`}
-                                        sx={{
-                                            width: cardSize.width, display: "flex", justifySelf: "center",
-                                            my: 0, height: cardSize.height, overflow: "hidden", p: 0
-                                        }}
-                                    >
-                                        <CardContent sx={{height: "100%"}}>
-                                            <Stack spacing={1} direction={cardSize.side} sx={{height: "100%"}}>
-                                                <Box
-                                                    component="img" src={sel_level.image}
-                                                    sx={{aspectRatio: "16 / 9", height: "100%"}}
-                                                />
-                                                <Stack spacing={1} sx={{p: 2}}>
-                                                    <Link
-                                                        level={fontSizeA} fontWeight="xl" href={"/gff/#/levels/" + sel_level?.level_id}
-                                                        sx={{color: "black", "&:hover": {textDecorationColor: "black"}}}
-                                                    >{sel_level.level_name}</Link>
-                                                    <Typography level={fontSizeB} fontWeight="lg">
-                                                        {`Host: ${sel_level.host} / Verify: ${sel_level.verifier}`}
-                                                    </Typography>
-                                                    <Typography level={fontSizeC} fontWeight="md">
-                                                        {`ID: ${sel_level.level_id}`}
-                                                        {
-                                                            `${pdavg(diff) !== "na" && diff ?
-                                                            ` / 난이도: ${pdavg(diff)}` :
-                                                            " / 난이도: N/A"}`
-                                                        }
-                                                    </Typography>
-                                                </Stack>
+                        return sel_level ? (
+                            <Grid sx={{ width: "fit-content" }} key={`grid-${text.level_id}`}>
+                                <Card
+                                    key={`map-card-${index}`}
+                                    sx={{
+                                        width: cardSize.width,
+                                        display: "flex",
+                                        justifySelf: "center",
+                                        my: 0,
+                                        height: cardSize.height,
+                                        overflow: "hidden",
+                                        p: 0,
+                                    }}
+                                >
+                                    <CardContent sx={{ height: "100%" }}>
+                                        <Stack
+                                            spacing={1}
+                                            direction={cardSize.side}
+                                            sx={{ height: "100%" }}
+                                        >
+                                            <Box
+                                                component="img"
+                                                src={sel_level.image}
+                                                sx={{ aspectRatio: "16 / 9", height: "100%" }}
+                                            />
+                                            <Stack spacing={1} sx={{ p: 2 }}>
+                                                <Link
+                                                    level={fontSizeA}
+                                                    fontWeight="xl"
+                                                    href={"/gff/#/levels/" + sel_level?.level_id}
+                                                    sx={{
+                                                        color: "black",
+                                                        "&:hover": { textDecorationColor: "black" },
+                                                    }}
+                                                >
+                                                    {sel_level.level_name}
+                                                </Link>
+                                                <Typography level={fontSizeB} fontWeight="lg">
+                                                    {`Host: ${sel_level.host} / Verify: ${sel_level.verifier}`}
+                                                </Typography>
+                                                <Typography level={fontSizeC} fontWeight="md">
+                                                    {`ID: ${sel_level.level_id}`}
+                                                    {`${
+                                                        pdavg(diff) !== "na" && diff
+                                                            ? ` / 난이도: ${pdavg(diff)}`
+                                                            : " / 난이도: N/A"
+                                                    }`}
+                                                </Typography>
                                             </Stack>
-                                        </CardContent>
-                                    </Card>
-                                </Grid>
-                            ) : <React.Fragment key={`map-card-${index}`} />
+                                        </Stack>
+                                    </CardContent>
+                                </Card>
+                            </Grid>
+                        ) : (
+                            <React.Fragment key={`map-card-${index}`} />
                         );
                     })}
                 </Grid>

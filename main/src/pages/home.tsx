@@ -21,7 +21,11 @@ import { useNavigate } from "react-router-dom";
 import FormControl from "@mui/joy/FormControl";
 import FormHelperText from "@mui/joy/FormHelperText";
 
-const colormap: Record<string, ColorPaletteProp> = {admin: "primary", gff: "warning", something: "success"};
+const colormap: Record<string, ColorPaletteProp> = {
+    admin: "primary",
+    gff: "warning",
+    something: "success",
+};
 const usable = [["something", "Something"]];
 
 function MyPage() {
@@ -35,9 +39,15 @@ function MyPage() {
     useEffect(() => {
         const fetchTableData = async () => {
             try {
-                const { data: { session } } = await supabase.auth.getSession();
+                const {
+                    data: { session },
+                } = await supabase.auth.getSession();
                 if (session?.user) {
-                    const userResult = await supabase.from("user").select("*").eq("id", session.user.id).single();
+                    const userResult = await supabase
+                        .from("user")
+                        .select("*")
+                        .eq("id", session.user.id)
+                        .single();
                     if (userResult.error) {
                         throw userResult.error;
                     }
@@ -64,16 +74,18 @@ function MyPage() {
                 setErrorMessage("이름은 5글자 이상 20글자 이하여야 합니다.");
                 return;
             }
-            const { data: { session } } = await supabase.auth.getSession();
+            const {
+                data: { session },
+            } = await supabase.auth.getSession();
             if (!session) {
                 return;
             }
-            const { error } = await supabase
+            const { error: nicknameSaveError } = await supabase
                 .from("user")
                 .update({ name: targetNickname })
                 .eq("id", session.user.id);
-            if (error) {
-                console.error("Nickname Save Fail", error.message);
+            if (nicknameSaveError) {
+                console.error("Nickname Save Fail", nicknameSaveError.message);
                 setError(true);
                 setErrorMessage("닉네임 저장 중 오류가 발생했습니다.");
                 return;
@@ -83,51 +95,74 @@ function MyPage() {
         return (
             <>
                 <Sheet
-                variant="solid"
-                color="neutral"
-                sx={{
-                    top: 0,
-                    zIndex: 1100,
-                    width: "100%",
-                    height: "64px",
-                    px: 2,
-                    display: "flex",
-                    alignItems: "center",
-                    borderBottom: "1.5px solid #bcbfb6",
-                    borderColor: "divider",
-                    bgcolor: "#f6f8fa",
-                }}>
-                    <Stack
-                        direction="row"
-                        alignItems="center"
-                        spacing={1}
-                        sx={{width: "100%"}}
-                    >
-                        <IconButton variant="outlined" color="neutral" size="md" onClick={() => setOpen(true)}>
+                    variant="solid"
+                    color="neutral"
+                    sx={{
+                        top: 0,
+                        zIndex: 1100,
+                        width: "100%",
+                        height: "64px",
+                        px: 2,
+                        display: "flex",
+                        alignItems: "center",
+                        borderBottom: "1.5px solid #bcbfb6",
+                        borderColor: "divider",
+                        bgcolor: "#f6f8fa",
+                    }}
+                >
+                    <Stack direction="row" alignItems="center" spacing={1} sx={{ width: "100%" }}>
+                        <IconButton
+                            variant="outlined"
+                            color="neutral"
+                            size="md"
+                            onClick={() => setOpen(true)}
+                        >
                             <MenuIcon />
                         </IconButton>
                         <Drawer open={open} onClose={() => setOpen(false)} size="sm">
                             <ModalClose />
                             <DialogTitle>
                                 <Box>
-                                    <IconButton sx={{
-                                        width: "35px",height: "35px",
-                                        "& svg": {
-                                        fontSize: "30px"
-                                        }
-                                    }} component="a" href="/">
+                                    <IconButton
+                                        sx={{
+                                            width: "35px",
+                                            height: "35px",
+                                            "& svg": {
+                                                fontSize: "30px",
+                                            },
+                                        }}
+                                        component="a"
+                                        href="/"
+                                    >
                                         <GFFIcon />
                                     </IconButton>
                                 </Box>
                             </DialogTitle>
                             <br />
-                            <Box role="presentation" sx={{p: 1}}>
+                            <Box role="presentation" sx={{ p: 1 }}>
                                 <List>
-                                    {users?.role.map((text) => <ListItemButton component="a" onClick={() => {setOpen(false)}} href={`/${text[0]}/`} key={`listitembutton-${text[0]}`}>{text[1]}</ListItemButton>)}
+                                    {users?.role.map((text) => (
+                                        <ListItemButton
+                                            component="a"
+                                            onClick={() => {
+                                                setOpen(false);
+                                            }}
+                                            href={`/${text[0]}/`}
+                                            key={`listitembutton-${text[0]}`}
+                                        >
+                                            {text[1]}
+                                        </ListItemButton>
+                                    ))}
                                 </List>
                                 <Divider />
                                 <List>
-                                    <ListItemButton component="a" onClick={() => {setOpen(false)}} href="/#/logout/">
+                                    <ListItemButton
+                                        component="a"
+                                        onClick={() => {
+                                            setOpen(false);
+                                        }}
+                                        href="/#/logout/"
+                                    >
                                         Log Out
                                     </ListItemButton>
                                 </List>
@@ -141,23 +176,39 @@ function MyPage() {
                         direction="row-reverse"
                         alignItems="center"
                         spacing={2}
-                        sx={{width: "100%"}}
+                        sx={{ width: "100%" }}
                     >
-                        <Button variant="plain" color="neutral" component="a" href="/#/logout/">Log Out</Button>
+                        <Button variant="plain" color="neutral" component="a" href="/#/logout/">
+                            Log Out
+                        </Button>
                     </Stack>
                 </Sheet>
-                <Stack direction="column" spacing={4} sx={{ p: 4, mx: "auto", my: 5, maxWidth: 1000 }}>
+                <Stack
+                    direction="column"
+                    spacing={4}
+                    sx={{ p: 4, mx: "auto", my: 5, maxWidth: 1000 }}
+                >
                     <Typography level="h1">마지막입니다. 어떻게 불러드릴까요?</Typography>
-                    <Stack direction="column" spacing={4} sx={{ p: 4, mx: "auto", my: 5, maxWidth: 350 }}>
+                    <Stack
+                        direction="column"
+                        spacing={4}
+                        sx={{ p: 4, mx: "auto", my: 5, maxWidth: 350 }}
+                    >
                         <FormControl error={error}>
                             <Input
-                                variant="outlined" color="primary" size="lg" placeholder="이름" value={value}
+                                variant="outlined"
+                                color="primary"
+                                size="lg"
+                                placeholder="이름"
+                                value={value}
                                 onChange={(event) => {
                                     const data = event.target.value.trim();
                                     setValue(data);
                                     if (data.length < 5 || 20 < data.length) {
                                         setError(true);
-                                        setErrorMessage("이름은 5글자 이상 20글자 이하여야 합니다.");
+                                        setErrorMessage(
+                                            "이름은 5글자 이상 20글자 이하여야 합니다.",
+                                        );
                                     } else {
                                         setError(false);
                                         setErrorMessage("");
@@ -167,8 +218,14 @@ function MyPage() {
                             <FormHelperText>{errorMessage}</FormHelperText>
                         </FormControl>
                         <Button
-                            variant="solid" color="primary" disabled={error} size="lg" onClick={handleSaveNickname}
-                        >제출</Button>
+                            variant="solid"
+                            color="primary"
+                            disabled={error}
+                            size="lg"
+                            onClick={handleSaveNickname}
+                        >
+                            제출
+                        </Button>
                     </Stack>
                 </Stack>
             </>
@@ -177,54 +234,75 @@ function MyPage() {
     return (
         <>
             <Sheet
-            variant="solid"
-            color="neutral"
-            sx={{
-                top: 0,
-                zIndex: 1100,
-                width: "100%",
-                height: "64px",
-                px: 2,
-                display: "flex",
-                alignItems: "center",
-                borderBottom: "1.5px solid #bcbfb6",
-                borderColor: "divider",
-                bgcolor: "#f6f8fa",
-            }}>
-                <Stack
-                    direction="row"
-                    alignItems="center"
-                    spacing={1}
-                    sx={{width: "100%"}}
-                >
-                    <IconButton variant="outlined" color="neutral" size="md" onClick={() => setOpen(true)}>
+                variant="solid"
+                color="neutral"
+                sx={{
+                    top: 0,
+                    zIndex: 1100,
+                    width: "100%",
+                    height: "64px",
+                    px: 2,
+                    display: "flex",
+                    alignItems: "center",
+                    borderBottom: "1.5px solid #bcbfb6",
+                    borderColor: "divider",
+                    bgcolor: "#f6f8fa",
+                }}
+            >
+                <Stack direction="row" alignItems="center" spacing={1} sx={{ width: "100%" }}>
+                    <IconButton
+                        variant="outlined"
+                        color="neutral"
+                        size="md"
+                        onClick={() => setOpen(true)}
+                    >
                         <MenuIcon />
                     </IconButton>
                     <Drawer open={open} onClose={() => setOpen(false)} size="sm">
                         <ModalClose />
                         <DialogTitle>
                             <Box>
-                                <IconButton sx={{
-                                    width: "35px",height: "35px",
-                                    "& svg": {
-                                    fontSize: "30px"
-                                    }
-                                }} component="a" href="/">
+                                <IconButton
+                                    sx={{
+                                        width: "35px",
+                                        height: "35px",
+                                        "& svg": {
+                                            fontSize: "30px",
+                                        },
+                                    }}
+                                    component="a"
+                                    href="/"
+                                >
                                     <GFFIcon />
                                 </IconButton>
                             </Box>
                         </DialogTitle>
                         <br />
-                        <Box role="presentation" sx={{p: 1}}>
+                        <Box role="presentation" sx={{ p: 1 }}>
                             <List>
-                                {users?.role.map((text) => <ListItemButton component="a" onClick={() => {setOpen(false)}} href={`/${text[0]}/`} key={`listitembutton-${text[0]}`}>{text[1]}</ListItemButton>)}
+                                {users?.role.map((text) => (
+                                    <ListItemButton
+                                        component="a"
+                                        onClick={() => {
+                                            setOpen(false);
+                                        }}
+                                        href={`/${text[0]}/`}
+                                        key={`listitembutton-${text[0]}`}
+                                    >
+                                        {text[1]}
+                                    </ListItemButton>
+                                ))}
                             </List>
                             {users?.role.length === 0 ? null : <Divider />}
                             <List>
-                                <ListItem>
-                                    공통 기능
-                                </ListItem>
-                                <ListItemButton component="a" onClick={() => {setOpen(false)}} href="/#/logout/">
+                                <ListItem>공통 기능</ListItem>
+                                <ListItemButton
+                                    component="a"
+                                    onClick={() => {
+                                        setOpen(false);
+                                    }}
+                                    href="/#/logout/"
+                                >
                                     로그아웃
                                 </ListItemButton>
                             </List>
@@ -238,19 +316,66 @@ function MyPage() {
                     direction="row-reverse"
                     alignItems="center"
                     spacing={2}
-                    sx={{width: "100%"}}
+                    sx={{ width: "100%" }}
                 >
-                    <Button variant="plain" color="neutral" component="a" href="/#/logout/">Log Out</Button>
+                    <Button variant="plain" color="neutral" component="a" href="/#/logout/">
+                        Log Out
+                    </Button>
                 </Stack>
             </Sheet>
             <Stack direction="column" spacing={3} sx={{ p: 4, mx: "auto", my: 5, maxWidth: 1000 }}>
                 <Typography level="h1">환영합니다, {users?.name}님!</Typography>
-                <Typography level="body-xs">로그인은 영어인데 갑자기 한국어로 변하면 좀 그런가...</Typography>
-                <Stack direction="row" spacing={1}><Typography level="h3">가진 권한: {users?.role.length === 0 ? "없음" : ""}</Typography>{users?.role.map((text) => <React.Fragment key={`chip1-${text[0]}`}><Chip size="md" variant="soft" color={colormap[text[0]]} slotProps={{ action: { component: 'a', href: `/${text[0]}/` } }}>{text[1]}</Chip></React.Fragment>)}</Stack>
-                <Stack direction="row" spacing={1}><Typography level="h3">가진 보기 권한: {users?.vrole.length === 0 ? "없음" : ""}</Typography>{users?.vrole.map((text) => <React.Fragment key={`chip2-${text[0]}`}><Chip size="md" variant="soft" color={colormap[text[0]]} slotProps={{ action: { component: 'a', href: `/${text[0]}/` } }}>{text[1]}</Chip></React.Fragment>)}</Stack>
+                <Typography level="body-xs">
+                    로그인은 영어인데 갑자기 한국어로 변하면 좀 그런가...
+                </Typography>
+                <Stack direction="row" spacing={1}>
+                    <Typography level="h3">
+                        가진 권한: {users?.role.length === 0 ? "없음" : ""}
+                    </Typography>
+                    {users?.role.map((text) => (
+                        <React.Fragment key={`chip1-${text[0]}`}>
+                            <Chip
+                                size="md"
+                                variant="soft"
+                                color={colormap[text[0]]}
+                                slotProps={{ action: { component: "a", href: `/${text[0]}/` } }}
+                            >
+                                {text[1]}
+                            </Chip>
+                        </React.Fragment>
+                    ))}
+                </Stack>
+                <Stack direction="row" spacing={1}>
+                    <Typography level="h3">
+                        가진 보기 권한: {users?.vrole.length === 0 ? "없음" : ""}
+                    </Typography>
+                    {users?.vrole.map((text) => (
+                        <React.Fragment key={`chip2-${text[0]}`}>
+                            <Chip
+                                size="md"
+                                variant="soft"
+                                color={colormap[text[0]]}
+                                slotProps={{ action: { component: "a", href: `/${text[0]}/` } }}
+                            >
+                                {text[1]}
+                            </Chip>
+                        </React.Fragment>
+                    ))}
+                </Stack>
                 <Stack direction="row" spacing={1}>
                     <Typography level="h3">사용 가능 컨텐츠:</Typography>
-                    {usable.map((text) => <React.Fragment key={`chip2-${text[0]}`}><Chip size="md" variant="soft" color={colormap[text[0]]} slotProps={{ action: { component: 'a', href: `/${text[0]}/` } }}>{text[1]}</Chip></React.Fragment>)}
+                    {usable.map((text) => (
+                        <React.Fragment key={`chip2-${text[0]}`}>
+                            <Chip
+                                size="md"
+                                variant="soft"
+                                color={colormap[text[0]]}
+                                slotProps={{ action: { component: "a", href: `/${text[0]}/` } }}
+                            >
+                                {text[1]}
+                            </Chip>
+                        </React.Fragment>
+                    ))}
                 </Stack>
             </Stack>
         </>
@@ -262,50 +387,68 @@ function IntroPage() {
     return (
         <>
             <Sheet
-            variant="solid"
-            color="neutral"
-            sx={{
-                top: 0,
-                zIndex: 1100,
-                width: "100%",
-                height: "64px",
-                px: 2,
-                display: "flex",
-                alignItems: "center",
-                borderBottom: "1.5px solid #bcbfb6",
-                borderColor: "divider",
-                bgcolor: "#f6f8fa",
-            }}>
-                <Stack
-                    direction="row"
-                    alignItems="center"
-                    spacing={1}
-                    sx={{width: "100%"}}
-                >
-                    <IconButton variant="outlined" color="neutral" size="md" onClick={() => setOpen(true)}>
+                variant="solid"
+                color="neutral"
+                sx={{
+                    top: 0,
+                    zIndex: 1100,
+                    width: "100%",
+                    height: "64px",
+                    px: 2,
+                    display: "flex",
+                    alignItems: "center",
+                    borderBottom: "1.5px solid #bcbfb6",
+                    borderColor: "divider",
+                    bgcolor: "#f6f8fa",
+                }}
+            >
+                <Stack direction="row" alignItems="center" spacing={1} sx={{ width: "100%" }}>
+                    <IconButton
+                        variant="outlined"
+                        color="neutral"
+                        size="md"
+                        onClick={() => setOpen(true)}
+                    >
                         <MenuIcon />
                     </IconButton>
                     <Drawer open={open} onClose={() => setOpen(false)} size="sm">
                         <ModalClose />
                         <DialogTitle>
                             <Box>
-                                <IconButton sx={{
-                                    width: "35px",height: "35px",
-                                    "& svg": {
-                                    fontSize: "30px"
-                                    }
-                                }} component="a" href="/">
+                                <IconButton
+                                    sx={{
+                                        width: "35px",
+                                        height: "35px",
+                                        "& svg": {
+                                            fontSize: "30px",
+                                        },
+                                    }}
+                                    component="a"
+                                    href="/"
+                                >
                                     <GFFIcon />
                                 </IconButton>
                             </Box>
                         </DialogTitle>
                         <br />
-                        <Box role="presentation" sx={{p: 1}}>
+                        <Box role="presentation" sx={{ p: 1 }}>
                             <List>
-                                <ListItemButton component="a" onClick={() => {setOpen(false)}} href="/#/login/">
+                                <ListItemButton
+                                    component="a"
+                                    onClick={() => {
+                                        setOpen(false);
+                                    }}
+                                    href="/#/login/"
+                                >
                                     Log In
                                 </ListItemButton>
-                                <ListItemButton component="a" onClick={() => {setOpen(false)}} href="/#/signup/">
+                                <ListItemButton
+                                    component="a"
+                                    onClick={() => {
+                                        setOpen(false);
+                                    }}
+                                    href="/#/signup/"
+                                >
                                     Sign Up
                                 </ListItemButton>
                             </List>
@@ -319,28 +462,42 @@ function IntroPage() {
                     direction="row-reverse"
                     alignItems="center"
                     spacing={2}
-                    sx={{width: "100%"}}
+                    sx={{ width: "100%" }}
                 >
-                    <Button variant="solid" color="neutral" component="a" href="/#/signup/">Sign Up</Button>
-                    <Button variant="outlined" color="neutral" component="a" href="/#/login/">Log In</Button>
+                    <Button variant="solid" color="neutral" component="a" href="/#/signup/">
+                        Sign Up
+                    </Button>
+                    <Button variant="outlined" color="neutral" component="a" href="/#/login/">
+                        Log In
+                    </Button>
                 </Stack>
             </Sheet>
             <Stack direction="column" spacing={3} sx={{ p: 4, mx: "auto", my: 5, maxWidth: 1000 }}>
                 <Typography level="h1">Seanleeee13 Github Pages</Typography>
                 <Typography level="title-lg">대충 내가 하는 모든 것에 대한 웹 페이지</Typography>
                 <Typography level="title-sm">제작: 당연히 Seanleeee13</Typography>
-                <Stack
-                    direction="row"
-                    alignItems="center"
-                    spacing={2}
-                    sx={{width: "100%"}}
-                >
-                    <Button variant="solid" color="neutral" component="a" href="/#/signup/">Sign Up</Button>
-                    <Button variant="outlined" color="neutral" component="a" href="/#/login/">Log In</Button>
+                <Stack direction="row" alignItems="center" spacing={2} sx={{ width: "100%" }}>
+                    <Button variant="solid" color="neutral" component="a" href="/#/signup/">
+                        Sign Up
+                    </Button>
+                    <Button variant="outlined" color="neutral" component="a" href="/#/login/">
+                        Log In
+                    </Button>
                 </Stack>
                 <Stack direction="row" spacing={1}>
                     <Typography level="h3">사용 가능 컨텐츠:</Typography>
-                    {usable.map((text) => <React.Fragment key={`chip2-${text[0]}`}><Chip size="md" variant="soft" color={colormap[text[0]]} slotProps={{ action: { component: 'a', href: `/${text[0]}/` } }}>{text[1]}</Chip></React.Fragment>)}
+                    {usable.map((text) => (
+                        <React.Fragment key={`chip2-${text[0]}`}>
+                            <Chip
+                                size="md"
+                                variant="soft"
+                                color={colormap[text[0]]}
+                                slotProps={{ action: { component: "a", href: `/${text[0]}/` } }}
+                            >
+                                {text[1]}
+                            </Chip>
+                        </React.Fragment>
+                    ))}
                 </Stack>
             </Stack>
         </>
@@ -353,7 +510,9 @@ function Home() {
     const navigate = useNavigate();
     useEffect(() => {
         const checkLoggedUser = async () => {
-            const { data: { session } } = await supabase.auth.getSession();
+            const {
+                data: { session },
+            } = await supabase.auth.getSession();
             if (session) {
                 setHasSession(true);
             } else {
