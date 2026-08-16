@@ -43,3 +43,4 @@ jobs:
           FOLDER: something/dist
           TARGET_DIR: something
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          CLEAR_GLOBS: "something/**"

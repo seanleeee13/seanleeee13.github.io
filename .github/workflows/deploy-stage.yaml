@@ -43,3 +43,4 @@ jobs:
           FOLDER: stage/dist
           TARGET_DIR: stage
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          CLEAR_GLOBS: "stage/**"

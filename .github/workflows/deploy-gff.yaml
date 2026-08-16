@@ -43,3 +43,4 @@ jobs:
           FOLDER: gff/dist
           TARGET_DIR: gff
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          CLEAR_GLOBS: "gff/**"
