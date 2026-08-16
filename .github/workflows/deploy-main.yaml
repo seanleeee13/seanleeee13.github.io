@@ -13,7 +13,7 @@ permissions:
   id-token: write
 concurrency:
   group: "pages-deploy"
-  cancel-in-progress: true
+  cancel-in-progress: false
 jobs:
   deploy:
     environment:
@@ -47,3 +47,4 @@ jobs:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: ./main/dist
           publish_branch: gh-pages
+          keep_files: true
