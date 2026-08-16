@@ -5,12 +5,12 @@ import Typography from "@mui/joy/Typography";
 import MenuIcon from "./assets/menu.tsx";
 import ReactLogoIcon from "./assets/react_logo.tsx";
 import Stack from "@mui/joy/Stack";
-import Sheet from "@mui/joy/Sheet"
-import IconButton from "@mui/joy/IconButton"
-import FormControl from "@mui/joy/FormControl"
-import FormHelperText from "@mui/joy/FormHelperText"
-import Input from "@mui/joy/Input"
-import Button from "@mui/joy/Button"
+import Sheet from "@mui/joy/Sheet";
+import IconButton from "@mui/joy/IconButton";
+import FormControl from "@mui/joy/FormControl";
+import FormHelperText from "@mui/joy/FormHelperText";
+import Input from "@mui/joy/Input";
+import Button from "@mui/joy/Button";
 import Drawer from "@mui/joy/Drawer";
 import Box from "@mui/joy/Box";
 import List from "@mui/joy/List";
@@ -23,9 +23,7 @@ import Snackbar from "@mui/joy/Snackbar";
 import { supabase } from "./utils/supabase_key.tsx";
 import Divider from "@mui/joy/Divider";
 
-const router = createHashRouter([
-    { path: "/", element: <Home /> },
-]);
+const router = createHashRouter([{ path: "/", element: <Home /> }]);
 
 function Authenticate() {
     const [open, setOpen] = useState<boolean>(false);
@@ -49,7 +47,9 @@ function Authenticate() {
     const currentScale = Math.min(currentScale1, currentScale2);
     useEffect(() => {
         const checkLoggedUser = async () => {
-            const { data: { session } } = await supabase.auth.getSession();
+            const {
+                data: { session },
+            } = await supabase.auth.getSession();
             if (session) {
                 setHasSession(true);
             } else {
@@ -63,10 +63,10 @@ function Authenticate() {
         if (password.trim() === "") {
             setError(true);
         } else {
-            const { data, error } = await supabase.rpc("check_password_stage", {
-                password: password
+            const { data, error: passwordError } = await supabase.rpc("check_password_stage", {
+                password: password,
             });
-            if (!error && data === true) {
+            if (!passwordError && data === true) {
                 localStorage.setItem("stage_page_unlocked", "true");
                 window.location.reload();
             } else {
@@ -80,51 +80,63 @@ function Authenticate() {
     return (
         <>
             <Sheet
-            variant="solid"
-            color="neutral"
-            sx={{
-                top: 0,
-                zIndex: 1100,
-                width: "100%",
-                height: "64px",
-                px: 2,
-                display: "flex",
-                alignItems: "center",
-                borderBottom: "1.5px solid #bcbfb6",
-                borderColor: "divider",
-                bgcolor: "#f6f8fa",
-            }}>
-                <Stack
-                    direction="row"
-                    alignItems="center"
-                    spacing={1}
-                    sx={{width: "100%"}}
-                >
-                    <IconButton variant="outlined" color="neutral" size="md" onClick={() => setOpen(true)}>
+                variant="solid"
+                color="neutral"
+                sx={{
+                    top: 0,
+                    zIndex: 1100,
+                    width: "100%",
+                    height: "64px",
+                    px: 2,
+                    display: "flex",
+                    alignItems: "center",
+                    borderBottom: "1.5px solid #bcbfb6",
+                    borderColor: "divider",
+                    bgcolor: "#f6f8fa",
+                }}
+            >
+                <Stack direction="row" alignItems="center" spacing={1} sx={{ width: "100%" }}>
+                    <IconButton
+                        variant="outlined"
+                        color="neutral"
+                        size="md"
+                        onClick={() => setOpen(true)}
+                    >
                         <MenuIcon />
                     </IconButton>
                     <Drawer open={open} onClose={() => setOpen(false)} size="sm">
                         <ModalClose />
                         <DialogTitle>
                             <Box>
-                                <IconButton sx={{
-                                    width: "35px",height: "35px",
-                                    "& svg": {
-                                    fontSize: "30px"
-                                    }
-                                }} component="a" href="/">
+                                <IconButton
+                                    sx={{
+                                        width: "35px",
+                                        height: "35px",
+                                        "& svg": {
+                                            fontSize: "30px",
+                                        },
+                                    }}
+                                    component="a"
+                                    href="/"
+                                >
                                     <ReactLogoIcon />
                                 </IconButton>
                             </Box>
                         </DialogTitle>
                         <br />
-                        <Box role="presentation" sx={{p: 1}}>
+                        <Box role="presentation" sx={{ p: 1 }}>
                             <List>
                                 <ListItem>
-                                    <Typography sx={{fontWeight: "lg"}}>기본 기능</Typography>
+                                    <Typography sx={{ fontWeight: "lg" }}>기본 기능</Typography>
                                 </ListItem>
                                 <ListItem>
-                                    <ListItemButton component="a" onClick={() => {setOpen(false)}} href="/something/">
+                                    <ListItemButton
+                                        component="a"
+                                        onClick={() => {
+                                            setOpen(false);
+                                        }}
+                                        href="/something/"
+                                    >
                                         Home
                                     </ListItemButton>
                                 </ListItem>
@@ -135,22 +147,35 @@ function Authenticate() {
                         <ReactLogoIcon />
                     </IconButton>
                     <Divider orientation="vertical" />
-                    <Button variant="plain" color="neutral" component="a" href="/stage/">Stage</Button>
+                    <Button variant="plain" color="neutral" component="a" href="/stage/">
+                        Stage
+                    </Button>
                 </Stack>
                 <Stack
                     direction="row-reverse"
                     alignItems="center"
                     spacing={1}
-                    sx={{width: "100%"}}
+                    sx={{ width: "100%" }}
                 >
-                    {
-                        hasSession ?
-                        <Button variant="plain" color="neutral" component="a" href="/#/logout/">Log Out</Button> :
+                    {hasSession ? (
+                        <Button variant="plain" color="neutral" component="a" href="/#/logout/">
+                            Log Out
+                        </Button>
+                    ) : (
                         <>
-                            <Button variant="solid" color="neutral" component="a" href="/#/signup/">Sign Up</Button>
-                            <Button variant="outlined" color="neutral" component="a" href="/#/login/">Log In</Button>
+                            <Button variant="solid" color="neutral" component="a" href="/#/signup/">
+                                Sign Up
+                            </Button>
+                            <Button
+                                variant="outlined"
+                                color="neutral"
+                                component="a"
+                                href="/#/login/"
+                            >
+                                Log In
+                            </Button>
                         </>
-                    }
+                    )}
                 </Stack>
             </Sheet>
             <Stack
@@ -161,7 +186,7 @@ function Authenticate() {
                     height: "calc(100dvh - 64px)",
                     overflow: "hidden",
                     boxSizing: "border-box",
-                    px: 0
+                    px: 0,
                 }}
             >
                 <Card
@@ -173,10 +198,10 @@ function Authenticate() {
                         borderRadius: "xl",
                         boxShadow: "md",
                         borderColor: "neutral.outlinedBorder",
-                        transform: `scale(${currentScale})`, 
+                        transform: `scale(${currentScale})`,
                         transformOrigin: "center",
                         transition: "transform 0.1s ease-out",
-                        flexShrink: 0
+                        flexShrink: 0,
                     }}
                 >
                     <Typography
@@ -195,7 +220,10 @@ function Authenticate() {
                                 variant="outlined"
                                 size="lg"
                                 value={password}
-                                onChange={(event) => {setPassword(event.target.value); setError(false)}}
+                                onChange={(event) => {
+                                    setPassword(event.target.value);
+                                    setError(false);
+                                }}
                                 sx={{ borderRadius: "lg" }}
                             />
                             <FormHelperText>
@@ -217,7 +245,9 @@ function Authenticate() {
             <Snackbar
                 anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
                 open={openSnackbar}
-                onClose={() => {setOpenSnackbar(false)}}
+                onClose={() => {
+                    setOpenSnackbar(false);
+                }}
                 color="danger"
                 variant="outlined"
                 autoHideDuration={2000}
@@ -242,11 +272,9 @@ function Router() {
         return null;
     }
     if (!isAuthenticated) {
-        return <Authenticate />
+        return <Authenticate />;
     }
-    return (
-        <RouterProvider router={router} />
-    );
+    return <RouterProvider router={router} />;
 }
 
 export default Router;

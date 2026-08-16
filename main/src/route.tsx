@@ -8,13 +8,11 @@ const router = createHashRouter([
     { path: "/", element: <Home /> },
     { path: "/login/", element: <Login /> },
     { path: "/signup/", element: <SignUp /> },
-    { path: "/logout/", element: <Logout /> }
+    { path: "/logout/", element: <Logout /> },
 ]);
 
 function Router() {
-    return (
-        <RouterProvider router={router} />
-    );
+    return <RouterProvider router={router} />;
 }
 
 export default Router;

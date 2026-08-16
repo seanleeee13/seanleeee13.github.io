@@ -15,7 +15,7 @@ function Logout() {
             }
         };
         executeLogout();
-    }, []);
+    }, [navigate]);
     return null;
 }
 

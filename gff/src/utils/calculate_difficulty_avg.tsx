@@ -12,10 +12,16 @@ function cdavg(difficulty_votes: Record<string, number[]> | undefined) {
         if (!(0 <= difficulty_votes[key][0] && difficulty_votes[key][0] <= 1)) {
             continue;
         }
-        if (!(
-            (1 <= difficulty_votes[key][1] && difficulty_votes[key][1] <= 9 && difficulty_votes[key][0] === 0)
-            || (1 <= difficulty_votes[key][1] && difficulty_votes[key][1] <= 39 && difficulty_votes[key][0] === 1)
-        )) {
+        if (
+            !(
+                (1 <= difficulty_votes[key][1] &&
+                    difficulty_votes[key][1] <= 9 &&
+                    difficulty_votes[key][0] === 0) ||
+                (1 <= difficulty_votes[key][1] &&
+                    difficulty_votes[key][1] <= 39 &&
+                    difficulty_votes[key][0] === 1)
+            )
+        ) {
             if (difficulty_votes[key][3] === 1) {
                 dv_ipp.push(difficulty_votes[key][3]);
             }
@@ -38,9 +44,9 @@ function cdavg(difficulty_votes: Record<string, number[]> | undefined) {
     if (dv_diff.length === 0) {
         return undefined;
     }
-    let difficulty = Math.round(100 * dv_diff.reduce((a, b) => a + b, 0) / dv_diff.length) / 100;
-    let featured = Math.round(100 * dv_ft.reduce((a, b) => a + b, 0) / dv_ft.length) / 100;
-    let ipp = Math.round(100 * dv_ipp.reduce((a, b) => a + b, 0) / dv_ipp.length) / 100;
+    let difficulty = Math.round((100 * dv_diff.reduce((a, b) => a + b, 0)) / dv_diff.length) / 100;
+    let featured = Math.round((100 * dv_ft.reduce((a, b) => a + b, 0)) / dv_ft.length) / 100;
+    let ipp = Math.round((100 * dv_ipp.reduce((a, b) => a + b, 0)) / dv_ipp.length) / 100;
     if (10 <= difficulty) {
         return [1, difficulty - 9, featured, ipp];
     } else {
@@ -58,10 +64,16 @@ function pdavg(difficulty: number[] | undefined) {
     difficulty[1] = Math.round(difficulty[1]);
     difficulty[2] = Math.round(difficulty[2]);
     difficulty[3] = Math.round(difficulty[3]);
-    let ft = difficulty[2] === 0 ? "nf" :
-        difficulty[2] === 1 ? "ft" :
-        difficulty[2] === 2 ? "ep" :
-        difficulty[2] === 3 ? "ld" : "mt";
+    let ft =
+        difficulty[2] === 0
+            ? "nf"
+            : difficulty[2] === 1
+              ? "ft"
+              : difficulty[2] === 2
+                ? "ep"
+                : difficulty[2] === 3
+                  ? "ld"
+                  : "mt";
     if (difficulty[3] === 1) {
         return "ipp";
     } else if (difficulty[0] === 1) {
@@ -93,4 +105,4 @@ function pdavg(difficulty: number[] | undefined) {
     }
 }
 
-export { cdavg, pdavg }
+export { cdavg, pdavg };
