@@ -254,9 +254,9 @@ function PlayChess() {
     const [loading, setLoading] = useState(true);
     const [hasSession, setHasSession] = useState(false);
     const navigate = useNavigate();
-    const [searchParams, _] = useSearchParams();
-    const white = searchParams.get("white");
-    const black = searchParams.get("black");
+    // const [searchParams, _] = useSearchParams();
+    // const white = searchParams.get("white");
+    // const black = searchParams.get("black");
     useEffect(() => {
         const checkLoggedUser = async () => {
             const {

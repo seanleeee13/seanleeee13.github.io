@@ -34,12 +34,12 @@ import {
 import Checkbox from "@mui/joy/Checkbox";
 
 function Upload() {
-    const [levels, setLevels] = useState<LevelInterface[]>([]);
+    const [_, setLevels] = useState<LevelInterface[]>([]);
     const [lists, setLists] = useState<ListInterface[]>([]);
     const [plists, setPLists] = useState<PListInterface[]>([]);
     const [users, setUsers] = useState<UserInterface | null>(null);
     const [userNameList, setUserNameList] = useState<string[]>([]);
-    const [levelUploadInputData, setLevelUploadInputData] = useState({
+    const [levelUploadInputData, __] = useState({
         id: "",
         name: "",
         host: "",
