@@ -35,14 +35,11 @@ jobs:
       #   run: pnpm --filter gff lint
       - name: Build Project
         run: pnpm --filter gff build
-      - name: Move File
-        run: |
-          mkdir -p dist
-          cp -r gff/dist/. dist/gff
-      - name: Upload artifact
-        uses: actions/upload-pages-artifact@v3
-        with:
-          path: "./dist"
-      - name: Deploy to GitHub Pages
-        id: deployment
-        uses: actions/deploy-pages@v4
+      - name: Deploy Gff
+        uses: s0/git-publish-subdir-action@v2.6.0
+        env:
+          REPO: self
+          BRANCH: gh-pages
+          FOLDER: gff/dist
+          TARGET_DIR: gff
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

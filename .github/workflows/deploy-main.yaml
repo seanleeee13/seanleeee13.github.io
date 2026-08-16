@@ -39,6 +39,11 @@ jobs:
         uses: actions/upload-pages-artifact@v3
         with:
           path: "./main/dist"
-      - name: Deploy to GitHub Pages
-        id: deployment
-        uses: actions/deploy-pages@v4
+      - name: Deploy Main
+        uses: s0/git-publish-subdir-action@v2.6.0
+        env:
+          REPO: self
+          BRANCH: gh-Pages
+          FOLDER: main/dist
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          CLEAR_GLOBS: "assets,index.html"

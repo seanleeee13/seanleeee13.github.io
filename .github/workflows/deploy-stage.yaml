@@ -35,14 +35,11 @@ jobs:
       #   run: pnpm --filter stage lint
       - name: Build Project
         run: pnpm --filter stage build
-      - name: Move File
-        run: |
-          mkdir -p dist
-          cp -r stage/dist/. dist/stage
-      - name: Upload artifact
-        uses: actions/upload-pages-artifact@v3
-        with:
-          path: "./dist"
-      - name: Deploy to GitHub Pages
-        id: deployment
-        uses: actions/deploy-pages@v4
+      - name: Deploy Stage
+        uses: s0/git-publish-subdir-action@v2.6.0
+        env:
+          REPO: self
+          BRANCH: gh-pages
+          FOLDER: stage/dist
+          TARGET_DIR: stage
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
