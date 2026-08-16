@@ -9,12 +9,9 @@ on:
       - ".github/workflows/deploy-main.yaml"
       - "apply-change"
 permissions:
-  contents: write
+  contents: read
   pages: write
   id-token: write
-concurrency:
-  group: "pages-deploy"
-  cancel-in-progress: false
 jobs:
   deploy:
     environment:
@@ -42,10 +39,6 @@ jobs:
         uses: actions/upload-pages-artifact@v3
         with:
           path: "./main/dist"
-      - name: Deploy Website
-        uses: peaceiris/actions-gh-pages@v4
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./main/dist
-          publish_branch: gh-pages
-          keep_files: true
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4

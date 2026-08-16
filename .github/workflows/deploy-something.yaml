@@ -9,12 +9,9 @@ on:
       - ".github/workflows/deploy-something.yaml"
       - "apply-change"
 permissions:
-  contents: write
+  contents: read
   pages: write
   id-token: write
-concurrency:
-  group: "pages-deploy"
-  cancel-in-progress: false
 jobs:
   deploy:
     environment:
@@ -38,15 +35,14 @@ jobs:
       #   run: pnpm --filter something lint
       - name: Build Project
         run: pnpm --filter something build
+      - name: Move File
+        run: |
+          mkdir -p dist
+          cp -r something/dist/. dist/something
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: "./something/dist"
-      - name: Deploy Website
-        uses: peaceiris/actions-gh-pages@v4
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./something/dist
-          publish_branch: gh-pages
-          destination_dir: something
-          keep_files: true
+          path: "./dist"
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
