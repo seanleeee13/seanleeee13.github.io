@@ -8,7 +8,7 @@ importers:
 
   .: {}
 
-  gff:
+  apps/gff:
     dependencies:
       '@emotion/react':
         specifier: ^11.14.0
@@ -72,7 +72,7 @@ importers:
         specifier: ^8.2.1
         version: 8.2.1(@types/node@24.13.3)
 
-  main:
+  apps/main:
     dependencies:
       '@emotion/react':
         specifier: ^11.14.0
@@ -124,7 +124,7 @@ importers:
         specifier: ^8.2.1
         version: 8.2.1(@types/node@24.13.3)
 
-  something:
+  apps/something:
     dependencies:
       '@emotion/react':
         specifier: ^11.14.0
@@ -176,7 +176,7 @@ importers:
         specifier: ^8.2.1
         version: 8.2.1(@types/node@24.13.3)
 
-  stage:
+  apps/stage:
     dependencies:
       '@emotion/react':
         specifier: ^11.14.0
