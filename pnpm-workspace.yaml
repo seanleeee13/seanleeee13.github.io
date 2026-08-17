@@ -1,7 +1,5 @@
 packages:
-  - 'main'
-  - 'gff'
-  - 'something'
-  - 'stage'
+  - 'apps/*'
+  - 'packages/*'
 
 minimumReleaseAge: 0

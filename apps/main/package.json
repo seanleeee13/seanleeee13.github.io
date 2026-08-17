@@ -13,10 +13,6 @@
     "dependencies": {
         "@emotion/react": "^11.14.0",
         "@emotion/styled": "^11.14.1",
-        "@fontsource-variable/mona-sans": "^5.2.8",
-        "@fontsource/roboto": "^5.2.10",
-        "@mui/joy": "^5.0.0-beta.52",
-        "@mui/material": "^9.3.1",
         "@supabase/supabase-js": "^2.112.3",
         "react": "^19.2.6",
         "react-dom": "^19.2.6",
