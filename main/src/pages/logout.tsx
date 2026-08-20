@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { supabase } from "../utils/supabase_key";
+import { supabase } from "components/utils";
 import { useNavigate } from "react-router-dom";
 
 function Logout() {

@@ -1,41 +1,27 @@
 import Typography from "@mui/joy/Typography";
 import Button from "@mui/joy/Button";
-import MenuIcon from "../assets/menu.tsx";
-import GFFIcon from "../assets/gff.tsx";
 import Stack from "@mui/joy/Stack";
 import Sheet from "@mui/joy/Sheet";
-import IconButton from "@mui/joy/IconButton";
-import Drawer from "@mui/joy/Drawer";
-import Box from "@mui/joy/Box";
 import Input from "@mui/joy/Input";
-import List from "@mui/joy/List";
-import ListItemButton from "@mui/joy/ListItemButton";
 import ModalClose from "@mui/joy/ModalClose";
-import DialogTitle from "@mui/joy/DialogTitle";
-import React, { useState, useEffect } from "react";
-import { supabase, type UserInterface } from "../utils/supabase_key.tsx";
-import Divider from "@mui/joy/Divider";
-import { ListItem, type ColorPaletteProp } from "@mui/joy";
-import Chip from "@mui/joy/Chip";
+import { useState, useEffect } from "react";
+import { GetLoggedIn, supabase, type UserInterface } from "components/utils";
+import { Card, Modal } from "@mui/joy";
 import { useNavigate } from "react-router-dom";
 import FormControl from "@mui/joy/FormControl";
 import FormHelperText from "@mui/joy/FormHelperText";
-
-const colormap: Record<string, ColorPaletteProp> = {
-    admin: "primary",
-    gff: "warning",
-    something: "success",
-};
-const usable = [["something", "Something"]];
+import { AppBar } from "components";
+import { imagemap, descriptionmap, sourcemap, usable } from "../utils/contents.ts";
 
 function MyPage() {
-    const [open, setOpen] = useState(false);
+    const [modalOpen, setModalOpen] = useState(false);
     const [loading, setLoading] = useState(true);
     const [users, setUsers] = useState<UserInterface>();
     const [value, setValue] = useState("");
     const [error, setError] = useState(false);
     const [errorMessage, setErrorMessage] = useState("");
     const navigate = useNavigate();
+    const content = [...(users?.role ?? []), ...(users?.vrole ?? []), ...usable];
     useEffect(() => {
         const fetchTableData = async () => {
             try {
@@ -94,95 +80,13 @@ function MyPage() {
         };
         return (
             <>
-                <Sheet
-                    variant="solid"
-                    color="neutral"
-                    sx={{
-                        top: 0,
-                        zIndex: 1100,
-                        width: "100%",
-                        height: "64px",
-                        px: 2,
-                        display: "flex",
-                        alignItems: "center",
-                        borderBottom: "1.5px solid #bcbfb6",
-                        borderColor: "divider",
-                        bgcolor: "#f6f8fa",
+                <AppBar
+                    link={[]}
+                    list={{
+                        컨텐츠: content.map(([id, name]) => [name, `/${id}/`]),
+                        "공통 기능": [["Log Out", "/#/logout/"]],
                     }}
-                >
-                    <Stack direction="row" alignItems="center" spacing={1} sx={{ width: "100%" }}>
-                        <IconButton
-                            variant="outlined"
-                            color="neutral"
-                            size="md"
-                            onClick={() => setOpen(true)}
-                        >
-                            <MenuIcon />
-                        </IconButton>
-                        <Drawer open={open} onClose={() => setOpen(false)} size="sm">
-                            <ModalClose />
-                            <DialogTitle>
-                                <Box>
-                                    <IconButton
-                                        sx={{
-                                            width: "35px",
-                                            height: "35px",
-                                            "& svg": {
-                                                fontSize: "30px",
-                                            },
-                                        }}
-                                        component="a"
-                                        href="/"
-                                    >
-                                        <GFFIcon />
-                                    </IconButton>
-                                </Box>
-                            </DialogTitle>
-                            <br />
-                            <Box role="presentation" sx={{ p: 1 }}>
-                                <List>
-                                    {users?.role.map((text) => (
-                                        <ListItemButton
-                                            component="a"
-                                            onClick={() => {
-                                                setOpen(false);
-                                            }}
-                                            href={`/${text[0]}/`}
-                                            key={`listitembutton-${text[0]}`}
-                                        >
-                                            {text[1]}
-                                        </ListItemButton>
-                                    ))}
-                                </List>
-                                <Divider />
-                                <List>
-                                    <ListItemButton
-                                        component="a"
-                                        onClick={() => {
-                                            setOpen(false);
-                                        }}
-                                        href="/#/logout/"
-                                    >
-                                        Log Out
-                                    </ListItemButton>
-                                </List>
-                            </Box>
-                        </Drawer>
-                        <IconButton variant="plain" size="md" component="a" href="/">
-                            <GFFIcon />
-                        </IconButton>
-                    </Stack>
-                    <Stack
-                        direction="row-reverse"
-                        alignItems="center"
-                        spacing={2}
-                        sx={{ width: "100%" }}
-                    >
-                        <Button variant="plain" color="neutral" component="a" href="/#/logout/">
-                            Log Out
-                        </Button>
-                    </Stack>
-                </Sheet>
+                />
                 <Stack
                     direction="column"
                     spacing={4}
@@ -233,272 +137,190 @@ function MyPage() {
     }
     return (
         <>
-            <Sheet
-                variant="solid"
-                color="neutral"
-                sx={{
-                    top: 0,
-                    zIndex: 1100,
-                    width: "100%",
-                    height: "64px",
-                    px: 2,
-                    display: "flex",
-                    alignItems: "center",
-                    borderBottom: "1.5px solid #bcbfb6",
-                    borderColor: "divider",
-                    bgcolor: "#f6f8fa",
+            <AppBar
+                link={[]}
+                list={{
+                    컨텐츠: content.map(([id, name]) => [name, `/${id}/`]),
+                    "공통 기능": [["Log Out", "/#/logout/"]],
                 }}
-            >
-                <Stack direction="row" alignItems="center" spacing={1} sx={{ width: "100%" }}>
-                    <IconButton
-                        variant="outlined"
-                        color="neutral"
-                        size="md"
-                        onClick={() => setOpen(true)}
-                    >
-                        <MenuIcon />
-                    </IconButton>
-                    <Drawer open={open} onClose={() => setOpen(false)} size="sm">
-                        <ModalClose />
-                        <DialogTitle>
-                            <Box>
-                                <IconButton
-                                    sx={{
-                                        width: "35px",
-                                        height: "35px",
-                                        "& svg": {
-                                            fontSize: "30px",
-                                        },
-                                    }}
-                                    component="a"
-                                    href="/"
-                                >
-                                    <GFFIcon />
-                                </IconButton>
-                            </Box>
-                        </DialogTitle>
-                        <br />
-                        <Box role="presentation" sx={{ p: 1 }}>
-                            <List>
-                                {users?.role.map((text) => (
-                                    <ListItemButton
-                                        component="a"
-                                        onClick={() => {
-                                            setOpen(false);
-                                        }}
-                                        href={`/${text[0]}/`}
-                                        key={`listitembutton-${text[0]}`}
-                                    >
-                                        {text[1]}
-                                    </ListItemButton>
-                                ))}
-                            </List>
-                            {users?.role.length === 0 ? null : <Divider />}
-                            <List>
-                                <ListItem>공통 기능</ListItem>
-                                <ListItemButton
-                                    component="a"
-                                    onClick={() => {
-                                        setOpen(false);
-                                    }}
-                                    href="/#/logout/"
-                                >
-                                    로그아웃
-                                </ListItemButton>
-                            </List>
-                        </Box>
-                    </Drawer>
-                    <IconButton variant="plain" size="md" component="a" href="/">
-                        <GFFIcon />
-                    </IconButton>
-                </Stack>
-                <Stack
-                    direction="row-reverse"
-                    alignItems="center"
-                    spacing={2}
-                    sx={{ width: "100%" }}
-                >
-                    <Button variant="plain" color="neutral" component="a" href="/#/logout/">
-                        Log Out
-                    </Button>
-                </Stack>
-            </Sheet>
-            <Stack direction="column" spacing={3} sx={{ p: 4, mx: "auto", my: 5, maxWidth: 1000 }}>
+            />
+            <Stack direction="column" spacing={5} sx={{ p: 4, mx: "auto", my: 5, maxWidth: 1000 }}>
                 <Typography level="h1">환영합니다, {users?.name}님!</Typography>
-                <Typography level="body-xs">
-                    로그인은 영어인데 갑자기 한국어로 변하면 좀 그런가...
-                </Typography>
-                <Stack direction="row" spacing={1}>
-                    <Typography level="h3">
-                        가진 권한: {users?.role.length === 0 ? "없음" : ""}
-                    </Typography>
-                    {users?.role.map((text) => (
-                        <React.Fragment key={`chip1-${text[0]}`}>
-                            <Chip
-                                size="md"
-                                variant="soft"
-                                color={colormap[text[0]]}
-                                slotProps={{ action: { component: "a", href: `/${text[0]}/` } }}
-                            >
-                                {text[1]}
-                            </Chip>
-                        </React.Fragment>
-                    ))}
+                <Stack direction="column" spacing={3} sx={{ maxWidth: 500 }}>
+                    {[...(users?.role ?? []), ...(users?.vrole ?? []), ...usable].map(
+                        ([id, name]) => {
+                            let role = "User";
+                            if (!users?.role.some((data) => data[0] === id)) {
+                                role = "View";
+                            }
+                            if (id.split(":").length > 1) {
+                                if (id.split(":").at(-1) === "admin") {
+                                    role = "Admin";
+                                }
+                                id = id.split(":")[0];
+                            }
+                            if (users?.role.some((data) => data[0] === "admin")) {
+                                role = "Admin";
+                            }
+                            return (
+                                <Card
+                                    key={`Card-${id}`}
+                                    onClick={() => {
+                                        window.location.href = `/${id}/`;
+                                    }}
+                                    sx={{
+                                        cursor: "pointer",
+                                        backgroundImage: {
+                                            xs: "none",
+                                            sm: `linear-gradient(to right, #FBFCFE 0%, #FBFCFE 40%, transparent 80%, transparent 100%), url("${imagemap[id]}")`,
+                                        },
+                                        backgroundSize: "cover",
+                                        backgroundPosition: "center",
+                                        backgroundRepeat: "no-repeat",
+                                        aspectRatio: "498.667 / 136",
+                                        maxWidth: 500,
+                                    }}
+                                >
+                                    <Typography
+                                        level="h3"
+                                        sx={{ "&:hover": { textDecoration: "underline" } }}
+                                    >
+                                        {name}
+                                    </Typography>
+                                    <Typography level="body-lg">{descriptionmap[id]}</Typography>
+                                    <Typography level="body-sm">Permission: {role}</Typography>
+                                </Card>
+                            );
+                        },
+                    )}
                 </Stack>
-                <Stack direction="row" spacing={1}>
-                    <Typography level="h3">
-                        가진 보기 권한: {users?.vrole.length === 0 ? "없음" : ""}
-                    </Typography>
-                    {users?.vrole.map((text) => (
-                        <React.Fragment key={`chip2-${text[0]}`}>
-                            <Chip
-                                size="md"
-                                variant="soft"
-                                color={colormap[text[0]]}
-                                slotProps={{ action: { component: "a", href: `/${text[0]}/` } }}
-                            >
-                                {text[1]}
-                            </Chip>
-                        </React.Fragment>
-                    ))}
-                </Stack>
-                <Stack direction="row" spacing={1}>
-                    <Typography level="h3">사용 가능 컨텐츠:</Typography>
-                    {usable.map((text) => (
-                        <React.Fragment key={`chip2-${text[0]}`}>
-                            <Chip
-                                size="md"
-                                variant="soft"
-                                color={colormap[text[0]]}
-                                slotProps={{ action: { component: "a", href: `/${text[0]}/` } }}
-                            >
-                                {text[1]}
-                            </Chip>
-                        </React.Fragment>
-                    ))}
-                </Stack>
+                <Button
+                    variant="plain"
+                    color="neutral"
+                    sx={{ maxWidth: 100, bottom: 16, right: 16, position: "fixed" }}
+                    onClick={(_) => {
+                        setModalOpen(true);
+                    }}
+                >
+                    이미지 출처
+                </Button>
+                <Modal
+                    aria-labelledby="modal-title"
+                    aria-describedby="modal-desc"
+                    open={modalOpen}
+                    onClose={() => setModalOpen(false)}
+                    sx={{ display: "flex", justifyContent: "center", alignItems: "center" }}
+                >
+                    <Sheet
+                        variant="outlined"
+                        sx={{ maxWidth: 500, borderRadius: "md", p: 3, boxShadow: "lg" }}
+                    >
+                        <ModalClose variant="plain" sx={{ m: 1 }} />
+                        <Typography level="h4" sx={{ mb: 1 }}>
+                            이미지 출처
+                        </Typography>
+                        {[...(users?.role ?? []), ...(users?.vrole ?? []), ...usable].map(
+                            ([id, _]) => {
+                                return (
+                                    <Typography key={`typography-${id}`} sx={{ mb: 1 }}>
+                                        {sourcemap[id]}
+                                    </Typography>
+                                );
+                            },
+                        )}
+                    </Sheet>
+                </Modal>
             </Stack>
         </>
     );
 }
 
 function IntroPage() {
-    const [open, setOpen] = useState(false);
+    const [modalOpen, setModalOpen] = useState(false);
     return (
         <>
-            <Sheet
-                variant="solid"
-                color="neutral"
-                sx={{
-                    top: 0,
-                    zIndex: 1100,
-                    width: "100%",
-                    height: "64px",
-                    px: 2,
-                    display: "flex",
-                    alignItems: "center",
-                    borderBottom: "1.5px solid #bcbfb6",
-                    borderColor: "divider",
-                    bgcolor: "#f6f8fa",
+            <AppBar
+                link={[]}
+                list={{
+                    컨텐츠: usable.map(([id, name]) => [name, `/${id}/`]),
+                    "공통 기능": [
+                        ["Sign Up", "/#/signup/"],
+                        ["Log In", "/#/login/"],
+                    ],
                 }}
-            >
-                <Stack direction="row" alignItems="center" spacing={1} sx={{ width: "100%" }}>
-                    <IconButton
-                        variant="outlined"
-                        color="neutral"
-                        size="md"
-                        onClick={() => setOpen(true)}
-                    >
-                        <MenuIcon />
-                    </IconButton>
-                    <Drawer open={open} onClose={() => setOpen(false)} size="sm">
-                        <ModalClose />
-                        <DialogTitle>
-                            <Box>
-                                <IconButton
-                                    sx={{
-                                        width: "35px",
-                                        height: "35px",
-                                        "& svg": {
-                                            fontSize: "30px",
-                                        },
-                                    }}
-                                    component="a"
-                                    href="/"
-                                >
-                                    <GFFIcon />
-                                </IconButton>
-                            </Box>
-                        </DialogTitle>
-                        <br />
-                        <Box role="presentation" sx={{ p: 1 }}>
-                            <List>
-                                <ListItemButton
-                                    component="a"
-                                    onClick={() => {
-                                        setOpen(false);
-                                    }}
-                                    href="/#/login/"
-                                >
-                                    Log In
-                                </ListItemButton>
-                                <ListItemButton
-                                    component="a"
-                                    onClick={() => {
-                                        setOpen(false);
-                                    }}
-                                    href="/#/signup/"
-                                >
-                                    Sign Up
-                                </ListItemButton>
-                            </List>
-                        </Box>
-                    </Drawer>
-                    <IconButton variant="plain" size="md" component="a" href="/">
-                        <GFFIcon />
-                    </IconButton>
+            />
+            <Stack direction="column" spacing={4} sx={{ p: 4, mx: "auto", my: 5, maxWidth: 1000 }}>
+                <Stack spacing={1.5}>
+                    <Typography level="h1">Seanleeee13 Github Pages</Typography>
+                    <Typography level="title-lg">내가 하는 모든 것에 대한 사이트</Typography>
                 </Stack>
-                <Stack
-                    direction="row-reverse"
-                    alignItems="center"
-                    spacing={2}
-                    sx={{ width: "100%" }}
-                >
-                    <Button variant="solid" color="neutral" component="a" href="/#/signup/">
-                        Sign Up
-                    </Button>
-                    <Button variant="outlined" color="neutral" component="a" href="/#/login/">
-                        Log In
-                    </Button>
-                </Stack>
-            </Sheet>
-            <Stack direction="column" spacing={3} sx={{ p: 4, mx: "auto", my: 5, maxWidth: 1000 }}>
-                <Typography level="h1">Seanleeee13 Github Pages</Typography>
-                <Typography level="title-lg">대충 내가 하는 모든 것에 대한 웹 페이지</Typography>
-                <Typography level="title-sm">제작: 당연히 Seanleeee13</Typography>
-                <Stack direction="row" alignItems="center" spacing={2} sx={{ width: "100%" }}>
-                    <Button variant="solid" color="neutral" component="a" href="/#/signup/">
-                        Sign Up
-                    </Button>
-                    <Button variant="outlined" color="neutral" component="a" href="/#/login/">
-                        Log In
-                    </Button>
-                </Stack>
-                <Stack direction="row" spacing={1}>
-                    <Typography level="h3">사용 가능 컨텐츠:</Typography>
-                    {usable.map((text) => (
-                        <React.Fragment key={`chip2-${text[0]}`}>
-                            <Chip
-                                size="md"
-                                variant="soft"
-                                color={colormap[text[0]]}
-                                slotProps={{ action: { component: "a", href: `/${text[0]}/` } }}
+                <Stack direction="column" spacing={3} sx={{ maxWidth: 500 }}>
+                    {usable.map(([id, name]) => {
+                        return (
+                            <Card
+                                key={`Card-${id}`}
+                                onClick={() => {
+                                    window.location.href = `/${id}/`;
+                                }}
+                                sx={{
+                                    cursor: "pointer",
+                                    backgroundImage: {
+                                        xs: "none",
+                                        sm: `linear-gradient(to right, #FBFCFE 0%, #FBFCFE 40%, transparent 80%, transparent 100%), url("${imagemap[id]}")`,
+                                    },
+                                    backgroundSize: "cover",
+                                    backgroundPosition: "center",
+                                    backgroundRepeat: "no-repeat",
+                                    aspectRatio: "498.667 / 136",
+                                    maxWidth: 500,
+                                }}
                             >
-                                {text[1]}
-                            </Chip>
-                        </React.Fragment>
-                    ))}
+                                <Typography
+                                    level="h3"
+                                    sx={{ "&:hover": { textDecoration: "underline" } }}
+                                >
+                                    {name}
+                                </Typography>
+                                <Typography level="body-lg">{descriptionmap[id]}</Typography>
+                                <Typography level="body-sm">Permission: View</Typography>
+                            </Card>
+                        );
+                    })}
                 </Stack>
+                <Button
+                    variant="plain"
+                    color="neutral"
+                    sx={{ maxWidth: 100, bottom: 16, right: 16, position: "fixed" }}
+                    onClick={(_) => {
+                        setModalOpen(true);
+                    }}
+                >
+                    이미지 출처
+                </Button>
+                <Modal
+                    aria-labelledby="modal-title"
+                    aria-describedby="modal-desc"
+                    open={modalOpen}
+                    onClose={() => setModalOpen(false)}
+                    sx={{ display: "flex", justifyContent: "center", alignItems: "center" }}
+                >
+                    <Sheet
+                        variant="outlined"
+                        sx={{ maxWidth: 500, borderRadius: "md", p: 3, boxShadow: "lg" }}
+                    >
+                        <ModalClose variant="plain" sx={{ m: 1 }} />
+                        <Typography level="h4" sx={{ mb: 1 }}>
+                            이미지 출처
+                        </Typography>
+                        {usable.map(([id, _]) => {
+                            return (
+                                <Typography key={`typography-${id}`} sx={{ mb: 1 }}>
+                                    {sourcemap[id]}
+                                </Typography>
+                            );
+                        })}
+                    </Sheet>
+                </Modal>
             </Stack>
         </>
     );
@@ -510,14 +332,7 @@ function Home() {
     const navigate = useNavigate();
     useEffect(() => {
         const checkLoggedUser = async () => {
-            const {
-                data: { session },
-            } = await supabase.auth.getSession();
-            if (session) {
-                setHasSession(true);
-            } else {
-                setHasSession(false);
-            }
+            setHasSession(await GetLoggedIn());
             setLoading(false);
         };
         checkLoggedUser();
