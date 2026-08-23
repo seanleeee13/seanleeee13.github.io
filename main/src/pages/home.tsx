@@ -82,10 +82,10 @@ function MyPage() {
             <>
                 <AppBar
                     link={[]}
-                    list={{
-                        컨텐츠: content.map(([id, name]) => [name, `/${id}/`]),
-                        "공통 기능": [["Log Out", "/#/logout/"]],
-                    }}
+                    list={[
+                        ["컨텐츠", content.map(([id, name]) => [name, `/${id}/`])],
+                        ["공통 기능", [["Log Out", "/#/logout/"]]],
+                    ]}
                 />
                 <Stack
                     direction="column"
@@ -139,10 +139,10 @@ function MyPage() {
         <>
             <AppBar
                 link={[]}
-                list={{
-                    컨텐츠: content.map(([id, name]) => [name, `/${id}/`]),
-                    "공통 기능": [["Log Out", "/#/logout/"]],
-                }}
+                list={[
+                    ["컨텐츠", content.map(([id, name]) => [name, `/${id}/`])],
+                    ["공통 기능", [["Log Out", "/#/logout/"]]],
+                ]}
             />
             <Stack direction="column" spacing={5} sx={{ p: 4, mx: "auto", my: 5, maxWidth: 1000 }}>
                 <Typography level="h1">환영합니다, {users?.name}님!</Typography>
@@ -241,13 +241,10 @@ function IntroPage() {
         <>
             <AppBar
                 link={[]}
-                list={{
-                    컨텐츠: usable.map(([id, name]) => [name, `/${id}/`]),
-                    "공통 기능": [
-                        ["Sign Up", "/#/signup/"],
-                        ["Log In", "/#/login/"],
-                    ],
-                }}
+                list={[
+                    ["컨텐츠", usable.map(([id, name]) => [name, `/${id}/`])],
+                    ["공통 기능", [["Log Out", "/#/logout/"]]],
+                ]}
             />
             <Stack direction="column" spacing={4} sx={{ p: 4, mx: "auto", my: 5, maxWidth: 1000 }}>
                 <Stack spacing={1.5}>

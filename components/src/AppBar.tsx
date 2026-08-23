@@ -19,7 +19,7 @@ import { GetLoggedIn } from "./utils";
 
 interface AppBarProps {
     link: [string, string][];
-    list: Record<string, [string, string][]>;
+    list: [string, [string, string][]][];
 }
 
 function AppBar({ link, list }: AppBarProps) {
@@ -57,7 +57,7 @@ function AppBar({ link, list }: AppBarProps) {
     );
     const listElement = (
         <Stack divider={<Divider />}>
-            {Object.entries(list).map(([listName, listData], groupIdx) => (
+            {list.map(([listName, listData], groupIdx) => (
                 <List key={`group-${groupIdx}`}>
                     <ListItem>{listName}</ListItem>
                     {listData.map(([name, href]) => (

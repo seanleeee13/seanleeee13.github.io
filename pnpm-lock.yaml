@@ -65,6 +65,9 @@ importers:
       '@supabase/supabase-js':
         specifier: ^2.112.3
         version: 2.112.3
+      components:
+        specifier: workspace:*
+        version: link:../components
       react:
         specifier: ^19.2.6
         version: 19.2.8
@@ -190,6 +193,9 @@ importers:
       '@supabase/supabase-js':
         specifier: ^2.112.3
         version: 2.112.3
+      components:
+        specifier: workspace:*
+        version: link:../components
       react:
         specifier: ^19.2.7
         version: 19.2.8
@@ -242,6 +248,9 @@ importers:
       '@supabase/supabase-js':
         specifier: ^2.112.3
         version: 2.112.3
+      components:
+        specifier: workspace:*
+        version: link:../components
       react:
         specifier: ^19.2.7
         version: 19.2.8

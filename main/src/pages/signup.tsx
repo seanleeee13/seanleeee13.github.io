@@ -90,14 +90,11 @@ function SignUp() {
     return (
         <>
             <AppBar
-                link={[["Sign Up", "q:/signup"]]}
-                list={{
-                    컨텐츠: usable.map(([id, name]) => [name, `/${id}/`]),
-                    "공통 기능": [
-                        ["Sign Up", "q:/#/signup"],
-                        ["Log In", "q:/#/login"],
-                    ],
-                }}
+                link={[]}
+                list={[
+                    ["컨텐츠", usable.map(([id, name]) => [name, `/${id}/`])],
+                    ["공통 기능", [["Sign Up", "q:/#/signup/"], ["Log In", "q:/#/login/"]]],
+                ]}
             />
             <Stack
                 justifyContent="center"
@@ -121,7 +118,7 @@ function SignUp() {
                         borderColor: "neutral.outlinedBorder",
                         transform: `scale(${currentScale})`,
                         transformOrigin: "center",
-                        transition: "transform 0.1s ease-out",
+                        transition: "transform 0s ease-out",
                         flexShrink: 0,
                     }}
                 >

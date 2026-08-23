@@ -1,7 +1,4 @@
 import Typography from "@mui/joy/Typography";
-import MenuIcon from "../assets/menu.tsx";
-import ReactLogoIcon from "../assets/react_logo.tsx";
-import ExpandMoreIcon from "../assets/expand_more";
 import Stack from "@mui/joy/Stack";
 import Sheet from "@mui/joy/Sheet";
 import IconButton from "@mui/joy/IconButton";
@@ -14,7 +11,6 @@ import ListItemButton from "@mui/joy/ListItemButton";
 import ModalClose from "@mui/joy/ModalClose";
 import DialogTitle from "@mui/joy/DialogTitle";
 import { useState, useEffect } from "react";
-import { supabase } from "../utils/supabase_key.tsx";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import Divider from "@mui/joy/Divider";
 import Radio from "@mui/joy/Radio";
@@ -24,30 +20,13 @@ import RadioGroup from "@mui/joy/RadioGroup";
 import Select from "@mui/joy/Select";
 import Option from "@mui/joy/Option";
 import backgroundImage from "../assets/bg.png";
+import { AppBar } from "components";
 
 function PlaySelect() {
-    const [open, setOpen] = useState<boolean>(false);
-    const [loading, setLoading] = useState(true);
-    const [hasSession, setHasSession] = useState(false);
     const [color, setColor] = useState("random");
     const [p1, setP1] = useState("player");
-    const [p2, setP2] = useState("greedytree.evaluator");
-    const navigate = useNavigate();
+    const [p2, setP2] = useState("greedytree.evaluator-5");
     const [_, setSearchParams] = useSearchParams();
-    useEffect(() => {
-        const checkLoggedUser = async () => {
-            const {
-                data: { session },
-            } = await supabase.auth.getSession();
-            if (session) {
-                setHasSession(true);
-            } else {
-                setHasSession(false);
-            }
-            setLoading(false);
-        };
-        checkLoggedUser();
-    }, [navigate]);
     const handlePlay = () => {
         if (color === "" || p1 === "" || p2 === "") {
             return;
@@ -63,9 +42,6 @@ function PlaySelect() {
             setSearchParams({ white: p1, black: p2 });
         }
     };
-    if (loading) {
-        return null;
-    }
     return (
         <Box
             sx={{
@@ -77,122 +53,10 @@ function PlaySelect() {
                 width: "100vw",
             }}
         >
-            <Sheet
-                variant="solid"
-                color="neutral"
-                sx={{
-                    top: 0,
-                    zIndex: 1100,
-                    width: "100%",
-                    height: "64px",
-                    px: 2,
-                    display: "flex",
-                    alignItems: "center",
-                    borderBottom: "1.5px solid #bcbfb6",
-                    borderColor: "divider",
-                    bgcolor: "#f6f8fa",
-                }}
-            >
-                <Stack direction="row" alignItems="center" spacing={1} sx={{ width: "100%" }}>
-                    <IconButton
-                        variant="outlined"
-                        color="neutral"
-                        size="md"
-                        onClick={() => setOpen(true)}
-                    >
-                        <MenuIcon />
-                    </IconButton>
-                    <Drawer open={open} onClose={() => setOpen(false)} size="sm">
-                        <ModalClose />
-                        <DialogTitle>
-                            <Box>
-                                <IconButton
-                                    sx={{
-                                        width: "35px",
-                                        height: "35px",
-                                        "& svg": {
-                                            fontSize: "30px",
-                                        },
-                                    }}
-                                    component="a"
-                                    href="/"
-                                >
-                                    <ReactLogoIcon />
-                                </IconButton>
-                            </Box>
-                        </DialogTitle>
-                        <br />
-                        <Box role="presentation" sx={{ p: 1 }}>
-                            <List>
-                                <ListItem>
-                                    <Typography sx={{ fontWeight: "lg" }}>기본 기능</Typography>
-                                </ListItem>
-                                <ListItem>
-                                    <ListItemButton
-                                        component="a"
-                                        onClick={() => {
-                                            setOpen(false);
-                                        }}
-                                        href="/something/"
-                                    >
-                                        Home
-                                    </ListItemButton>
-                                </ListItem>
-                                <ListItem>
-                                    <ListItemButton
-                                        component="a"
-                                        onClick={() => {
-                                            setOpen(false);
-                                        }}
-                                        href="/something/#/play/"
-                                    >
-                                        Play
-                                    </ListItemButton>
-                                </ListItem>
-                            </List>
-                        </Box>
-                    </Drawer>
-                    <IconButton variant="plain" size="md" component="a" href="/">
-                        <ReactLogoIcon />
-                    </IconButton>
-                    <Divider orientation="vertical" />
-                    <Button variant="plain" color="neutral" component="a" href="/something/">
-                        Something
-                    </Button>
-                    <Typography sx={{ transform: "rotate(270deg)" }}>
-                        <ExpandMoreIcon />
-                    </Typography>
-                    <Button variant="plain" color="neutral" component="a" href="/something/#/play/">
-                        Play
-                    </Button>
-                </Stack>
-                <Stack
-                    direction="row-reverse"
-                    alignItems="center"
-                    spacing={1}
-                    sx={{ width: "100%" }}
-                >
-                    {hasSession ? (
-                        <Button variant="plain" color="neutral" component="a" href="/#/logout/">
-                            Log Out
-                        </Button>
-                    ) : (
-                        <>
-                            <Button variant="solid" color="neutral" component="a" href="/#/signup/">
-                                Sign Up
-                            </Button>
-                            <Button
-                                variant="outlined"
-                                color="neutral"
-                                component="a"
-                                href="/#/login/"
-                            >
-                                Log In
-                            </Button>
-                        </>
-                    )}
-                </Stack>
-            </Sheet>
+            <AppBar
+                link={[["Something", "/something/"]]} 
+                list={[["Something", [["Main", "/something/"], ["Play", "/something/#/play/"]]]]}
+            />
             <Stack sx={{ p: 4, mx: "auto", my: 5, maxWidth: 1000 }} spacing={3}>
                 <Typography level="h1">PLAY</Typography>
                 <FormControl>
@@ -221,7 +85,7 @@ function PlaySelect() {
                         >
                             <Option value="player">Player</Option>
                             <Option value="something.ai-v4">Something.AI-v4</Option>
-                            <Option value="greedytree.evaluator">GreedyTree.Evaluator</Option>
+                            <Option value="greedytree.evaluator-5">GreedyTree.Evaluator-5</Option>
                         </Select>
                     </Stack>
                     <Stack spacing={1} direction="row" alignItems="center">
@@ -237,7 +101,7 @@ function PlaySelect() {
                         >
                             <Option value="player">Player</Option>
                             <Option value="something.ai-v4">Something.AI-v4</Option>
-                            <Option value="greedytree.evaluator">GreedyTree.Evaluator</Option>
+                            <Option value="greedytree.evaluator-5">GreedyTree.Evaluator-5</Option>
                         </Select>
                     </Stack>
                 </Stack>
@@ -250,30 +114,9 @@ function PlaySelect() {
 }
 
 function PlayChess() {
-    const [open, setOpen] = useState<boolean>(false);
-    const [loading, setLoading] = useState(true);
-    const [hasSession, setHasSession] = useState(false);
-    const navigate = useNavigate();
     const [searchParams, _] = useSearchParams();
     const white = searchParams.get("white");
     const black = searchParams.get("black");
-    useEffect(() => {
-        const checkLoggedUser = async () => {
-            const {
-                data: { session },
-            } = await supabase.auth.getSession();
-            if (session) {
-                setHasSession(true);
-            } else {
-                setHasSession(false);
-            }
-            setLoading(false);
-        };
-        checkLoggedUser();
-    }, [navigate]);
-    if (loading) {
-        return null;
-    }
     return (
         <Box
             sx={{
@@ -285,122 +128,10 @@ function PlayChess() {
                 width: "100vw",
             }}
         >
-            <Sheet
-                variant="solid"
-                color="neutral"
-                sx={{
-                    top: 0,
-                    zIndex: 1100,
-                    width: "100%",
-                    height: "64px",
-                    px: 2,
-                    display: "flex",
-                    alignItems: "center",
-                    borderBottom: "1.5px solid #bcbfb6",
-                    borderColor: "divider",
-                    bgcolor: "#f6f8fa",
-                }}
-            >
-                <Stack direction="row" alignItems="center" spacing={1} sx={{ width: "100%" }}>
-                    <IconButton
-                        variant="outlined"
-                        color="neutral"
-                        size="md"
-                        onClick={() => setOpen(true)}
-                    >
-                        <MenuIcon />
-                    </IconButton>
-                    <Drawer open={open} onClose={() => setOpen(false)} size="sm">
-                        <ModalClose />
-                        <DialogTitle>
-                            <Box>
-                                <IconButton
-                                    sx={{
-                                        width: "35px",
-                                        height: "35px",
-                                        "& svg": {
-                                            fontSize: "30px",
-                                        },
-                                    }}
-                                    component="a"
-                                    href="/"
-                                >
-                                    <ReactLogoIcon />
-                                </IconButton>
-                            </Box>
-                        </DialogTitle>
-                        <br />
-                        <Box role="presentation" sx={{ p: 1 }}>
-                            <List>
-                                <ListItem>
-                                    <Typography sx={{ fontWeight: "lg" }}>기본 기능</Typography>
-                                </ListItem>
-                                <ListItem>
-                                    <ListItemButton
-                                        component="a"
-                                        onClick={() => {
-                                            setOpen(false);
-                                        }}
-                                        href="/something/"
-                                    >
-                                        Home
-                                    </ListItemButton>
-                                </ListItem>
-                                <ListItem>
-                                    <ListItemButton
-                                        component="a"
-                                        onClick={() => {
-                                            setOpen(false);
-                                        }}
-                                        href="/something/#/play/"
-                                    >
-                                        Play
-                                    </ListItemButton>
-                                </ListItem>
-                            </List>
-                        </Box>
-                    </Drawer>
-                    <IconButton variant="plain" size="md" component="a" href="/">
-                        <ReactLogoIcon />
-                    </IconButton>
-                    <Divider orientation="vertical" />
-                    <Button variant="plain" color="neutral" component="a" href="/something/">
-                        Something
-                    </Button>
-                    <Typography sx={{ transform: "rotate(270deg)" }}>
-                        <ExpandMoreIcon />
-                    </Typography>
-                    <Button variant="plain" color="neutral" component="a" href="/something/#/play/">
-                        Play
-                    </Button>
-                </Stack>
-                <Stack
-                    direction="row-reverse"
-                    alignItems="center"
-                    spacing={1}
-                    sx={{ width: "100%" }}
-                >
-                    {hasSession ? (
-                        <Button variant="plain" color="neutral" component="a" href="/#/logout/">
-                            Log Out
-                        </Button>
-                    ) : (
-                        <>
-                            <Button variant="solid" color="neutral" component="a" href="/#/signup/">
-                                Sign Up
-                            </Button>
-                            <Button
-                                variant="outlined"
-                                color="neutral"
-                                component="a"
-                                href="/#/login/"
-                            >
-                                Log In
-                            </Button>
-                        </>
-                    )}
-                </Stack>
-            </Sheet>
+            <AppBar
+                link={[["Something", "/something/"]]} 
+                list={[["Something", [["Main", "/something/"], ["Play", "/something/#/play/"]]]]}
+            />
             <Stack sx={{ p: 4, mx: "auto", my: 5, maxWidth: 1000 }} spacing={3}>
                 <Typography level="h1">PLAY</Typography>
             </Stack>
