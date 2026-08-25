@@ -14,7 +14,10 @@ function Home() {
     return (
         <Box
             sx={{
-                backgroundImage: `url("${backgroundImage}")`,
+                backgroundImage: {
+                    "md": `linear-gradient(to right, black 40%, transparent 80%), url("${backgroundImage}")`,
+                    "sm": `linear-gradient(to bottom, black 60%, transparent 100%), url("${backgroundImage}")`
+                },
                 backgroundSize: "cover",
                 backgroundPosition: "center",
                 backgroundRepeat: "no-repeat",
@@ -25,6 +28,7 @@ function Home() {
             <AppBar
                 link={[["Something", "/something/"]]} 
                 list={[["Something", [["Main", "/something/"], ["Play", "/something/#/play/"]]]]}
+                content={["Something", "/something/"]}
             />
             <Stack
                 sx={{

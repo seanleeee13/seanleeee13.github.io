@@ -182,18 +182,19 @@ function LevelsMain() {
     return (
         <>
             <AppBar
-                link={[["GFF", "/gff/"]]}
+                link={[["GFF", "/gff/"], ["Level", "q:/gff/#/levels"]]}
                 list={[...data.map((text) => [
                     text[0][1], text.slice(1).map(
-                        (text_data) => [text_data[1], `/gff/#/lists/${text_data[0]}`]
+                        (text_data) => [text_data[1], `/gff/#/lists/${text_data[0]}/`]
                     )
-                ]), ...[[
+                ]), [
                     "GFF", [
                         ["리스트 목록", "/gff/#/lists/"],
-                        ["레벨 검색하기", "/gff/#/levels/"],
+                        ["레벨 검색하기", "q:/gff/#/levels"],
                         ["레벨 업로드", "/gff/#/upload/"]
                     ]
-                ]]] as MenuListType}
+                ]] as MenuListType}
+                content={["GFF", "/gff/"]}
             />
             <Stack spacing={2} sx={{ pb: 7, pt: 5, px: "12.5%" }}>
                 <Typography level="h3">레벨 검색</Typography>

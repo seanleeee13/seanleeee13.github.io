@@ -20,9 +20,10 @@ import { GetLoggedIn } from "./utils";
 interface AppBarProps {
     link: [string, string][];
     list: [string, [string, string][]][];
+    content?: [string, string];
 }
 
-function AppBar({ link, list }: AppBarProps) {
+function AppBar({ link, list, content }: AppBarProps) {
     const [open, setOpen] = useState(false);
     const [loading, setLoading] = useState(true);
     const [hasSession, setHasSession] = useState(false);
@@ -36,6 +37,7 @@ function AppBar({ link, list }: AppBarProps) {
     const query = hashPart ? "?" + hashPart : window.location.search || "";
     const linkElement = (
         <Stack
+            direction="row"
             divider={
                 <Typography sx={{ transform: "rotate(270deg)" }}>
                     <ExpandMoreIcon />
@@ -59,7 +61,7 @@ function AppBar({ link, list }: AppBarProps) {
         <Stack divider={<Divider />}>
             {list.map(([listName, listData], groupIdx) => (
                 <List key={`group-${groupIdx}`}>
-                    <ListItem>{listName}</ListItem>
+                    <ListItem sx={{fontWeight: "lg", color: "common.black"}}>{listName}</ListItem>
                     {listData.map(([name, href]) => (
                         <ListItemButton
                             key={`listitembutton-${href}`}
@@ -88,7 +90,7 @@ function AppBar({ link, list }: AppBarProps) {
                 alignItems: "center",
                 borderBottom: "1.5px solid #bcbfb6",
                 borderColor: "divider",
-                bgcolor: "#f6f8fa",
+                bgcolor: "#f6f8fa"
             }}
         >
             <Stack direction="row" alignItems="center" spacing={1} sx={{ width: "100%" }}>
@@ -103,7 +105,7 @@ function AppBar({ link, list }: AppBarProps) {
                 <Drawer open={open} onClose={() => setOpen(false)} size="sm">
                     <ModalClose />
                     <DialogTitle>
-                        <Box>
+                        <Stack direction="row" alignItems="center">
                             <IconButton
                                 sx={{
                                     width: "35px",
@@ -111,13 +113,28 @@ function AppBar({ link, list }: AppBarProps) {
                                     "& svg": {
                                         fontSize: "30px",
                                     },
+                                    mr: 1
                                 }}
                                 component="a"
                                 href="/"
                             >
                                 <ReactIcon />
                             </IconButton>
-                        </Box>
+                            {
+                                content === undefined ? null :
+                                <>
+                                    <Typography sx={{ transform: "rotate(270deg)" }}>
+                                        <ExpandMoreIcon />
+                                    </Typography>
+                                    <Button
+                                        variant="plain"
+                                        color="neutral"
+                                        component="a"
+                                        href={content[1]}
+                                    >{content[0]}</Button>
+                                </>
+                            }
+                        </Stack>
                     </DialogTitle>
                     <br />
                     <Box role="presentation" sx={{ p: 1 }}>

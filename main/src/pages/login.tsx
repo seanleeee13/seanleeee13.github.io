@@ -73,7 +73,7 @@ function Login() {
     return (
         <>
             <AppBar
-                link={[]}
+                link={[["Log In", "/#/login/"]]}
                 list={[
                     ["컨텐츠", usable.map(([id, name]) => [name, `/${id}/`])],
                     ["공통 기능", [["Sign Up", "q:/#/signup/"], ["Log In", "q:/#/login/"]]],

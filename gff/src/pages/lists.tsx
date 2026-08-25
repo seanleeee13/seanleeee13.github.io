@@ -139,18 +139,19 @@ function Lists() {
     return (
         <>
             <AppBar
-                link={[["GFF", "/gff/"]]}
+                link={[["GFF", "/gff/"], ["List", "/gff/#/lists/"], [level_list, `/gff/#/lists/${level_list}/`]]}
                 list={[...data.map((text) => [
                     text[0][1], text.slice(1).map(
-                        (text_data) => [text_data[1], `/gff/#/lists/${text_data[0]}`]
+                        (text_data) => [text_data[1], `/gff/#/lists/${text_data[0]}/`]
                     )
-                ]), ...[[
+                ]), [
                     "GFF", [
                         ["리스트 목록", "/gff/#/lists/"],
                         ["레벨 검색하기", "/gff/#/levels/"],
                         ["레벨 업로드", "/gff/#/upload/"]
                     ]
-                ]]] as MenuListType}
+                ]] as MenuListType}
+                content={["GFF", "/gff/"]}
             />
             {lists
                 .find((item) => item.name === level_list)

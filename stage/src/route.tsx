@@ -49,7 +49,10 @@ function Authenticate() {
     };
     return (
         <>
-            <AppBar link={[["Stage", "/stage/"]]} list={{"Stage": [["Main", "/stage/"]]}} />
+            <AppBar
+                link={[["Stage", "/stage/"]]} list={[["Stage", [["Main", "/stage/"]]]]}
+                content={["Stage", "/stage/"]}
+            />
             <Stack
                 justifyContent="center"
                 alignItems="center"

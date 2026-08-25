@@ -9,7 +9,10 @@ import { AppBar } from "components";
 function Home() {
     return (
         <>
-            <AppBar link={[["Stage", "/stage/"]]} list={[["Stage", [["Main", "/stage/"]]]]} />
+            <AppBar
+                link={[["Stage", "/stage/"]]} list={[["Stage", [["Main", "/stage/"]]]]}
+                content={["Stage", "/stage/"]}
+            />
             <Stack sx={{ p: 4, mx: "auto", alignItems: "center" }} spacing={4}>
                 <Link
                     href="/stage/"

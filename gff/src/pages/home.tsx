@@ -73,15 +73,16 @@ function Home() {
                 link={[["GFF", "/gff/"]]}
                 list={[...data.map((text) => [
                     text[0][1], text.slice(1).map(
-                        (text_data) => [text_data[1], `/gff/#/lists/${text_data[0]}`]
+                        (text_data) => [text_data[1], `/gff/#/lists/${text_data[0]}/`]
                     )
-                ]), ...[[
+                ]), [
                     "GFF", [
                         ["리스트 목록", "/gff/#/lists/"],
                         ["레벨 검색하기", "/gff/#/levels/"],
                         ["레벨 업로드", "/gff/#/upload/"]
                     ]
-                ]]] as MenuListType}
+                ]] as MenuListType}
+                content={["GFF", "/gff/"]}
             />
             <Stack sx={{ p: 4, mx: "auto", my: 5, maxWidth: 1000 }} spacing={3}>
                 <Typography level="h1">Geometry Dash Friend Forum / GFF</Typography>
