@@ -1,0 +1,3 @@
+[submodule "submodules/evaluator"]
+    path = submodules/evaluator
+    url = https://github.com/seanleeee13/something-ai-evaluator.git
