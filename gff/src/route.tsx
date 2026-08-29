@@ -5,7 +5,7 @@ import Levels from "./pages/levels.tsx";
 import ListsMain from "./pages/lists_main.tsx";
 import LevelsMain from "./pages/levels_main.tsx";
 import Upload from "./pages/upload.tsx";
-import { supabase, type UserInterface } from "./utils/supabase_key.tsx";
+import { supabase, type UserInterface } from "components/utils";
 import { useState, useEffect } from "react";
 
 const router = createHashRouter([
