@@ -1,8 +1,8 @@
-import { Chess } from "ultrachess/inline";
+import { Chess } from "ultrachess";
 
 const INF_SCORE = 999999;
-const SEARCH_DEPTH = 4;
-const QUIESCENCE_MAX_DEPTH = 4;
+const SEARCH_DEPTH = 5;
+const QUIESCENCE_MAX_DEPTH = 5;
 const CENTER_PST = [
     [0, 0, 0, 0, 0, 0, 0, 0],
     [0, 0, 0, 0, 0, 0, 0, 0],
