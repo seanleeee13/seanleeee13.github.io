@@ -1,21 +1,9 @@
 import Typography from "@mui/joy/Typography";
-import MenuIcon from "../assets/menu";
-import GFFIcon from "../assets/gff";
 import Stack from "@mui/joy/Stack";
-import Sheet from "@mui/joy/Sheet";
-import IconButton from "@mui/joy/IconButton";
-import Button from "@mui/joy/Button";
-import Drawer from "@mui/joy/Drawer";
 import Box from "@mui/joy/Box";
 import Card from "@mui/joy/Card";
 import CardContent from "@mui/joy/CardContent";
-import List from "@mui/joy/List";
-import ListItem from "@mui/joy/ListItem";
-import ListItemButton from "@mui/joy/ListItemButton";
 import Link from "@mui/joy/Link";
-import Divider from "@mui/joy/Divider";
-import ModalClose from "@mui/joy/ModalClose";
-import DialogTitle from "@mui/joy/DialogTitle";
 import CircularProgress from "@mui/joy/CircularProgress";
 import { useParams } from "react-router-dom";
 import React, { useState, useEffect } from "react";
@@ -24,9 +12,9 @@ import {
     type LevelInterface,
     type ListInterface,
     type PListInterface,
-} from "../utils/supabase_key";
+} from "components/utils";
 import { cdavg, pdavg } from "../utils/calculate_difficulty_avg";
-import ExpandMoreIcon from "../assets/expand_more";
+import { AppBar } from "components";
 
 function Lists() {
     const [levels, setLevels] = useState<LevelInterface[]>([]);
@@ -34,7 +22,6 @@ function Lists() {
     const [plists, setPLists] = useState<PListInterface[]>([]);
     const [loading, setLoading] = useState<boolean>(true);
     const { level_list } = useParams<{ level_list: string }>();
-    const [open, setOpen] = useState(false);
     const [dimensions, setDimensions] = useState({
         width: window.innerWidth,
         height: window.innerHeight,
@@ -148,170 +135,24 @@ function Lists() {
     if (!flag) {
         return;
     }
+    type MenuListType = [string, [string, string][]][];
     return (
         <>
-            <Sheet
-                variant="solid"
-                color="neutral"
-                sx={{
-                    top: 0,
-                    zIndex: 1100,
-                    width: "100%",
-                    height: "64px",
-                    px: 2,
-                    display: "flex",
-                    alignItems: "center",
-                    borderBottom: "1.5px solid #bcbfb6",
-                    borderColor: "divider",
-                    bgcolor: "#f6f8fa",
-                }}
-            >
-                <Stack direction="row" alignItems="center" spacing={1} sx={{ width: "100%" }}>
-                    <IconButton
-                        variant="outlined"
-                        color="neutral"
-                        size="md"
-                        onClick={() => setOpen(true)}
-                    >
-                        <MenuIcon />
-                    </IconButton>
-                    <Drawer open={open} onClose={() => setOpen(false)} size="sm">
-                        <ModalClose />
-                        <DialogTitle>
-                            <Box>
-                                <IconButton
-                                    sx={{
-                                        width: "35px",
-                                        height: "35px",
-                                        "& svg": {
-                                            fontSize: "30px",
-                                        },
-                                    }}
-                                    component="a"
-                                    href="/"
-                                >
-                                    <GFFIcon />
-                                </IconButton>
-                            </Box>
-                        </DialogTitle>
-                        <br />
-                        <Box role="presentation" sx={{ p: 1 }}>
-                            {data.map((text, index) => (
-                                <React.Fragment key={`map-group-${index}`}>
-                                    <List>
-                                        <ListItem key={text[0][0]}>
-                                            <Typography sx={{ fontWeight: "lg" }}>
-                                                {text[0][1]}
-                                            </Typography>
-                                        </ListItem>
-                                        {text.slice(1).map((text_data) => (
-                                            <ListItem key={text_data[0]}>
-                                                <ListItemButton
-                                                    component="a"
-                                                    onClick={() => {
-                                                        setOpen(false);
-                                                    }}
-                                                    href={"/gff/#/lists/" + text_data[0]}
-                                                >
-                                                    {text_data[1]}
-                                                </ListItemButton>
-                                            </ListItem>
-                                        ))}
-                                    </List>
-                                    <Divider />
-                                </React.Fragment>
-                            ))}
-                            <List>
-                                <ListItem>
-                                    <Typography sx={{ fontWeight: "lg" }}>모든 기능</Typography>
-                                </ListItem>
-                                <ListItem>
-                                    <ListItemButton
-                                        component="a"
-                                        onClick={() => {
-                                            setOpen(false);
-                                        }}
-                                        href={"/gff/#/lists/"}
-                                    >
-                                        리스트 목록
-                                    </ListItemButton>
-                                </ListItem>
-                                <ListItem>
-                                    <ListItemButton
-                                        component="a"
-                                        onClick={() => {
-                                            setOpen(false);
-                                        }}
-                                        href={"/gff/#/levels/"}
-                                    >
-                                        레벨 검색하기
-                                    </ListItemButton>
-                                </ListItem>
-                                <ListItem>
-                                    <ListItemButton
-                                        component="a"
-                                        onClick={() => {
-                                            setOpen(false);
-                                        }}
-                                        href={"/gff/#/upload/"}
-                                    >
-                                        레벨 업로드하기
-                                    </ListItemButton>
-                                </ListItem>
-                            </List>
-                            <Divider />
-                            <List>
-                                <ListItem>
-                                    <Typography sx={{ fontWeight: "lg" }}>공통 기능</Typography>
-                                </ListItem>
-                                <ListItemButton
-                                    component="a"
-                                    onClick={() => {
-                                        setOpen(false);
-                                    }}
-                                    href="/#/logout/"
-                                >
-                                    로그아웃
-                                </ListItemButton>
-                            </List>
-                        </Box>
-                    </Drawer>
-                    <IconButton variant="plain" size="md" component="a" href="/">
-                        <GFFIcon />
-                    </IconButton>
-                    <Divider orientation="vertical" />
-                    <Button variant="plain" color="neutral" component="a" href="/gff/">
-                        GFF
-                    </Button>
-                    <Typography sx={{ transform: "rotate(270deg)" }}>
-                        <ExpandMoreIcon />
-                    </Typography>
-                    <Button variant="plain" color="neutral" component="a" href="/gff/#/lists">
-                        List
-                    </Button>
-                    <Typography sx={{ transform: "rotate(270deg)" }}>
-                        <ExpandMoreIcon />
-                    </Typography>
-                    <Button
-                        variant="plain"
-                        color="neutral"
-                        component="a"
-                        href={`/gff/#/lists/${level_list}`}
-                    >
-                        {level_list}
-                    </Button>
-                </Stack>
-                <Stack
-                    direction="row-reverse"
-                    alignItems="center"
-                    spacing={2}
-                    sx={{ width: "100%" }}
-                >
-                    <Button variant="plain" color="neutral" component="a" href="/#/logout/">
-                        Log Out
-                    </Button>
-                </Stack>
-            </Sheet>
+            <AppBar
+                link={[["GFF", "/gff/"], ["List", "/gff/#/lists/"], [level_list, `/gff/#/lists/${level_list}/`]]}
+                list={[...data.map((text) => [
+                    text[0][1], text.slice(1).map(
+                        (text_data) => [text_data[1], `/gff/#/lists/${text_data[0]}/`]
+                    )
+                ]), [
+                    "GFF", [
+                        ["리스트 목록", "/gff/#/lists/"],
+                        ["레벨 검색하기", "/gff/#/levels/"],
+                        ["레벨 업로드", "/gff/#/upload/"]
+                    ]
+                ]] as MenuListType}
+                content={["GFF", "/gff/"]}
+            />
             {lists
                 .find((item) => item.name === level_list)
                 ?.levels.map((text, index) => {

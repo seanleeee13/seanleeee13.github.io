@@ -4,31 +4,19 @@ import accordionSummaryClasses from "@mui/joy/AccordionSummary/accordionSummaryC
 import AccordionDetails from "@mui/joy/AccordionDetails";
 import AccordionGroup from "@mui/joy/AccordionGroup";
 import Typography from "@mui/joy/Typography";
-import ExpandMoreIcon from "../assets/expand_more";
-import MenuIcon from "../assets/menu";
-import GFFIcon from "../assets/gff";
 import Link from "@mui/joy/Link";
 import Stack from "@mui/joy/Stack";
-import Sheet from "@mui/joy/Sheet";
-import IconButton from "@mui/joy/IconButton";
 import Button from "@mui/joy/Button";
-import Drawer from "@mui/joy/Drawer";
-import Box from "@mui/joy/Box";
-import List from "@mui/joy/List";
-import ListItem from "@mui/joy/ListItem";
-import ListItemButton from "@mui/joy/ListItemButton";
-import Divider from "@mui/joy/Divider";
-import ModalClose from "@mui/joy/ModalClose";
 import CircularProgress from "@mui/joy/CircularProgress";
-import DialogTitle from "@mui/joy/DialogTitle";
-import React, { useState, useEffect } from "react";
-import { supabase, type ListInterface, type PListInterface } from "../utils/supabase_key";
+import { useState, useEffect } from "react";
+import { supabase, type ListInterface, type PListInterface } from "components/utils";
+import { ExpandMoreIcon } from "components/assets";
+import { AppBar } from "components";
 
 function Home() {
     const [lists, setLists] = useState<ListInterface[]>([]);
     const [plists, setPLists] = useState<PListInterface[]>([]);
     const [loading, setLoading] = useState<boolean>(true);
-    const [open, setOpen] = useState<boolean>(false);
     useEffect(() => {
         const fetchTableData = async () => {
             try {
@@ -78,153 +66,24 @@ function Home() {
             </>
         );
     }
+    type MenuListType = [string, [string, string][]][];
     return (
         <>
-            <Sheet
-                variant="solid"
-                color="neutral"
-                sx={{
-                    top: 0,
-                    zIndex: 1100,
-                    width: "100%",
-                    height: "64px",
-                    px: 2,
-                    display: "flex",
-                    alignItems: "center",
-                    borderBottom: "1.5px solid #bcbfb6",
-                    borderColor: "divider",
-                    bgcolor: "#f6f8fa",
-                }}
-            >
-                <Stack direction="row" alignItems="center" spacing={1} sx={{ width: "100%" }}>
-                    <IconButton
-                        variant="outlined"
-                        color="neutral"
-                        size="md"
-                        onClick={() => setOpen(true)}
-                    >
-                        <MenuIcon />
-                    </IconButton>
-                    <Drawer open={open} onClose={() => setOpen(false)} size="sm">
-                        <ModalClose />
-                        <DialogTitle>
-                            <Box>
-                                <IconButton
-                                    sx={{
-                                        width: "35px",
-                                        height: "35px",
-                                        "& svg": {
-                                            fontSize: "30px",
-                                        },
-                                    }}
-                                    component="a"
-                                    href="/"
-                                >
-                                    <GFFIcon />
-                                </IconButton>
-                            </Box>
-                        </DialogTitle>
-                        <br />
-                        <Box role="presentation" sx={{ p: 1 }}>
-                            {data.map((text, index) => (
-                                <React.Fragment key={`map-group-${index}`}>
-                                    <List>
-                                        <ListItem key={text[0][0]}>
-                                            <Typography sx={{ fontWeight: "lg" }}>
-                                                {text[0][1]}
-                                            </Typography>
-                                        </ListItem>
-                                        {text.slice(1).map((text_data) => (
-                                            <ListItem key={text_data[0]}>
-                                                <ListItemButton
-                                                    component="a"
-                                                    onClick={() => {
-                                                        setOpen(false);
-                                                    }}
-                                                    href={"/gff/#/lists/" + text_data[0]}
-                                                >
-                                                    {text_data[1]}
-                                                </ListItemButton>
-                                            </ListItem>
-                                        ))}
-                                    </List>
-                                    <Divider />
-                                </React.Fragment>
-                            ))}
-                            <List>
-                                <ListItem>
-                                    <Typography sx={{ fontWeight: "lg" }}>모든 기능</Typography>
-                                </ListItem>
-                                <ListItem>
-                                    <ListItemButton
-                                        component="a"
-                                        onClick={() => {
-                                            setOpen(false);
-                                        }}
-                                        href={"/gff/#/lists/"}
-                                    >
-                                        리스트 목록
-                                    </ListItemButton>
-                                </ListItem>
-                                <ListItem>
-                                    <ListItemButton
-                                        component="a"
-                                        onClick={() => {
-                                            setOpen(false);
-                                        }}
-                                        href={"/gff/#/levels/"}
-                                    >
-                                        레벨 검색하기
-                                    </ListItemButton>
-                                </ListItem>
-                                <ListItem>
-                                    <ListItemButton
-                                        component="a"
-                                        onClick={() => {
-                                            setOpen(false);
-                                        }}
-                                        href={"/gff/#/upload/"}
-                                    >
-                                        레벨 업로드하기
-                                    </ListItemButton>
-                                </ListItem>
-                            </List>
-                            <Divider />
-                            <List>
-                                <ListItem>
-                                    <Typography sx={{ fontWeight: "lg" }}>공통 기능</Typography>
-                                </ListItem>
-                                <ListItemButton
-                                    component="a"
-                                    onClick={() => {
-                                        setOpen(false);
-                                    }}
-                                    href="/#/logout/"
-                                >
-                                    로그아웃
-                                </ListItemButton>
-                            </List>
-                        </Box>
-                    </Drawer>
-                    <IconButton variant="plain" size="md" component="a" href="/">
-                        <GFFIcon />
-                    </IconButton>
-                    <Divider orientation="vertical" />
-                    <Button variant="plain" color="neutral" component="a" href="/gff/">
-                        GFF
-                    </Button>
-                </Stack>
-                <Stack
-                    direction="row-reverse"
-                    alignItems="center"
-                    spacing={2}
-                    sx={{ width: "100%" }}
-                >
-                    <Button variant="plain" color="neutral" component="a" href="/#/logout/">
-                        Log Out
-                    </Button>
-                </Stack>
-            </Sheet>
+            <AppBar
+                link={[["GFF", "/gff/"]]}
+                list={[...data.map((text) => [
+                    text[0][1], text.slice(1).map(
+                        (text_data) => [text_data[1], `/gff/#/lists/${text_data[0]}/`]
+                    )
+                ]), [
+                    "GFF", [
+                        ["리스트 목록", "/gff/#/lists/"],
+                        ["레벨 검색하기", "/gff/#/levels/"],
+                        ["레벨 업로드", "/gff/#/upload/"]
+                    ]
+                ]] as MenuListType}
+                content={["GFF", "/gff/"]}
+            />
             <Stack sx={{ p: 4, mx: "auto", my: 5, maxWidth: 1000 }} spacing={3}>
                 <Typography level="h1">Geometry Dash Friend Forum / GFF</Typography>
                 <Typography level="h3">1. 리스트 목록</Typography>

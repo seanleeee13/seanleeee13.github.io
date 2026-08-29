@@ -1,0 +1,33 @@
+{
+    "name": "components",
+    "version": "1.0.0",
+    "private": true,
+    "type": "module",
+    "main": "./src/index.tsx",
+    "exports": {
+        ".": "./src/index.tsx",
+        "./assets": "./src/assets/index.tsx",
+        "./utils": "./src/utils/index.ts",
+        "./*": "./src/*"
+    },
+    "scripts": {
+        "lint": "oxlint",
+        "format": "oxfmt --write ."
+    },
+    "dependencies": {
+        "oxfmt": "^0.64.0",
+        "oxlint": "^1.79.0"
+    },
+    "devDependencies": {
+        "@types/react": "^19.2.18",
+        "@types/react-dom": "^19.2.4"
+    },
+    "peerDependencies": {
+        "@emotion/react": "^11.14.0",
+        "@emotion/styled": "^11.14.1",
+        "@mui/joy": "^5.0.0-beta.52",
+        "@supabase/supabase-js": "^2.112.3",
+        "react": "^19.2.7",
+        "react-dom": "^19.2.7"
+    }
+}

@@ -1,35 +1,23 @@
 import Typography from "@mui/joy/Typography";
 import Button from "@mui/joy/Button";
-import MenuIcon from "../assets/menu";
-import GFFIcon from "../assets/gff";
 import Stack from "@mui/joy/Stack";
-import Sheet from "@mui/joy/Sheet";
-import IconButton from "@mui/joy/IconButton";
-import Drawer from "@mui/joy/Drawer";
 import Box from "@mui/joy/Box";
-import List from "@mui/joy/List";
-import ListItemButton from "@mui/joy/ListItemButton";
-import ModalClose from "@mui/joy/ModalClose";
-import DialogTitle from "@mui/joy/DialogTitle";
 import { useState, useEffect, useRef } from "react";
-import { supabase } from "../utils/supabase_key";
 import { signUpWithEmail, loginWithGitHub } from "../utils/login.tsx";
 import Divider from "@mui/joy/Divider";
 import FormControl from "@mui/joy/FormControl";
 import FormHelperText from "@mui/joy/FormHelperText";
 import Card from "@mui/joy/Card";
 import { useNavigate, useSearchParams } from "react-router-dom";
-import GithubIcon from "../assets/github.tsx";
 import Input from "@mui/joy/Input";
 import Link from "@mui/joy/Link";
 import Snackbar from "@mui/joy/Snackbar";
-
-function getQueryURL(link: string) {
-    return `${link}${window.location.hash.includes("?") ? "?" + window.location.hash.split("?")[1] : window.location.search === "" || window.location.search === "?" ? "/" : window.location.search}`;
-}
+import { GetLoggedIn, query } from "components/utils";
+import { AppBar } from "components";
+import { usable } from "../utils/contents.ts";
+import { GithubIcon } from "components/assets";
 
 function SignUp() {
-    const [open, setOpen] = useState(false);
     const [openSnackbar, setOpenSnackbar] = useState(false);
     const [loading, setLoading] = useState(true);
     const navigate = useNavigate();
@@ -89,10 +77,7 @@ function SignUp() {
     redirectRef.current = redirectURL;
     useEffect(() => {
         const checkLoggedUser = async () => {
-            const {
-                data: { session },
-            } = await supabase.auth.getSession();
-            if (session) {
+            if (await GetLoggedIn()) {
                 navigate(redirectRef.current);
             }
             setLoading(false);
@@ -104,111 +89,13 @@ function SignUp() {
     }
     return (
         <>
-            <Sheet
-                variant="solid"
-                color="neutral"
-                sx={{
-                    top: 0,
-                    zIndex: 1100,
-                    width: "100%",
-                    height: "64px",
-                    px: 2,
-                    display: "flex",
-                    alignItems: "center",
-                    borderBottom: "1.5px solid #bcbfb6",
-                    borderColor: "divider",
-                    bgcolor: "#f6f8fa",
-                }}
-            >
-                <Stack direction="row" alignItems="center" spacing={1} sx={{ width: "100%" }}>
-                    <IconButton
-                        variant="outlined"
-                        color="neutral"
-                        size="md"
-                        onClick={() => setOpen(true)}
-                    >
-                        <MenuIcon />
-                    </IconButton>
-                    <Drawer open={open} onClose={() => setOpen(false)} size="sm">
-                        <ModalClose />
-                        <DialogTitle>
-                            <Box>
-                                <IconButton
-                                    sx={{
-                                        width: "35px",
-                                        height: "35px",
-                                        "& svg": {
-                                            fontSize: "30px",
-                                        },
-                                    }}
-                                    component="a"
-                                    href="/"
-                                >
-                                    <GFFIcon />
-                                </IconButton>
-                            </Box>
-                        </DialogTitle>
-                        <br />
-                        <Box role="presentation" sx={{ p: 1 }}>
-                            <List>
-                                <ListItemButton
-                                    component="a"
-                                    onClick={() => {
-                                        setOpen(false);
-                                    }}
-                                    href={getQueryURL("/#/login")}
-                                >
-                                    Log In
-                                </ListItemButton>
-                                <ListItemButton
-                                    component="a"
-                                    onClick={() => {
-                                        setOpen(false);
-                                    }}
-                                    href={getQueryURL("/#/signup")}
-                                >
-                                    Sign Up
-                                </ListItemButton>
-                            </List>
-                        </Box>
-                    </Drawer>
-                    <IconButton variant="plain" size="md" component="a" href="/">
-                        <GFFIcon />
-                    </IconButton>
-                    <Divider orientation="vertical" />
-                    <Button
-                        variant="plain"
-                        color="neutral"
-                        component="a"
-                        href={getQueryURL("/#/signup")}
-                    >
-                        Sign Up
-                    </Button>
-                </Stack>
-                <Stack
-                    direction="row-reverse"
-                    alignItems="center"
-                    spacing={2}
-                    sx={{ width: "100%" }}
-                >
-                    <Button
-                        variant="solid"
-                        color="neutral"
-                        component="a"
-                        href={getQueryURL("/#/signup")}
-                    >
-                        Sign Up
-                    </Button>
-                    <Button
-                        variant="outlined"
-                        color="neutral"
-                        component="a"
-                        href={getQueryURL("/#/login")}
-                    >
-                        Log In
-                    </Button>
-                </Stack>
-            </Sheet>
+            <AppBar
+                link={[["Sign Up", "/#/signup/"]]}
+                list={[
+                    ["컨텐츠", usable.map(([id, name]) => [name, `/${id}/`])],
+                    ["공통 기능", [["Sign Up", "q:/#/signup/"], ["Log In", "q:/#/login/"]]],
+                ]}
+            />
             <Stack
                 justifyContent="center"
                 alignItems="center"
@@ -231,7 +118,7 @@ function SignUp() {
                         borderColor: "neutral.outlinedBorder",
                         transform: `scale(${currentScale})`,
                         transformOrigin: "center",
-                        transition: "transform 0.1s ease-out",
+                        transition: "transform 0s ease-out",
                         flexShrink: 0,
                     }}
                 >
@@ -322,7 +209,7 @@ function SignUp() {
                         </Button>
                         <Typography level="title-sm">
                             Already have an account?{" "}
-                            <Link component="a" href={getQueryURL("/#/login")}>
+                            <Link component="a" href={"/#/login" + query}>
                                 Log In
                             </Link>
                         </Typography>

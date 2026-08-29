@@ -16,6 +16,7 @@
         "@fontsource-variable/mona-sans": "^5.2.8",
         "@mui/joy": "^5.0.0-beta.52",
         "@supabase/supabase-js": "^2.112.3",
+        "components": "workspace:*",
         "react": "^19.2.7",
         "react-dom": "^19.2.7",
         "react-router-dom": "^7.18.1"
@@ -24,10 +25,10 @@
         "@types/node": "^24.13.2",
         "@types/react": "^19.2.17",
         "@types/react-dom": "^19.2.3",
-        "@vitejs/plugin-react": "^6.0.5",
-        "oxfmt": "^0.63.0",
-        "oxlint": "^1.78.0",
+        "@vitejs/plugin-react": "^6.1.0",
+        "oxfmt": "^0.64.0",
+        "oxlint": "^1.79.0",
         "typescript": "~7.0.2",
-        "vite": "^8.2.1"
+        "vite": "^8.2.2"
     }
 }

@@ -1,6 +1,6 @@
 import SvgIcon from "@mui/joy/SvgIcon";
 
-function GFFIcon() {
+function ReactIcon() {
     return (
         <SvgIcon viewBox="0 0 256 228">
             <path
@@ -11,4 +11,4 @@ function GFFIcon() {
     );
 }
 
-export default GFFIcon;
+export default ReactIcon;
