@@ -7,17 +7,17 @@ export interface AIRequest {
     fen: string;
 }
 
-export interface AIResponce {
+export interface AIResponse {
     move: string | null;
 }
 
-const ctx: WorkerGlobalScope & typeof globalThis = self as any;
+const ctx: WorkerGlobalScope & typeof globalThis = (self as unknown) as (WorkerGlobalScope & typeof globalThis);
 
-ctx.onmessage = (event: MessageEvent<AIRequest>) => {
+ctx.addEventListener("message", (event: MessageEvent<AIRequest>) => {
     const { aiType, fen } = event.data;
     if (!Object.keys(AIFuncList).includes(aiType)) {
-        ctx.postMessage({ move: null } as AIResponce);
+        ctx.postMessage({ move: null } as AIResponse, ctx.location.origin);
     }
     const move = AIFuncList[aiType as keyof typeof AIFuncList](fen);
-    ctx.postMessage({ move } as AIResponce);
-};
+    ctx.postMessage({ move } as AIResponse, ctx.location.origin);
+});

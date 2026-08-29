@@ -37,7 +37,7 @@ function Upload() {
         verified: true,
         progress: null as null | number,
     });
-    const [levelUploadErrorData, __] = useState({
+    const [levelUploadErrorData, ___] = useState({
         id: false,
         name: false,
         host: false,
@@ -211,7 +211,7 @@ function Upload() {
                                                 <Typography textColor="red">*</Typography>
                                             }
                                             value={levelUploadInputData.host}
-                                            onChange={(_, newValue) => {
+                                            onChange={(__, newValue) => {
                                                 setLevelUploadInputData({
                                                     ...levelUploadInputData,
                                                     host: newValue as string,
@@ -232,7 +232,7 @@ function Upload() {
                                                 <Typography textColor="red">*</Typography>
                                             }
                                             value={levelUploadInputData.publish}
-                                            onChange={(_, newValue) => {
+                                            onChange={(__, newValue) => {
                                                 setLevelUploadInputData({
                                                     ...levelUploadInputData,
                                                     publish: newValue as string,
@@ -251,7 +251,7 @@ function Upload() {
                                             placeholder="Co-creators"
                                             multiple
                                             value={levelUploadInputData.co_creators}
-                                            onChange={(_, newValue) => {
+                                            onChange={(__, newValue) => {
                                                 setLevelUploadInputData({
                                                     ...levelUploadInputData,
                                                     co_creators: newValue as string[],
@@ -275,7 +275,7 @@ function Upload() {
                                                 <Typography textColor="red">*</Typography>
                                             }
                                             value={levelUploadInputData.verifier}
-                                            onChange={(_, newValue) => {
+                                            onChange={(__, newValue) => {
                                                 setLevelUploadInputData({
                                                     ...levelUploadInputData,
                                                     verifier: newValue as string,

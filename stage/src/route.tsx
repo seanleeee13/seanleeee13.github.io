@@ -134,19 +134,7 @@ function Authenticate() {
 }
 
 function Router() {
-    const [loading, setLoading] = useState(true);
-    const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
-    useEffect(() => {
-        const isUnlocked = localStorage.getItem("stage_page_unlocked") === "true";
-        if (isUnlocked) {
-            setIsAuthenticated(true);
-        }
-        setLoading(false);
-    }, []);
-    if (loading) {
-        return null;
-    }
-    if (!isAuthenticated) {
+    if (localStorage.getItem("stage_page_unlocked") !== "true") {
         return <Authenticate />;
     }
     return <RouterProvider router={router} />;

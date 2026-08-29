@@ -2,7 +2,7 @@ import Typography from "@mui/joy/Typography";
 import Stack from "@mui/joy/Stack";
 import Button from "@mui/joy/Button";
 import Box from "@mui/joy/Box";
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import Radio from "@mui/joy/Radio";
 import FormControl from "@mui/joy/FormControl";
@@ -20,7 +20,6 @@ import type { Config } from "@lichess-org/chessground/config";
 import { Chess, type Square } from "chess.js";
 import { type Api } from "@lichess-org/chessground/api";
 import { AIList } from "../utils/ai";
-import AIWorker from "../core/core.worker.ts?worker";
 
 function PlaySelect() {
     const [color, setColor] = useState("random");
@@ -89,7 +88,7 @@ function PlaySelect() {
                         >
                             <Option value="player">Player</Option>
                             {Object.entries(AIList).map(([id, name]) => (
-                                <Option value={id}>{name}</Option>
+                                <Option value={id} key={`Option1-${id}`}>{name}</Option>
                             ))}
                         </Select>
                     </Stack>
@@ -106,7 +105,7 @@ function PlaySelect() {
                         >
                             <Option value="player">Player</Option>
                             {Object.entries(AIList).map(([id, name]) => (
-                                <Option value={id}>{name}</Option>
+                                <Option value={id} key={`Option2-${id}`}>{name}</Option>
                             ))}
                         </Select>
                     </Stack>
@@ -121,6 +120,11 @@ function PlaySelect() {
         </Box>
     );
 }
+
+const worker = new Worker(
+    new URL("../core/core.worker.ts", import.meta.url),
+    { type: "module" }
+);
 
 function PlayChess() {
     const [searchParams, _] = useSearchParams();
@@ -157,44 +161,19 @@ function PlayChess() {
             capture: Capture,
             gameEnd: GameEnd
         };
-    });
+    }, []);
     useEffect(() => {
         let timerId: number | null = null;
         if (white !== "player" && black === "player") {
-            worker.postMessage({ aiType: ai, fen: chessRef.current.fen() });
+            worker.postMessage({ aiType: ai, fen: chessRef.current.fen() }, {});
         }
         return () => {
             if (timerId) {
                 clearTimeout(timerId);
             }
         };
-    }, []);
-    useEffect(() => {
-        const lightTile = "f0dab7";
-        const darkTile = "b68863";
-        const svgRaw = `<svg xmlns="http://www.w3.org/2000/svg" xmlns:x="http://www.w3.org/1999/xlink" viewBox="0 0 8 8" shape-rendering="crispEdges"><g id="a"><g id="b"><g id="c"><g id="d"><rect width="1" height="1" id="e" opacity="0" /><use x="1" y="1" href="#e" x:href="#e" /><rect y="1" width="1" height="1" id="f" fill="#${darkTile}" /><use x="1" y="-1" href="#f" x:href="#f" /></g><use x="2" href="#d" x:href="#d" /></g><use x="4" href="#c" x:href="#c" /></g><use y="2" href="#b" x:href="#b" /></g><use y="4" href="#a" x:href="#a" /></svg>`;
-        const customSvgUrl = `url("data:image/svg+xml,${encodeURIComponent(svgRaw)}")`;
-        const styleTag = document.createElement("style");
-        styleTag.textContent = `cg-board { background-color: #${lightTile} !important; background-image: ${customSvgUrl} !important; }`;
-        document.head.appendChild(styleTag);
-        if (boardRef.current) {
-            groundRef.current = Chessground(boardRef.current, config);
-        }
-        return () => {
-            styleTag.remove();
-            if (groundRef.current) {
-                groundRef.current.destroy();
-            }
-        };
-    }, []);
-    if (ai && !Object.keys(AIList).includes(ai)) {
-        return null;
-    }
-    if (white === "player" && black === "player") {
-        return "WHAT"
-    }
-    const worker = new AIWorker();
-    const getValidMoves = () => {
+    }, [white, black, ai]);
+    const getValidMoves = useCallback(() => {
         const dests = new Map<Square, Square[]>();
         const moves = chessRef.current.moves({ verbose: true });
         moves.forEach(m => {
@@ -204,8 +183,8 @@ function PlayChess() {
             dests.get(m.from)!.push(m.to);
         });
         return dests;
-    };
-    const getValidPremoves = () => {
+    }, []);
+    const getValidPremoves = useCallback(() => {
         const premoveDests = new Map<Square, Square[]>();
         const board = chessRef.current.board();
         for (let r = 0; r < 8; r++) {
@@ -227,8 +206,102 @@ function PlayChess() {
             }
         }
         return premoveDests;
-    };
-    worker.onmessage = (e) => {
+    }, []);
+    useEffect(() => {
+        const lightTile = "f0dab7";
+        const darkTile = "b68863";
+        const svgRaw = `<svg xmlns="http://www.w3.org/2000/svg" xmlns:x="http://www.w3.org/1999/xlink" viewBox="0 0 8 8" shape-rendering="crispEdges"><g id="a"><g id="b"><g id="c"><g id="d"><rect width="1" height="1" id="e" opacity="0" /><use x="1" y="1" href="#e" x:href="#e" /><rect y="1" width="1" height="1" id="f" fill="#${darkTile}" /><use x="1" y="-1" href="#f" x:href="#f" /></g><use x="2" href="#d" x:href="#d" /></g><use x="4" href="#c" x:href="#c" /></g><use y="2" href="#b" x:href="#b" /></g><use y="4" href="#a" x:href="#a" /></svg>`;
+        const customSvgUrl = `url("data:image/svg+xml,${encodeURIComponent(svgRaw)}")`;
+        const styleTag = document.createElement("style");
+        styleTag.textContent = `cg-board { background-color: #${lightTile} !important; background-image: ${customSvgUrl} !important; }`;
+        document.head.appendChild(styleTag);
+        const config: Config = {
+            coordinates: false,
+            turnColor: "white",
+            autoCastle: true,
+            movable: {
+                color: player === "none" ? undefined : player === "w" ? "white" : "black",
+                free: false,
+                dests: getValidMoves(),
+                events: {
+                    after: async (orig, dest) => {
+                        const moves = chessRef.current.moves({ verbose: true });
+                        const isPromotionMove = moves.some(m => m.from === orig && m.to === dest && m.promotion);
+                        if (isPromotionMove) {
+                            setPromotionDialog(true);
+                            setPromotionWhite(chessRef.current.turn() == "w");
+                            setPromotionFile(dest[0].charCodeAt(0) - 97);
+                            setPromotion({ from: orig as Square, to: dest as Square });
+                            return;
+                        }
+                        const moveResult = chessRef.current.move({ from: orig as Square, to: dest as Square });
+                        groundRef.current?.set({
+                            movable: {
+                                dests: getValidMoves()
+                            },
+                            premovable: {
+                                customDests: getValidPremoves()
+                            },
+                            check: chessRef.current.isCheck(),
+                            fen: chessRef.current.fen()
+                        });
+                        if (audioRefs.current) {
+                            if (moveResult.captured) {
+                                audioRefs.current.capture.currentTime = 0;
+                                audioRefs.current.capture.play().catch((err) => {
+                                    console.log("Audio error:", err);
+                                });
+                            } else {
+                                audioRefs.current.move.currentTime = 0;
+                                audioRefs.current.move.play().catch((err) => {
+                                    console.log("Audio error:", err);
+                                });
+                            }
+                        }
+                        if (chessRef.current.isGameOver()) {
+                            groundRef.current?.set({
+                                viewOnly: true
+                            });
+                            setTimeout(() => {
+                                if (audioRefs.current) {
+                                    audioRefs.current.gameEnd.currentTime = 0;
+                                    audioRefs.current.gameEnd.play().catch((err) => {
+                                        console.log("Audio error:", err);
+                                    });
+                                }
+                            }, 100);
+                            return;
+                        }
+                        if (!ai) {
+                            return;
+                        }
+                        worker.postMessage({ aiType: ai, fen: chessRef.current.fen() }, {});
+                    }
+                }
+            },
+            premovable: {
+                enabled: true,
+                showDests: false,
+                castle: true,
+                customDests: getValidPremoves(),
+                additionalPremoveRequirements: () => {
+                    return true;
+                }
+            },
+            check: false,
+            orientation: player === "b" ? "black" : "white"
+        };
+        if (boardRef.current) {
+            groundRef.current = Chessground(boardRef.current, config);
+        }
+        return () => {
+            styleTag.remove();
+            if (groundRef.current) {
+                groundRef.current.destroy();
+            }
+        };
+    }, [groundRef, getValidMoves, player, getValidPremoves, ai]);
+    const MoveAI = useCallback((e: MessageEvent) => {
         const AIMove = e.data.move;
         if (!AIMove) {
             return;
@@ -287,83 +360,19 @@ function PlayChess() {
                 groundRef.current?.cancelPremove();
             }
         }
+    }, [getValidMoves, getValidPremoves]);
+    useEffect(() => {
+        worker.addEventListener("message", MoveAI);
+        return () => {
+            worker.removeEventListener("message", MoveAI);
+        };
+    }, [MoveAI]);
+    if (ai && !Object.keys(AIList).includes(ai)) {
+        return null;
     }
-    const config: Config = {
-        coordinates: false,
-        turnColor: "white",
-        autoCastle: true,
-        movable: {
-            color: player === "none" ? undefined : player === "w" ? "white" : "black",
-            free: false,
-            dests: getValidMoves(),
-            events: {
-                after: async (orig, dest) => {
-                    const moves = chessRef.current.moves({ verbose: true });
-                    const isPromotionMove = moves.some(m => m.from === orig && m.to === dest && m.promotion);
-                    if (isPromotionMove) {
-                        setPromotionDialog(true);
-                        setPromotionWhite(chessRef.current.turn() == "w");
-                        setPromotionFile(dest[0].charCodeAt(0) - 97);
-                        setPromotion({ from: orig as Square, to: dest as Square });
-                        return;
-                    }
-                    const moveResult = chessRef.current.move({ from: orig as Square, to: dest as Square });
-                    groundRef.current?.set({
-                        movable: {
-                            dests: getValidMoves()
-                        },
-                        premovable: {
-                            customDests: getValidPremoves()
-                        },
-                        check: chessRef.current.isCheck(),
-                        fen: chessRef.current.fen()
-                    });
-                    if (audioRefs.current) {
-                        if (moveResult.captured) {
-                            audioRefs.current.capture.currentTime = 0;
-                            audioRefs.current.capture.play().catch((err) => {
-                                console.log("Audio error:", err);
-                            });
-                        } else {
-                            audioRefs.current.move.currentTime = 0;
-                            audioRefs.current.move.play().catch((err) => {
-                                console.log("Audio error:", err);
-                            });
-                        }
-                    }
-                    if (chessRef.current.isGameOver()) {
-                        groundRef.current?.set({
-                            viewOnly: true
-                        });
-                        setTimeout(() => {
-                            if (audioRefs.current) {
-                                audioRefs.current.gameEnd.currentTime = 0;
-                                audioRefs.current.gameEnd.play().catch((err) => {
-                                    console.log("Audio error:", err);
-                                });
-                            }
-                        }, 100);
-                        return;
-                    }
-                    if (!ai) {
-                        return;
-                    }
-                    worker.postMessage({ aiType: ai, fen: chessRef.current.fen() });
-                }
-            }
-        },
-        premovable: {
-            enabled: true,
-            showDests: false,
-            castle: true,
-            customDests: getValidPremoves(),
-            additionalPremoveRequirements: () => {
-                return true;
-            }
-        },
-        check: false,
-        orientation: player === "b" ? "black" : "white"
-    };
+    if (white === "player" && black === "player") {
+        return "WHAT"
+    }
     const handlePromotionSelect = (piece: "q" | "n" | "r" | "b") => {
         if (!promotion) {
             return;
@@ -397,7 +406,7 @@ function PlayChess() {
             }
         }
         setPromotionDialog(false);
-        worker.postMessage({ aiType: ai, fen: chessRef.current.fen() });
+        worker.postMessage({ aiType: ai, fen: chessRef.current.fen() }, {});
     }
     return (
         <div style={{ display: "flex", flexWrap: "wrap" }}>

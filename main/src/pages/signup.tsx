@@ -74,7 +74,6 @@ function SignUp() {
         }
     };
     const redirectRef = useRef(redirectURL);
-    redirectRef.current = redirectURL;
     useEffect(() => {
         const checkLoggedUser = async () => {
             if (await GetLoggedIn()) {

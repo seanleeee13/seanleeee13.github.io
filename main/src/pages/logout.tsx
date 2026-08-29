@@ -1,9 +1,7 @@
 import { useEffect } from "react";
 import { supabase } from "components/utils";
-import { useNavigate } from "react-router-dom";
 
 function Logout() {
-    const navigate = useNavigate();
     useEffect(() => {
         const executeLogout = async () => {
             try {
@@ -11,11 +9,11 @@ function Logout() {
             } catch (error) {
                 console.error("Log Out Failed:", error);
             } finally {
-                navigate("/");
+                window.location.href = "/";
             }
         };
         executeLogout();
-    }, [navigate]);
+    }, []);
     return null;
 }
 

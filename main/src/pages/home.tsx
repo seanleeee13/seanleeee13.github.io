@@ -7,7 +7,6 @@ import ModalClose from "@mui/joy/ModalClose";
 import { useState, useEffect } from "react";
 import { GetLoggedIn, supabase, type UserInterface } from "components/utils";
 import { Card, Modal } from "@mui/joy";
-import { useNavigate } from "react-router-dom";
 import FormControl from "@mui/joy/FormControl";
 import FormHelperText from "@mui/joy/FormHelperText";
 import { AppBar } from "components";
@@ -20,7 +19,6 @@ function MyPage() {
     const [value, setValue] = useState("");
     const [error, setError] = useState(false);
     const [errorMessage, setErrorMessage] = useState("");
-    const navigate = useNavigate();
     const content = [...(users?.role ?? []), ...(users?.vrole ?? []), ...usable];
     useEffect(() => {
         const fetchTableData = async () => {
@@ -48,7 +46,7 @@ function MyPage() {
             }
         };
         fetchTableData();
-    }, [navigate]);
+    }, []);
     if (loading) {
         return null;
     }
@@ -326,14 +324,13 @@ function IntroPage() {
 function Home() {
     const [loading, setLoading] = useState(true);
     const [hasSession, setHasSession] = useState(false);
-    const navigate = useNavigate();
     useEffect(() => {
         const checkLoggedUser = async () => {
             setHasSession(await GetLoggedIn());
             setLoading(false);
         };
         checkLoggedUser();
-    }, [navigate]);
+    }, []);
     if (loading) {
         return null;
     }
