@@ -19,7 +19,7 @@ import "@lichess-org/chessground/assets/chessground.cburnett.css";
 import type { Config } from "@lichess-org/chessground/config";
 import { Chess, type Square } from "chess.js";
 import { type Api } from "@lichess-org/chessground/api";
-import { AIList, AIFuncList } from "../utils/ai";
+import { AIList } from "../utils/ai";
 import AIWorker from "../core/core.worker.ts?worker";
 
 function PlaySelect() {
