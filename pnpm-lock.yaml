@@ -109,7 +109,7 @@ importers:
         specifier: ^8.2.2
         version: 8.2.2(@types/node@24.13.3)
 
-  main:
+  apps/main:
     dependencies:
       '@emotion/react':
         specifier: ^11.14.0
@@ -176,7 +176,7 @@ importers:
         specifier: ^8.2.2
         version: 8.2.2(@types/node@24.13.3)
 
-  something:
+  apps/something:
     dependencies:
       '@emotion/react':
         specifier: ^11.14.0
@@ -240,7 +240,7 @@ importers:
         specifier: ^8.2.2
         version: 8.2.2(@types/node@24.13.3)
 
-  stage:
+  apps/stage:
     dependencies:
       '@emotion/react':
         specifier: ^11.14.0
@@ -2908,3 +2908,4 @@ snapshots:
       fsevents: 2.3.3
 
   yaml@1.10.3: {}
+

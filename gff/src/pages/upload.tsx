@@ -22,7 +22,7 @@ import Checkbox from "@mui/joy/Checkbox";
 import { AppBar } from "components";
 
 function Upload() {
-    const [levels, setLevels] = useState<LevelInterface[]>([]);
+    const [_, setLevels] = useState<LevelInterface[]>([]);
     const [lists, setLists] = useState<ListInterface[]>([]);
     const [plists, setPLists] = useState<PListInterface[]>([]);
     const [users, setUsers] = useState<UserInterface | null>(null);
@@ -37,7 +37,7 @@ function Upload() {
         verified: true,
         progress: null as null | number,
     });
-    const [levelUploadErrorData, setLevelUploadErrorData] = useState({
+    const [levelUploadErrorData, __] = useState({
         id: false,
         name: false,
         host: false,

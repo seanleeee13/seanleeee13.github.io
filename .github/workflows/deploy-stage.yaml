@@ -7,13 +7,15 @@ on:
       - "stage/**"
       - "pnpm-lock.yaml"
       - ".github/workflows/deploy-stage.yaml"
+      - "apply-change"
 permissions:
-  contents: read
+  contents: write
   pages: write
   id-token: write
 concurrency:
-  group: "pages-stage"
-  cancel-in-progress: true
+  group: "pages-deploy"
+  cancel-in-progress: false
+  queue: max
 jobs:
   deploy:
     environment:
@@ -45,6 +47,7 @@ jobs:
         uses: peaceiris/actions-gh-pages@v4
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./main/dist
+          publish_dir: ./stage/dist
           publish_branch: gh-pages
           destination_dir: stage
+          keep_files: true
