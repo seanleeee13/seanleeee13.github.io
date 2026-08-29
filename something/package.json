@@ -21,7 +21,8 @@
         "components": "workspace:*",
         "react": "^19.2.7",
         "react-dom": "^19.2.7",
-        "react-router-dom": "^7.18.1"
+        "react-router-dom": "^7.18.1",
+        "ultrachess": "^1.4.0"
     },
     "devDependencies": {
         "@types/node": "^24.13.2",

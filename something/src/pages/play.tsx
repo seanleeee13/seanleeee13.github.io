@@ -19,11 +19,13 @@ import "@lichess-org/chessground/assets/chessground.cburnett.css";
 import type { Config } from "@lichess-org/chessground/config";
 import { Chess, type Square } from "chess.js";
 import { type Api } from "@lichess-org/chessground/api";
+import { AIList, AIFuncList } from "../utils/ai";
+import AIWorker from "../core/core.worker.ts?worker";
 
 function PlaySelect() {
     const [color, setColor] = useState("random");
     const [p1, setP1] = useState("player");
-    const [p2, setP2] = useState("greedytree.evaluator-5");
+    const [p2, setP2] = useState("k_hxnsxol-evaluator-5");
     const [_, setSearchParams] = useSearchParams();
     const handlePlay = () => {
         if (color === "" || p1 === "" || p2 === "") {
@@ -86,8 +88,9 @@ function PlaySelect() {
                             }}
                         >
                             <Option value="player">Player</Option>
-                            <Option value="something.ai-v4">Something.AI-v4</Option>
-                            <Option value="greedytree.evaluator-5">GreedyTree.Evaluator-5</Option>
+                            {Object.entries(AIList).map(([id, name]) => (
+                                <Option value={id}>{name}</Option>
+                            ))}
                         </Select>
                     </Stack>
                     <Stack spacing={1} direction="row" alignItems="center">
@@ -102,8 +105,9 @@ function PlaySelect() {
                             }}
                         >
                             <Option value="player">Player</Option>
-                            <Option value="something.ai-v4">Something.AI-v4</Option>
-                            <Option value="greedytree.evaluator-5">GreedyTree.Evaluator-5</Option>
+                            {Object.entries(AIList).map(([id, name]) => (
+                                <Option value={id}>{name}</Option>
+                            ))}
                         </Select>
                     </Stack>
                 </Stack>
@@ -123,6 +127,14 @@ function PlayChess() {
     const white = searchParams.get("white");
     const black = searchParams.get("black");
     const player = white === "player" ? "w" : black === "player" ? "b" : "none";
+    let ai = null;
+    if (player !== "none") {
+        if (player === "w") {
+            ai = black;
+        } else {
+            ai = white;
+        }
+    }
     const boardRef = useRef<HTMLDivElement>(null);
     const groundRef = useRef<Api>(null);
     const chessRef = useRef(new Chess());
@@ -146,6 +158,42 @@ function PlayChess() {
             gameEnd: GameEnd
         };
     });
+    useEffect(() => {
+        let timerId: number | null = null;
+        if (white !== "player" && black === "player") {
+            worker.postMessage({ aiType: ai, fen: chessRef.current.fen() });
+        }
+        return () => {
+            if (timerId) {
+                clearTimeout(timerId);
+            }
+        };
+    }, []);
+    useEffect(() => {
+        const lightTile = "f0dab7";
+        const darkTile = "b68863";
+        const svgRaw = `<svg xmlns="http://www.w3.org/2000/svg" xmlns:x="http://www.w3.org/1999/xlink" viewBox="0 0 8 8" shape-rendering="crispEdges"><g id="a"><g id="b"><g id="c"><g id="d"><rect width="1" height="1" id="e" opacity="0" /><use x="1" y="1" href="#e" x:href="#e" /><rect y="1" width="1" height="1" id="f" fill="#${darkTile}" /><use x="1" y="-1" href="#f" x:href="#f" /></g><use x="2" href="#d" x:href="#d" /></g><use x="4" href="#c" x:href="#c" /></g><use y="2" href="#b" x:href="#b" /></g><use y="4" href="#a" x:href="#a" /></svg>`;
+        const customSvgUrl = `url("data:image/svg+xml,${encodeURIComponent(svgRaw)}")`;
+        const styleTag = document.createElement("style");
+        styleTag.textContent = `cg-board { background-color: #${lightTile} !important; background-image: ${customSvgUrl} !important; }`;
+        document.head.appendChild(styleTag);
+        if (boardRef.current) {
+            groundRef.current = Chessground(boardRef.current, config);
+        }
+        return () => {
+            styleTag.remove();
+            if (groundRef.current) {
+                groundRef.current.destroy();
+            }
+        };
+    }, []);
+    if (ai && !Object.keys(AIList).includes(ai)) {
+        return null;
+    }
+    if (white === "player" && black === "player") {
+        return "WHAT"
+    }
+    const worker = new AIWorker();
     const getValidMoves = () => {
         const dests = new Map<Square, Square[]>();
         const moves = chessRef.current.moves({ verbose: true });
@@ -180,16 +228,13 @@ function PlayChess() {
         }
         return premoveDests;
     };
-    const moveAI = () => {
-        const moves = chessRef.current.moves({ verbose: true });
-        if (moves.length === 0) {
+    worker.onmessage = (e) => {
+        const AIMove = e.data.move;
+        if (!AIMove) {
             return;
         }
-        const randomMove = moves[Math.floor(Math.random() * moves.length)];
-        const AIMoveResult = chessRef.current.move({
-            from: randomMove.from, to: randomMove.to, promotion: randomMove.promotion
-        });
-        groundRef.current?.move(randomMove.from, randomMove.to);
+        const AIMoveResult = chessRef.current.move(AIMove);
+        groundRef.current?.move(AIMoveResult.from, AIMoveResult.to);
         groundRef.current?.set({
             turnColor: chessRef.current.turn() === "w" ? "white" : "black",
             movable: {
@@ -213,6 +258,20 @@ function PlayChess() {
                     console.log("Audio error:", err);
                 });
             }
+        }
+        if (chessRef.current.isGameOver()) {
+            groundRef.current?.set({
+                viewOnly: true
+            });
+            setTimeout(() => {
+                if (audioRefs.current) {
+                    audioRefs.current.gameEnd.currentTime = 0;
+                    audioRefs.current.gameEnd.play().catch((err) => {
+                        console.log("Audio error:", err);
+                    });
+                }
+            }, 100);
+            return;
         }
         const currentPremove = groundRef.current?.state.premovable.current;
         if (currentPremove) {
@@ -286,7 +345,10 @@ function PlayChess() {
                         }, 100);
                         return;
                     }
-                    setTimeout(moveAI, 1000);
+                    if (!ai) {
+                        return;
+                    }
+                    worker.postMessage({ aiType: ai, fen: chessRef.current.fen() });
                 }
             }
         },
@@ -297,34 +359,11 @@ function PlayChess() {
             customDests: getValidPremoves(),
             additionalPremoveRequirements: () => {
                 return true;
-            },
-            events: {
-                set: (orig, dest) => {
-                    console.log(orig, dest);
-                }
             }
         },
         check: false,
         orientation: player === "b" ? "black" : "white"
     };
-    useEffect(() => {
-        const lightTile = "f0dab7";
-        const darkTile = "b68863";
-        const svgRaw = `<svg xmlns="http://www.w3.org/2000/svg" xmlns:x="http://www.w3.org/1999/xlink" viewBox="0 0 8 8" shape-rendering="crispEdges"><g id="a"><g id="b"><g id="c"><g id="d"><rect width="1" height="1" id="e" opacity="0" /><use x="1" y="1" href="#e" x:href="#e" /><rect y="1" width="1" height="1" id="f" fill="#${darkTile}" /><use x="1" y="-1" href="#f" x:href="#f" /></g><use x="2" href="#d" x:href="#d" /></g><use x="4" href="#c" x:href="#c" /></g><use y="2" href="#b" x:href="#b" /></g><use y="4" href="#a" x:href="#a" /></svg>`;
-        const customSvgUrl = `url("data:image/svg+xml,${encodeURIComponent(svgRaw)}")`;
-        const styleTag = document.createElement("style");
-        styleTag.textContent = `cg-board { background-color: #${lightTile} !important; background-image: ${customSvgUrl} !important; }`;
-        document.head.appendChild(styleTag);
-        if (boardRef.current) {
-            groundRef.current = Chessground(boardRef.current, config);
-        }
-        return () => {
-            styleTag.remove();
-            if (groundRef.current) {
-                groundRef.current.destroy();
-            }
-        };
-    }, []);
     const handlePromotionSelect = (piece: "q" | "n" | "r" | "b") => {
         if (!promotion) {
             return;
@@ -358,21 +397,7 @@ function PlayChess() {
             }
         }
         setPromotionDialog(false);
-        setTimeout(moveAI, 1000);
-    }
-    useEffect(() => {
-        let timerId: number | null = null;
-        if (white !== "player" && black === "player") {
-            timerId = setTimeout(moveAI, 1000);
-        }
-        return () => {
-            if (timerId) {
-                clearTimeout(timerId);
-            }
-        };
-    }, []);
-    if (white === "player" && black === "player") {
-        return "WHAT"
+        worker.postMessage({ aiType: ai, fen: chessRef.current.fen() });
     }
     return (
         <div style={{ display: "flex", flexWrap: "wrap" }}>
@@ -417,8 +442,8 @@ function PlayChess() {
                         >
                             <span
                                 style={{
-                                    top: promotionWhite ? "0%" : "50%",
-                                    left: `${promotionFile * 12.5}%`,
+                                    top: "0%",
+                                    left: `${promotionWhite ? promotionFile * 12.5 : 87.5 - promotionFile * 12.5}%`,
                                     transition: "all 150ms ease",
                                     cursor: "pointer",
                                     borderRadius: hoveredSquare === 1 ? "0%" : "50%",
@@ -457,8 +482,8 @@ function PlayChess() {
                                 />
                             </span>
                             <span style={{
-                                top: promotionWhite ? "12.5%" : "62.5%",
-                                left: `${promotionFile * 12.5}%`,
+                                top: "12.5%",
+                                left: `${promotionWhite ? promotionFile * 12.5 : 87.5 - promotionFile * 12.5}%`,
                                     transition: "all 150ms ease",
                                     cursor: "pointer",
                                     borderRadius: hoveredSquare === 2 ? "0%" : "50%",
@@ -497,8 +522,8 @@ function PlayChess() {
                                 />
                             </span>
                             <span style={{
-                                top: promotionWhite ? "25%" : "75%",
-                                left: `${promotionFile * 12.5}%`,
+                                top: "25%",
+                                left: `${promotionWhite ? promotionFile * 12.5 : 87.5 - promotionFile * 12.5}%`,
                                     transition: "all 150ms ease",
                                     cursor: "pointer",
                                     borderRadius: hoveredSquare === 3 ? "0%" : "50%",
@@ -537,8 +562,8 @@ function PlayChess() {
                                 />
                             </span>
                             <span style={{
-                                top: promotionWhite ? "37.5%" : "87.5%",
-                                left: `${promotionFile * 12.5}%`,
+                                top: "37.5%",
+                                left: `${promotionWhite ? promotionFile * 12.5 : 87.5 - promotionFile * 12.5}%`,
                                     transition: "all 150ms ease",
                                     cursor: "pointer",
                                     borderRadius: hoveredSquare === 4 ? "0%" : "50%",

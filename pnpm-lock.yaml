@@ -211,6 +211,9 @@ importers:
       react-router-dom:
         specifier: ^7.18.1
         version: 7.18.2(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
+      ultrachess:
+        specifier: ^1.4.0
+        version: 1.4.0
     devDependencies:
       '@types/node':
         specifier: ^24.13.2
@@ -291,6 +294,22 @@ importers:
       vite:
         specifier: ^8.2.2
         version: 8.2.2(@types/node@24.13.3)
+
+  submodules/evaluator:
+    dependencies:
+      ultrachess:
+        specifier: ^1.4.0
+        version: 1.4.0
+    devDependencies:
+      '@types/node':
+        specifier: ^26.3.0
+        version: 26.3.0
+      oxfmt:
+        specifier: ^0.64.0
+        version: 0.64.0
+      oxlint:
+        specifier: ^1.79.0
+        version: 1.79.0
 
 packages:
 
@@ -995,6 +1014,9 @@ packages:
   '@types/node@24.13.3':
     resolution: {integrity: sha512-Dh8vAsV36ig5wa9OX4pXvMc9D3Veibfw2wix0CUwYODLD8nkj9UsLjASr49nPg+2eKzxhBV+v7L8pXvT4e639Q==}
 
+  '@types/node@26.3.0':
+    resolution: {integrity: sha512-L3fgrnchriRC2ExBflb8j4uZZURHZfQsmQeyVzhjcHW4kkwVyo8/0h1B2MVzMTrYUJYu6G7EWs14hW/L9putqw==}
+
   '@types/parse-json@4.0.2':
     resolution: {integrity: sha512-dISoDXWWQwUquiKsyZ4Ng+HX2KsPL7LyHKHQwgGFEA3IaKac4Obd+h2a/a6waisAoepJlBcx9paWqjA8/HVjCw==}
 
@@ -1669,8 +1691,15 @@ packages:
     engines: {node: '>=16.20.0'}
     hasBin: true
 
+  ultrachess@1.4.0:
+    resolution: {integrity: sha512-GAsuWLKGcqr0q7+uelhX3jMf1oUOww7YdzuLC6dHzacknMi91Dkpl8w7O+Q9a/1rDxX4SgrtymPYBAxsr2dX+w==}
+    engines: {node: '>=18'}
+
   undici-types@7.18.2:
     resolution: {integrity: sha512-AsuCzffGHJybSaRrmr5eHr81mwJU3kjw6M+uprWvCXiNeN9SOGwQ3Jn8jb8m3Z6izVgknn1R0FTCEAP2QrLY/w==}
+
+  undici-types@8.3.0:
+    resolution: {integrity: sha512-j375ScV60dom+YkPFIfTLcOiPxkN/buHz5GobjLhixFuANaNs3C9l4GmrWqejgXWJ7BbJcFYpTEUkS1Ge8bpZQ==}
 
   universalify@2.0.1:
     resolution: {integrity: sha512-gptHNQghINnc/vTGIk0SOFGFNXw7JVrlRUtConJRlvaw6DuX0wO5Jeko9sWrMBhh+PsYAZ7oXAiOnf/UKogyiw==}
@@ -2279,6 +2308,10 @@ snapshots:
     dependencies:
       undici-types: 7.18.2
 
+  '@types/node@26.3.0':
+    dependencies:
+      undici-types: 8.3.0
+
   '@types/parse-json@4.0.2': {}
 
   '@types/prop-types@15.7.15': {}
@@ -2855,7 +2888,11 @@ snapshots:
       '@typescript/typescript-win32-arm64': 7.0.2
       '@typescript/typescript-win32-x64': 7.0.2
 
+  ultrachess@1.4.0: {}
+
   undici-types@7.18.2: {}
+
+  undici-types@8.3.0: {}
 
   universalify@2.0.1: {}
 
