@@ -12,19 +12,7 @@ function Home() {
         to { opacity: 1; scale: 1 }
     `;
     return (
-        <Box
-            sx={{
-                backgroundImage: {
-                    md: `linear-gradient(to right, black 40%, transparent 80%), url("${backgroundImage}")`,
-                    sm: `linear-gradient(to bottom, black 60%, transparent 100%), url("${backgroundImage}")`
-                },
-                backgroundSize: "cover",
-                backgroundPosition: "center",
-                backgroundRepeat: "no-repeat",
-                height: "100vh",
-                width: "100vw"
-            }}
-        >
+        <>
             <AppBar
                 link={[["Something", "/something/"]]}
                 list={[
@@ -32,74 +20,112 @@ function Home() {
                         "Something",
                         [
                             ["Main", "/something/"],
-                            ["Play", "/something/#/play/"]
+                            ["Play", "/something/#/play/"],
+                            ["Explore", "/something/#/explore/"]
                         ]
                     ]
                 ]}
                 content={["Something", "/something/"]}
             />
-            <Stack
+            <Box
                 sx={{
-                    p: 4,
-                    mx: "auto",
-                    my: 5,
-                    maxWidth: 1000,
-                    marginTop: "8vw"
+                    backgroundImage: {
+                        md: `linear-gradient(to right, black 40%, transparent 80%), url("${backgroundImage}")`,
+                        sm: `linear-gradient(to bottom, black 60%, transparent 100%), url("${backgroundImage}")`
+                    },
+                    backgroundSize: "cover",
+                    backgroundPosition: "center",
+                    backgroundRepeat: "no-repeat",
+                    position: "fixed",
+                    width: "100vw",
+                    height: "100vh",
+                    zIndex: -1000
                 }}
-                spacing={3}
-            >
-                <Box
+            />
+            <Box sx={{ overflowY: "auto", height: "calc(100vh - 64px)" }}>
+                <Stack
                     sx={{
-                        width: "fit-content"
+                        p: 4,
+                        mx: "auto",
+                        my: 5,
+                        maxWidth: 1000,
+                        marginTop: "8vw"
                     }}
+                    spacing={3}
                 >
-                    <Typography
-                        level="h1"
-                        textColor="common.white"
+                    <Box
                         sx={{
-                            animation: `${fadeIn} 0.5s ease-out forwards`
+                            width: "fit-content"
                         }}
                     >
-                        SOMETHING
-                    </Typography>
-                </Box>
-                <Box
-                    sx={{
-                        width: "fit-content"
-                    }}
-                >
-                    <Typography
-                        level="h3"
-                        textColor="common.white"
+                        <Typography
+                            level="h1"
+                            textColor="common.white"
+                            sx={{
+                                animation: `${fadeIn} 0.5s ease-out forwards`
+                            }}
+                        >
+                            SOMETHING
+                        </Typography>
+                    </Box>
+                    <Box
                         sx={{
-                            animation: `${fadeIn} 0.5s ease-out forwards`
+                            width: "fit-content"
                         }}
                     >
-                        Play Chess with Something AI
-                    </Typography>
-                </Box>
-                <Box>
-                    <Button
-                        component="a"
-                        variant="plain"
-                        href="/something/#/play/"
-                        size="lg"
-                        sx={{
-                            backgroundColor: "common.white",
-                            color: "neutral.800",
-                            transition: "all 0.4s ease",
-                            "&:hover": {
-                                transform: "scale(1.1)",
-                                backgroundColor: "neutral.100"
-                            },
-                            animation: `${fadeIn} 0.5s ease-out forwards`
-                        }}
-                    >
-                        Play
-                    </Button>
-                </Box>
-            </Stack>
-        </Box>
+                        <Typography
+                            level="h3"
+                            textColor="common.white"
+                            sx={{
+                                animation: `${fadeIn} 0.5s ease-out forwards`
+                            }}
+                        >
+                            Play Chess with Something AI
+                        </Typography>
+                    </Box>
+                    <Stack direction="row" spacing={2}>
+                        <Button
+                            component="a"
+                            variant="solid"
+                            href="/something/#/play/"
+                            size="lg"
+                            sx={{
+                                backgroundColor: "common.white",
+                                color: "common.black",
+                                transition: "all 0.4s ease",
+                                "&:hover": {
+                                    transform: "scale(1.1)",
+                                    backgroundColor: "common.white"
+                                },
+                                animation: `${fadeIn} 0.5s ease-out forwards`
+                            }}
+                        >
+                            Play
+                        </Button>
+                        <Button
+                            component="a"
+                            variant="outlined"
+                            href="/something/#/explore/"
+                            size="lg"
+                            sx={{
+                                color: "common.white",
+                                transition: "all 0.4s ease",
+                                "&:hover": {
+                                    transform: "scale(1.1)",
+                                    backgroundColor: "transparent"
+                                },
+                                animation: `${fadeIn} 0.5s ease-out forwards`,
+                                outline: "1px solid white",
+                                outlineOffset: "-1px",
+                                backgroundColor: "transparent"
+                            }}
+                        >
+                            Explore
+                        </Button>
+                    </Stack>
+                </Stack>
+            </Box>
+        </>
     );
 }
 

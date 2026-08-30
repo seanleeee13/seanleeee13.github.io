@@ -3,7 +3,7 @@ import supabase from "./supabase_key.ts";
 async function GetLoggedIn() {
     try {
         const {
-            data: { session },
+            data: { session }
         } = await supabase.auth.getSession();
         return !!session;
     } catch (error) {

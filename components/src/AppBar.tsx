@@ -11,7 +11,7 @@ import {
     Divider,
     Button,
     Typography,
-    ListItem,
+    ListItem
 } from "@mui/joy";
 import { useState, useEffect } from "react";
 import { MenuIcon, ReactIcon, ExpandMoreIcon } from "./assets";
@@ -91,6 +91,7 @@ function AppBar({ link, list, content }: AppBarProps) {
                 borderBottom: "1.5px solid #bcbfb6",
                 borderColor: "divider",
                 bgcolor: "#f6f8fa",
+                position: "sticky"
             }}
         >
             <Stack direction="row" alignItems="center" spacing={1} sx={{ width: "100%" }}>
@@ -111,9 +112,9 @@ function AppBar({ link, list, content }: AppBarProps) {
                                     width: "35px",
                                     height: "35px",
                                     "& svg": {
-                                        fontSize: "30px",
+                                        fontSize: "30px"
                                     },
-                                    mr: 1,
+                                    mr: 1
                                 }}
                                 component="a"
                                 href="/"

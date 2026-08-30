@@ -3,7 +3,7 @@ import Stack from "@mui/joy/Stack";
 import Button from "@mui/joy/Button";
 import Box from "@mui/joy/Box";
 import { useCallback, useEffect, useRef, useState } from "react";
-import { useSearchParams } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import Radio from "@mui/joy/Radio";
 import FormControl from "@mui/joy/FormControl";
 import FormLabel from "@mui/joy/FormLabel";
@@ -20,11 +20,13 @@ import type { Config } from "@lichess-org/chessground/config";
 import { Chess, type Square } from "chess.js";
 import { type Api } from "@lichess-org/chessground/api";
 import { AIList } from "../utils/ai";
+import { Card, Divider } from "@mui/joy";
+import { keyframes } from "@emotion/react";
 
 function PlaySelect() {
     const [color, setColor] = useState("random");
     const [p1, setP1] = useState("player");
-    const [p2, setP2] = useState("k_hxnsxol-evaluator-5");
+    const [p2, setP2] = useState("Evaluator-5");
     const [_, setSearchParams] = useSearchParams();
     const handlePlay = () => {
         if (color === "" || p1 === "" || p2 === "") {
@@ -42,19 +44,7 @@ function PlaySelect() {
         }
     };
     return (
-        <Box
-            sx={{
-                backgroundImage: {
-                    md: `linear-gradient(to right, black 40%, transparent 80%), url("${backgroundImage}")`,
-                    sm: `linear-gradient(to bottom, black 60%, transparent 100%), url("${backgroundImage}")`
-                },
-                backgroundSize: "cover",
-                backgroundPosition: "center",
-                backgroundRepeat: "no-repeat",
-                height: "100vh",
-                width: "100vw"
-            }}
-        >
+        <>
             <AppBar
                 link={[
                     ["Something", "/something/"],
@@ -65,96 +55,113 @@ function PlaySelect() {
                         "Something",
                         [
                             ["Main", "/something/"],
-                            ["Play", "/something/#/play/"]
+                            ["Play", "/something/#/play/"],
+                            ["Explore", "/something/#/explore/"]
                         ]
                     ]
                 ]}
                 content={["Something", "/something/"]}
             />
-            <Stack sx={{ p: 4, mx: "auto", my: 5, maxWidth: 1000 }} spacing={3}>
-                <Typography level="h1" textColor="common.white">
-                    PLAY
-                </Typography>
-                <FormControl>
-                    <FormLabel sx={{ color: "white" }}>Color</FormLabel>
-                    <RadioGroup
-                        value={color}
-                        onChange={(event) => {
-                            setColor(event.target.value);
+            <Box
+                sx={{
+                    backgroundImage: {
+                        md: `linear-gradient(to right, black 40%, transparent 80%), url("${backgroundImage}")`,
+                        sm: `linear-gradient(to bottom, black 60%, transparent 100%), url("${backgroundImage}")`
+                    },
+                    backgroundSize: "cover",
+                    backgroundPosition: "center",
+                    backgroundRepeat: "no-repeat",
+                    position: "fixed",
+                    width: "100vw",
+                    height: "100vh",
+                    zIndex: -1000
+                }}
+            />
+            <Box sx={{ overflowY: "auto", height: "calc(100vh - 64px)" }}>
+                <Stack sx={{ p: 4, mx: "auto", my: 5, maxWidth: 1000 }} spacing={3}>
+                    <Typography level="h1" textColor="common.white">
+                        PLAY
+                    </Typography>
+                    <FormControl>
+                        <FormLabel sx={{ color: "white" }}>Color</FormLabel>
+                        <RadioGroup
+                            value={color}
+                            onChange={(event) => {
+                                setColor(event.target.value);
+                            }}
+                        >
+                            <Radio
+                                value="random"
+                                label="Random"
+                                variant="outlined"
+                                sx={{ color: "white" }}
+                            />
+                            <Radio
+                                value="select"
+                                label="Select"
+                                variant="outlined"
+                                sx={{ color: "white" }}
+                            />
+                        </RadioGroup>
+                    </FormControl>
+                    <Stack spacing={1} direction="column">
+                        <Stack spacing={1} direction="row" alignItems="center">
+                            <Typography level="title-md" textColor="common.white">
+                                {color == "random" ? "P1:" : "White:"}
+                            </Typography>
+                            <Select
+                                value={p1}
+                                size="sm"
+                                onChange={(__, newValue) => {
+                                    setP1(newValue === null ? "" : newValue);
+                                }}
+                            >
+                                <Option value="player">Player</Option>
+                                {Object.entries(AIList).map(([id, name]) => (
+                                    <Option value={id} key={`Option1-${id}`}>
+                                        {name}
+                                    </Option>
+                                ))}
+                            </Select>
+                        </Stack>
+                        <Stack spacing={1} direction="row" alignItems="center">
+                            <Typography level="title-md" textColor="common.white">
+                                {color == "random" ? "P2:" : "Black:"}
+                            </Typography>
+                            <Select
+                                value={p2}
+                                size="sm"
+                                onChange={(__, newValue) => {
+                                    setP2(newValue === null ? "" : newValue);
+                                }}
+                            >
+                                <Option value="player">Player</Option>
+                                {Object.entries(AIList).map(([id, name]) => (
+                                    <Option value={id} key={`Option2-${id}`}>
+                                        {name}
+                                    </Option>
+                                ))}
+                            </Select>
+                        </Stack>
+                    </Stack>
+                    <Button
+                        sx={{
+                            maxWidth: "10%",
+                            transition: "transform 0.4s ease",
+                            "&:hover": { transform: "scale(1.1)" }
                         }}
+                        onClick={handlePlay}
                     >
-                        <Radio
-                            value="random"
-                            label="Random"
-                            variant="outlined"
-                            sx={{ color: "white" }}
-                        />
-                        <Radio
-                            value="select"
-                            label="Select"
-                            variant="outlined"
-                            sx={{ color: "white" }}
-                        />
-                    </RadioGroup>
-                </FormControl>
-                <Stack spacing={1} direction="column">
-                    <Stack spacing={1} direction="row" alignItems="center">
-                        <Typography level="title-md" textColor="common.white">
-                            {color == "random" ? "P1:" : "White:"}
-                        </Typography>
-                        <Select
-                            value={p1}
-                            size="sm"
-                            onChange={(__, newValue) => {
-                                setP1(newValue === null ? "" : newValue);
-                            }}
-                        >
-                            <Option value="player">Player</Option>
-                            {Object.entries(AIList).map(([id, name]) => (
-                                <Option value={id} key={`Option1-${id}`}>
-                                    {name}
-                                </Option>
-                            ))}
-                        </Select>
-                    </Stack>
-                    <Stack spacing={1} direction="row" alignItems="center">
-                        <Typography level="title-md" textColor="common.white">
-                            {color == "random" ? "P2:" : "Black:"}
-                        </Typography>
-                        <Select
-                            value={p2}
-                            size="sm"
-                            onChange={(__, newValue) => {
-                                setP2(newValue === null ? "" : newValue);
-                            }}
-                        >
-                            <Option value="player">Player</Option>
-                            {Object.entries(AIList).map(([id, name]) => (
-                                <Option value={id} key={`Option2-${id}`}>
-                                    {name}
-                                </Option>
-                            ))}
-                        </Select>
-                    </Stack>
+                        Play
+                    </Button>
                 </Stack>
-                <Button
-                    sx={{
-                        maxWidth: "10%",
-                        transition: "transform 0.4s ease",
-                        "&:hover": { transform: "scale(1.1)" }
-                    }}
-                    onClick={handlePlay}
-                >
-                    Play
-                </Button>
-            </Stack>
-        </Box>
+            </Box>
+        </>
     );
 }
 
-const worker = new Worker(new URL("../core/core.worker.ts", import.meta.url), { type: "module" });
-
 function PlayChess() {
+    const workerRef = useRef<Worker | null>(null);
     const [searchParams, _] = useSearchParams();
     const white = searchParams.get("white");
     const black = searchParams.get("black");
@@ -170,11 +177,43 @@ function PlayChess() {
     const boardRef = useRef<HTMLDivElement>(null);
     const groundRef = useRef<Api>(null);
     const chessRef = useRef(new Chess());
+    const navigate = useNavigate();
     const [promotionDialog, setPromotionDialog] = useState(false);
     const [promotionWhite, setPromotionWhite] = useState(false);
     const [promotionFile, setPromotionFile] = useState(0);
     const [promotion, setPromotion] = useState<{ from: Square; to: Square }>();
     const [hoveredSquare, setHoveredSquare] = useState(0);
+    type endReasonType =
+        | "none"
+        | "white:checkmate"
+        | "black:checkmate"
+        | "draw:stalemate"
+        | "draw:50moves"
+        | "draw:repetition"
+        | "draw:insufficientMaterials";
+    const [endDialog, setEndDialog] = useState<endReasonType>("none");
+    const winner: Record<endReasonType, string> = {
+        none: "",
+        "white:checkmate": `${white} 승리`,
+        "black:checkmate": `${black} 승리`,
+        "draw:stalemate": "무승부",
+        "draw:50moves": "무승부",
+        "draw:repetition": "무승부",
+        "draw:insufficientMaterials": "무승부"
+    };
+    const reason: Record<endReasonType, string> = {
+        none: "",
+        "white:checkmate": `체크메이트`,
+        "black:checkmate": `체크메이트`,
+        "draw:stalemate": "스테일메이트",
+        "draw:50moves": "50수 규칙",
+        "draw:repetition": "반복",
+        "draw:insufficientMaterials": "기물 부족"
+    };
+    const fadeIn = keyframes`
+        from { opacity: 0; scale: 0 }
+        to { opacity: 1; scale: 1 }
+    `;
     const audioRefs = useRef<{
         move: HTMLAudioElement;
         capture: HTMLAudioElement;
@@ -190,17 +229,6 @@ function PlayChess() {
             gameEnd: GameEnd
         };
     }, []);
-    useEffect(() => {
-        let timerId: number | null = null;
-        if (white !== "player" && black === "player") {
-            worker.postMessage({ aiType: ai, fen: chessRef.current.fen() }, {});
-        }
-        return () => {
-            if (timerId) {
-                clearTimeout(timerId);
-            }
-        };
-    }, [white, black, ai]);
     const getValidMoves = useCallback(() => {
         const dests = new Map<Square, Square[]>();
         const moves = chessRef.current.moves({ verbose: true });
@@ -234,6 +262,25 @@ function PlayChess() {
             }
         }
         return premoveDests;
+    }, []);
+    const handleGameEnd = useCallback(() => {
+        if (chessRef.current.isCheckmate()) {
+            if (chessRef.current.turn() === "b") {
+                setEndDialog("white:checkmate");
+            } else {
+                setEndDialog("black:checkmate");
+            }
+        } else if (chessRef.current.isStalemate()) {
+            setEndDialog("draw:stalemate");
+        } else if (chessRef.current.isDrawByFiftyMoves()) {
+            setEndDialog("draw:50moves");
+        } else if (chessRef.current.isThreefoldRepetition()) {
+            setEndDialog("draw:repetition");
+        } else if (chessRef.current.isInsufficientMaterial()) {
+            setEndDialog("draw:insufficientMaterials");
+        } else {
+            setEndDialog("none");
+        }
     }, []);
     useEffect(() => {
         const lightTile = "f0dab7";
@@ -303,12 +350,16 @@ function PlayChess() {
                                     });
                                 }
                             }, 100);
+                            setTimeout(handleGameEnd, 300);
                             return;
                         }
                         if (!ai) {
                             return;
                         }
-                        worker.postMessage({ aiType: ai, fen: chessRef.current.fen() }, {});
+                        workerRef.current?.postMessage(
+                            { aiType: ai, fen: chessRef.current.fen() },
+                            {}
+                        );
                     }
                 }
             },
@@ -333,7 +384,7 @@ function PlayChess() {
                 groundRef.current.destroy();
             }
         };
-    }, [groundRef, getValidMoves, player, getValidPremoves, ai]);
+    }, [groundRef, getValidMoves, player, getValidPremoves, ai, handleGameEnd]);
     const MoveAI = useCallback(
         (e: MessageEvent) => {
             const AIMove = e.data.move;
@@ -378,6 +429,7 @@ function PlayChess() {
                         });
                     }
                 }, 100);
+                setTimeout(handleGameEnd, 300);
                 return;
             }
             const currentPremove = groundRef.current?.state.premovable.current;
@@ -395,14 +447,25 @@ function PlayChess() {
                 }
             }
         },
-        [getValidMoves, getValidPremoves]
+        [getValidMoves, getValidPremoves, handleGameEnd]
     );
     useEffect(() => {
-        worker.addEventListener("message", MoveAI);
+        const worker = new Worker(new URL("../core/core.worker.ts", import.meta.url), {
+            type: "module"
+        });
+        workerRef.current = worker;
+        workerRef.current?.addEventListener("message", MoveAI);
         return () => {
-            worker.removeEventListener("message", MoveAI);
+            workerRef.current?.removeEventListener("message", MoveAI);
+            worker.terminate();
+            workerRef.current = null;
         };
     }, [MoveAI]);
+    useEffect(() => {
+        if (white !== "player" && black === "player") {
+            workerRef.current?.postMessage({ aiType: ai, fen: chessRef.current.fen() }, {});
+        }
+    }, [white, black, ai]);
     if (ai && !Object.keys(AIList).includes(ai)) {
         return null;
     }
@@ -442,7 +505,7 @@ function PlayChess() {
             }
         }
         setPromotionDialog(false);
-        worker.postMessage({ aiType: ai, fen: chessRef.current.fen() }, {});
+        workerRef.current?.postMessage({ aiType: ai, fen: chessRef.current.fen() }, {});
     };
     return (
         <div style={{ display: "flex", flexWrap: "wrap" }}>
@@ -456,19 +519,24 @@ function PlayChess() {
                         "Something",
                         [
                             ["Main", "/something/"],
-                            ["Play", "/something/#/play/"]
+                            ["Play", "/something/#/play/"],
+                            ["Explore", "/something/#/explore/"]
                         ]
                     ]
                 ]}
                 content={["Something", "/something/"]}
             />
-            <Stack sx={{ p: 4, mx: "auto", maxWidth: 1000 }} alignItems="center" spacing={10}>
+            <Stack
+                sx={{ p: 4, mx: "auto", maxWidth: 1000, height: "calc(100vh - 64px)" }}
+                alignItems="center"
+                spacing={10}
+            >
                 <Typography level="h1">PLAY</Typography>
                 <div
                     style={{
                         margin: "10px",
                         aspectRatio: "1 / 1",
-                        height: "70vh",
+                        height: "calc((100vh - 64px) / 5 * 4)",
                         position: "relative"
                     }}
                 >
@@ -478,11 +546,71 @@ function PlayChess() {
                         style={{
                             margin: 0,
                             aspectRatio: "1 / 1",
-                            height: "70vh",
+                            height: "calc((100vh - 64px) / 5 * 4)",
                             zIndex: 100,
                             position: "absolute"
                         }}
                     />
+                    {endDialog !== "none" && (
+                        <Box
+                            sx={{
+                                background: "rgba(255, 255, 255, 0.7)",
+                                zIndex: 102,
+                                position: "absolute",
+                                aspectRatio: "1 / 1",
+                                height: "calc((100vh - 64px) / 5 * 4)",
+                                justifyContent: "center",
+                                display: "flex",
+                                alignItems: "center"
+                            }}
+                        >
+                            <Card
+                                sx={{
+                                    alignItems: "center",
+                                    p: 0,
+                                    animation: `${fadeIn} 0.5s ease-out forwards`
+                                }}
+                            >
+                                <Stack direction="column" spacing={2} alignItems="center">
+                                    <Stack
+                                        direction="column"
+                                        spacing={1}
+                                        alignItems="center"
+                                        sx={{ px: "16px", pb: 0, pt: "16px" }}
+                                    >
+                                        <Typography level="h2">{winner[endDialog]}</Typography>
+                                        <Typography level="title-lg" color="neutral">
+                                            {reason[endDialog]}
+                                        </Typography>
+                                    </Stack>
+                                    <Divider />
+                                    <Stack
+                                        direction="row"
+                                        spacing={1}
+                                        alignItems="center"
+                                        sx={{ px: "16px", pb: "16px", pt: 0 }}
+                                    >
+                                        <Button
+                                            variant="solid"
+                                            onClick={() => {
+                                                window.location.reload();
+                                            }}
+                                        >
+                                            재대국
+                                        </Button>
+                                        <Button
+                                            variant="outlined"
+                                            onClick={() => {
+                                                navigate("/play/");
+                                            }}
+                                        >
+                                            신규 봇
+                                        </Button>
+                                    </Stack>
+                                </Stack>
+                            </Card>
+                        </Box>
+                    )}
                     {promotionDialog && (
                         <div
                             style={{
@@ -490,7 +618,7 @@ function PlayChess() {
                                 zIndex: 101,
                                 position: "absolute",
                                 aspectRatio: "1 / 1",
-                                height: "70vh"
+                                height: "calc((100vh - 64px) / 5 * 4)"
                             }}
                             onClick={() => {
                                 setPromotionDialog(false);
@@ -512,7 +640,11 @@ function PlayChess() {
                             <span
                                 style={{
                                     top: "0%",
-                                    left: `${promotionWhite ? promotionFile * 12.5 : 87.5 - promotionFile * 12.5}%`,
+                                    left: `${
+                                        promotionWhite
+                                            ? promotionFile * 12.5
+                                            : 87.5 - promotionFile * 12.5
+                                    }%`,
                                     transition: "all 150ms ease",
                                     cursor: "pointer",
                                     borderRadius: hoveredSquare === 1 ? "0%" : "50%",

@@ -4,6 +4,6 @@ export {
     type ListInterface,
     type LevelInterface,
     type UserInterface,
-    type PListInterface,
+    type PListInterface
 } from "./supabase_key.ts";
 export { default as query } from "./get_query.ts";
