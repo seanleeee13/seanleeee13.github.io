@@ -241,6 +241,7 @@ function PlayChess() {
         return dests;
     }, []);
     const getValidPremoves = useCallback(() => {
+        console.log(chessRef.current.turn());
         const premoveDests = new Map<Square, Square[]>();
         const board = chessRef.current.board();
         for (let r = 0; r < 8; r++) {
@@ -250,7 +251,30 @@ function PlayChess() {
                     const fromSquare = `${String.fromCharCode(97 + c)}${8 - r}` as Square;
                     const chessBoard = new Chess();
                     chessBoard.clear();
+                    chessBoard.setTurn(chessRef.current.turn() === "w" ? "b" : "w");
                     chessBoard.put({ type: piece.type, color: piece.color }, fromSquare);
+                    if (piece.type === "p") {
+                        const enemyColor = piece.color === "w" ? "b" : "w";
+                        const dir = piece.color === "w" ? 1 : -1;
+                        const nextRank = (8 - r) + dir;
+                        if (c > 0) {
+                            chessBoard.put({ type: "p", color: enemyColor }, `${String.fromCharCode(97 + c - 1)}${nextRank}` as Square);
+                        }
+                        if (c < 7) {
+                            chessBoard.put({ type: "p", color: enemyColor }, `${String.fromCharCode(97 + c + 1)}${nextRank}` as Square);
+                        }
+                    }
+                    if (piece.type === "k") {
+                        const {k, q} = chessRef.current.getCastlingRights(piece.color);
+                        const rookRank = piece.color === "w" ? 1 : 8;
+                        if (k) {
+                            chessBoard.put({ type: "r", color: piece.color }, `h${rookRank}`);
+                        }
+                        if (q) {
+                            chessBoard.put({ type: "r", color: piece.color }, `a${rookRank}`);
+                        }
+                        chessBoard.setCastlingRights(piece.color, {k, q});
+                    }
                     const moves = chessBoard.moves({ square: fromSquare, verbose: true });
                     moves.forEach((m) => {
                         if (!premoveDests.has(fromSquare)) {
@@ -261,9 +285,13 @@ function PlayChess() {
                 }
             }
         }
+        console.log(premoveDests);
+        console.log(chessRef.current.getCastlingRights("w"));
         return premoveDests;
     }, []);
     const handleGameEnd = useCallback(() => {
+        groundRef.current?.cancelPremove();
+        groundRef.current?.selectSquare(null, true);
         if (chessRef.current.isCheckmate()) {
             if (chessRef.current.turn() === "b") {
                 setEndDialog("white:checkmate");
@@ -316,6 +344,7 @@ function PlayChess() {
                             to: dest as Square
                         });
                         groundRef.current?.set({
+                            turnColor: chessRef.current.turn() === "w" ? "white" : "black",
                             movable: {
                                 dests: getValidMoves()
                             },
@@ -365,7 +394,7 @@ function PlayChess() {
             },
             premovable: {
                 enabled: true,
-                showDests: false,
+                showDests: true,
                 castle: true,
                 customDests: getValidPremoves(),
                 additionalPremoveRequirements: () => {
@@ -482,6 +511,7 @@ function PlayChess() {
             return;
         }
         groundRef.current.set({
+            turnColor: chessRef.current.turn() === "w" ? "white" : "black",
             fen: chessRef.current.fen(),
             movable: {
                 dests: getValidMoves()
