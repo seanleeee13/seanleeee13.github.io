@@ -92,7 +92,13 @@ function SignUp() {
                 link={[["Sign Up", "/#/signup/"]]}
                 list={[
                     ["컨텐츠", usable.map(([id, name]) => [name, `/${id}/`])],
-                    ["공통 기능", [["Sign Up", "q:/#/signup/"], ["Log In", "q:/#/login/"]]],
+                    [
+                        "공통 기능",
+                        [
+                            ["Sign Up", "q:/#/signup/"],
+                            ["Log In", "q:/#/login/"]
+                        ]
+                    ]
                 ]}
             />
             <Stack
@@ -103,7 +109,7 @@ function SignUp() {
                     height: "calc(100dvh - 64px)",
                     overflow: "hidden",
                     boxSizing: "border-box",
-                    px: 0,
+                    px: 0
                 }}
             >
                 <Card
@@ -118,7 +124,7 @@ function SignUp() {
                         transform: `scale(${currentScale})`,
                         transformOrigin: "center",
                         transition: "transform 0s ease-out",
-                        flexShrink: 0,
+                        flexShrink: 0
                     }}
                 >
                     <Typography
@@ -228,12 +234,12 @@ function SignUp() {
                             backgroundColor: "#24292e",
                             color: "#fff",
                             "&:hover": {
-                                backgroundColor: "#1b1f23",
+                                backgroundColor: "#1b1f23"
                             },
                             "& svg": {
                                 color: "#ffffff !important",
-                                fill: "#ffffff !important",
-                            },
+                                fill: "#ffffff !important"
+                            }
                         }}
                     >
                         Continue with Github

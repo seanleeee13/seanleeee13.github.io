@@ -15,19 +15,27 @@ function Home() {
         <Box
             sx={{
                 backgroundImage: {
-                    "md": `linear-gradient(to right, black 40%, transparent 80%), url("${backgroundImage}")`,
-                    "sm": `linear-gradient(to bottom, black 60%, transparent 100%), url("${backgroundImage}")`
+                    md: `linear-gradient(to right, black 40%, transparent 80%), url("${backgroundImage}")`,
+                    sm: `linear-gradient(to bottom, black 60%, transparent 100%), url("${backgroundImage}")`
                 },
                 backgroundSize: "cover",
                 backgroundPosition: "center",
                 backgroundRepeat: "no-repeat",
                 height: "100vh",
-                width: "100vw",
+                width: "100vw"
             }}
         >
             <AppBar
-                link={[["Something", "/something/"]]} 
-                list={[["Something", [["Main", "/something/"], ["Play", "/something/#/play/"]]]]}
+                link={[["Something", "/something/"]]}
+                list={[
+                    [
+                        "Something",
+                        [
+                            ["Main", "/something/"],
+                            ["Play", "/something/#/play/"]
+                        ]
+                    ]
+                ]}
                 content={["Something", "/something/"]}
             />
             <Stack
@@ -36,20 +44,20 @@ function Home() {
                     mx: "auto",
                     my: 5,
                     maxWidth: 1000,
-                    marginTop: "8vw",
+                    marginTop: "8vw"
                 }}
                 spacing={3}
             >
                 <Box
                     sx={{
-                        width: "fit-content",
+                        width: "fit-content"
                     }}
                 >
                     <Typography
                         level="h1"
                         textColor="common.white"
                         sx={{
-                            animation: `${fadeIn} 0.5s ease-out forwards`,
+                            animation: `${fadeIn} 0.5s ease-out forwards`
                         }}
                     >
                         SOMETHING
@@ -57,14 +65,14 @@ function Home() {
                 </Box>
                 <Box
                     sx={{
-                        width: "fit-content",
+                        width: "fit-content"
                     }}
                 >
                     <Typography
                         level="h3"
                         textColor="common.white"
                         sx={{
-                            animation: `${fadeIn} 0.5s ease-out forwards`,
+                            animation: `${fadeIn} 0.5s ease-out forwards`
                         }}
                     >
                         Play Chess with Something AI
@@ -82,9 +90,9 @@ function Home() {
                             transition: "all 0.4s ease",
                             "&:hover": {
                                 transform: "scale(1.1)",
-                                backgroundColor: "neutral.100",
+                                backgroundColor: "neutral.100"
                             },
-                            animation: `${fadeIn} 0.5s ease-out forwards`,
+                            animation: `${fadeIn} 0.5s ease-out forwards`
                         }}
                     >
                         Play

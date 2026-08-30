@@ -11,7 +11,7 @@ import {
     supabase,
     type LevelInterface,
     type ListInterface,
-    type PListInterface,
+    type PListInterface
 } from "components/utils";
 import { cdavg, pdavg } from "../utils/calculate_difficulty_avg";
 import { AppBar } from "components";
@@ -24,13 +24,13 @@ function Lists() {
     const { level_list } = useParams<{ level_list: string }>();
     const [dimensions, setDimensions] = useState({
         width: window.innerWidth,
-        height: window.innerHeight,
+        height: window.innerHeight
     });
     useEffect(() => {
         const handleResize = () => {
             setDimensions({
                 width: window.innerWidth,
-                height: window.innerHeight,
+                height: window.innerHeight
             });
         };
         window.addEventListener("resize", handleResize);
@@ -43,7 +43,7 @@ function Lists() {
                 const [levelResult, listResult, plistResult] = await Promise.all([
                     supabase.from("level").select("*"),
                     supabase.from("list").select("*").order("id"),
-                    supabase.from("plist").select("*").order("id"),
+                    supabase.from("plist").select("*").order("id")
                 ]);
                 if (levelResult.error) {
                     throw levelResult.error;
@@ -75,7 +75,7 @@ function Lists() {
     let cardSize: { width: number | string; height: number | string; side: "row" | "column" } = {
         width: 0,
         height: 0,
-        side: "row",
+        side: "row"
     };
     let fontSizeA: "h4" | "title-lg" | "title-md";
     let fontSizeB: "title-md" | "title-sm" | "body-lg";
@@ -139,18 +139,29 @@ function Lists() {
     return (
         <>
             <AppBar
-                link={[["GFF", "/gff/"], ["List", "/gff/#/lists/"], [level_list, `/gff/#/lists/${level_list}/`]]}
-                list={[...data.map((text) => [
-                    text[0][1], text.slice(1).map(
-                        (text_data) => [text_data[1], `/gff/#/lists/${text_data[0]}/`]
-                    )
-                ]), [
-                    "GFF", [
-                        ["리스트 목록", "/gff/#/lists/"],
-                        ["레벨 검색하기", "/gff/#/levels/"],
-                        ["레벨 업로드", "/gff/#/upload/"]
-                    ]
-                ]] as MenuListType}
+                link={[
+                    ["GFF", "/gff/"],
+                    ["List", "/gff/#/lists/"],
+                    [level_list, `/gff/#/lists/${level_list}/`]
+                ]}
+                list={
+                    [
+                        ...data.map((text) => [
+                            text[0][1],
+                            text
+                                .slice(1)
+                                .map((text_data) => [text_data[1], `/gff/#/lists/${text_data[0]}/`])
+                        ]),
+                        [
+                            "GFF",
+                            [
+                                ["리스트 목록", "/gff/#/lists/"],
+                                ["레벨 검색하기", "/gff/#/levels/"],
+                                ["레벨 업로드", "/gff/#/upload/"]
+                            ]
+                        ]
+                    ] as MenuListType
+                }
                 content={["GFF", "/gff/"]}
             />
             {lists
@@ -168,7 +179,7 @@ function Lists() {
                                 my: 5,
                                 height: cardSize.height,
                                 overflow: "hidden",
-                                p: 0,
+                                p: 0
                             }}
                         >
                             <CardContent sx={{ height: "100%" }}>
@@ -194,7 +205,7 @@ function Lists() {
                                             }
                                             sx={{
                                                 color: "black",
-                                                "&:hover": { textDecorationColor: "black" },
+                                                "&:hover": { textDecorationColor: "black" }
                                             }}
                                         >{`#${index + 1} - ${sel_level.level_name}`}</Link>
                                         <Typography level={fontSizeB} fontWeight="lg">

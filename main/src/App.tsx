@@ -7,15 +7,15 @@ const gffTheme = extendTheme({
     fontFamily: {
         body: "'Mona Sans Variable', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji'",
         display:
-            "'Mona Sans Variable', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji'",
+            "'Mona Sans Variable', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji'"
     },
     fontWeight: {
         xs: 200,
         sm: 300,
         md: 400,
         lg: 500,
-        xl: 600,
-    },
+        xl: 600
+    }
 });
 
 function App() {

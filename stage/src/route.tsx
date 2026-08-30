@@ -37,7 +37,7 @@ function Authenticate() {
             setError(true);
         } else {
             const { data, error: passwordError } = await supabase.rpc("check_password_stage", {
-                password: password,
+                password: password
             });
             if (!passwordError && data === true) {
                 localStorage.setItem("stage_page_unlocked", "true");
@@ -50,7 +50,8 @@ function Authenticate() {
     return (
         <>
             <AppBar
-                link={[["Stage", "/stage/"]]} list={[["Stage", [["Main", "/stage/"]]]]}
+                link={[["Stage", "/stage/"]]}
+                list={[["Stage", [["Main", "/stage/"]]]]}
                 content={["Stage", "/stage/"]}
             />
             <Stack
@@ -61,7 +62,7 @@ function Authenticate() {
                     height: "calc(100dvh - 64px)",
                     overflow: "hidden",
                     boxSizing: "border-box",
-                    px: 0,
+                    px: 0
                 }}
             >
                 <Card
@@ -76,7 +77,7 @@ function Authenticate() {
                         transform: `scale(${currentScale})`,
                         transformOrigin: "center",
                         transition: "transform 0.1s ease-out",
-                        flexShrink: 0,
+                        flexShrink: 0
                     }}
                 >
                     <Typography

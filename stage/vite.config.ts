@@ -6,6 +6,6 @@ export default defineConfig({
     plugins: [react()],
     base: "/stage/",
     server: {
-        port: 5176,
-    },
+        port: 5176
+    }
 });

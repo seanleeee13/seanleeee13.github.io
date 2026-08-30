@@ -24,7 +24,7 @@ function MyPage() {
         const fetchTableData = async () => {
             try {
                 const {
-                    data: { session },
+                    data: { session }
                 } = await supabase.auth.getSession();
                 if (session?.user) {
                     const userResult = await supabase
@@ -59,7 +59,7 @@ function MyPage() {
                 return;
             }
             const {
-                data: { session },
+                data: { session }
             } = await supabase.auth.getSession();
             if (!session) {
                 return;
@@ -82,7 +82,7 @@ function MyPage() {
                     link={[]}
                     list={[
                         ["컨텐츠", content.map(([id, name]) => [name, `/${id}/`])],
-                        ["공통 기능", [["Log Out", "/#/logout/"]]],
+                        ["공통 기능", [["Log Out", "/#/logout/"]]]
                     ]}
                 />
                 <Stack
@@ -109,7 +109,7 @@ function MyPage() {
                                     if (data.length < 5 || 20 < data.length) {
                                         setError(true);
                                         setErrorMessage(
-                                            "이름은 5글자 이상 20글자 이하여야 합니다.",
+                                            "이름은 5글자 이상 20글자 이하여야 합니다."
                                         );
                                     } else {
                                         setError(false);
@@ -139,7 +139,7 @@ function MyPage() {
                 link={[]}
                 list={[
                     ["컨텐츠", content.map(([id, name]) => [name, `/${id}/`])],
-                    ["공통 기능", [["Log Out", "/#/logout/"]]],
+                    ["공통 기능", [["Log Out", "/#/logout/"]]]
                 ]}
             />
             <Stack direction="column" spacing={5} sx={{ p: 4, mx: "auto", my: 5, maxWidth: 1000 }}>
@@ -170,13 +170,13 @@ function MyPage() {
                                         cursor: "pointer",
                                         backgroundImage: {
                                             xs: "none",
-                                            sm: `linear-gradient(to right, #FBFCFE 0%, #FBFCFE 40%, transparent 80%, transparent 100%), url("${imagemap[id]}")`,
+                                            sm: `linear-gradient(to right, #FBFCFE 0%, #FBFCFE 40%, transparent 80%, transparent 100%), url("${imagemap[id]}")`
                                         },
                                         backgroundSize: "cover",
                                         backgroundPosition: "center",
                                         backgroundRepeat: "no-repeat",
                                         aspectRatio: "498.667 / 136",
-                                        maxWidth: 500,
+                                        maxWidth: 500
                                     }}
                                 >
                                     <Typography
@@ -189,7 +189,7 @@ function MyPage() {
                                     <Typography level="body-sm">Permission: {role}</Typography>
                                 </Card>
                             );
-                        },
+                        }
                     )}
                 </Stack>
                 <Button
@@ -224,7 +224,7 @@ function MyPage() {
                                         {sourcemap[id]}
                                     </Typography>
                                 );
-                            },
+                            }
                         )}
                     </Sheet>
                 </Modal>
@@ -241,7 +241,7 @@ function IntroPage() {
                 link={[]}
                 list={[
                     ["컨텐츠", usable.map(([id, name]) => [name, `/${id}/`])],
-                    ["공통 기능", [["Log Out", "/#/logout/"]]],
+                    ["공통 기능", [["Log Out", "/#/logout/"]]]
                 ]}
             />
             <Stack direction="column" spacing={4} sx={{ p: 4, mx: "auto", my: 5, maxWidth: 1000 }}>
@@ -261,13 +261,13 @@ function IntroPage() {
                                     cursor: "pointer",
                                     backgroundImage: {
                                         xs: "none",
-                                        sm: `linear-gradient(to right, #FBFCFE 0%, #FBFCFE 40%, transparent 80%, transparent 100%), url("${imagemap[id]}")`,
+                                        sm: `linear-gradient(to right, #FBFCFE 0%, #FBFCFE 40%, transparent 80%, transparent 100%), url("${imagemap[id]}")`
                                     },
                                     backgroundSize: "cover",
                                     backgroundPosition: "center",
                                     backgroundRepeat: "no-repeat",
                                     aspectRatio: "498.667 / 136",
-                                    maxWidth: 500,
+                                    maxWidth: 500
                                 }}
                             >
                                 <Typography

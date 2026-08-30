@@ -17,7 +17,7 @@ export default defineConfig({
                             res.end();
                         }
                     });
-                },
+                }
             },
             "/something": {
                 target: "http://localhost:5175",
@@ -29,7 +29,7 @@ export default defineConfig({
                             res.end();
                         }
                     });
-                },
+                }
             },
             "/stage": {
                 target: "http://localhost:5176",
@@ -41,8 +41,8 @@ export default defineConfig({
                             res.end();
                         }
                     });
-                },
-            },
-        },
-    },
+                }
+            }
+        }
+    }
 });

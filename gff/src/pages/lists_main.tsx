@@ -22,7 +22,7 @@ function ListsMain() {
                 setLoading(true);
                 const [listResult, plistResult] = await Promise.all([
                     supabase.from("list").select("*").order("id"),
-                    supabase.from("plist").select("*").order("id"),
+                    supabase.from("plist").select("*").order("id")
                 ]);
                 if (listResult.error) {
                     throw listResult.error;
@@ -69,18 +69,28 @@ function ListsMain() {
     return (
         <>
             <AppBar
-                link={[["GFF", "/gff/"], ["List", "/gff/#/lists/"]]}
-                list={[...data.map((text) => [
-                    text[0][1], text.slice(1).map(
-                        (text_data) => [text_data[1], `/gff/#/lists/${text_data[0]}/`]
-                    )
-                ]), [
-                    "GFF", [
-                        ["리스트 목록", "/gff/#/lists/"],
-                        ["레벨 검색하기", "/gff/#/levels/"],
-                        ["레벨 업로드", "/gff/#/upload/"]
-                    ]
-                ]] as MenuListType}
+                link={[
+                    ["GFF", "/gff/"],
+                    ["List", "/gff/#/lists/"]
+                ]}
+                list={
+                    [
+                        ...data.map((text) => [
+                            text[0][1],
+                            text
+                                .slice(1)
+                                .map((text_data) => [text_data[1], `/gff/#/lists/${text_data[0]}/`])
+                        ]),
+                        [
+                            "GFF",
+                            [
+                                ["리스트 목록", "/gff/#/lists/"],
+                                ["레벨 검색하기", "/gff/#/levels/"],
+                                ["레벨 업로드", "/gff/#/upload/"]
+                            ]
+                        ]
+                    ] as MenuListType
+                }
                 content={["GFF", "/gff/"]}
             />
             <Stack sx={{ p: 4, mx: "auto", my: 5, maxWidth: 1000 }} spacing={3}>
@@ -89,11 +99,11 @@ function ListsMain() {
                     sx={{
                         maxWidth: 400,
                         [`& .${accordionSummaryClasses.indicator}`]: {
-                            transition: "0.2s",
+                            transition: "0.2s"
                         },
                         [`& [aria-expanded="true"] .${accordionSummaryClasses.indicator}`]: {
-                            transform: "rotate(180deg)",
-                        },
+                            transform: "rotate(180deg)"
+                        }
                     }}
                     color="primary"
                     variant="outlined"

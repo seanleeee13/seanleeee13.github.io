@@ -4,5 +4,6 @@
     "quoteProps": "as-needed",
     "semi": true,
     "tabWidth": 4,
-    "insertFinalNewline": false
+    "insertFinalNewline": false,
+    "trailingComma": "none"
 }

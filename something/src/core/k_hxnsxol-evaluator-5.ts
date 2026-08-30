@@ -11,29 +11,21 @@ const CENTER_PST = [
     [0, 0, 10, 20, 20, 10, 0, 0],
     [0, 0, 10, 10, 10, 10, 0, 0],
     [0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0]
 ];
 const PIECE_VALUES = { 0: 100, 1: 320, 2: 330, 3: 500, 4: 900, 5: 20000 };
 
 function getPiece(move: string) {
-    switch (move[0]) {
-        case "N":
-            return 1;
-        case "B":
-            return 2;
-        case "R":
-            return 3;
-        case "Q":
-            return 4;
-        case "K":
-        case "O":
-            return 5;
-        default:
-            return 0;
-    }
+    const firstChar = move.charCodeAt(0);
+    if (firstChar === 78) return 1;
+    if (firstChar === 66) return 2;
+    if (firstChar === 82) return 3;
+    if (firstChar === 81) return 4;
+    if (firstChar === 75 || firstChar === 79) return 5;
+    return 0;
 }
 
-function getCapured(move: string, chess: Chess) {
+function getCaptured(move: string, chess: Chess) {
     if (move.includes("x", 1)) {
         const toSquare = move.replace(/[+#]/g, "").slice(-2);
         const captured = chess.pieceAt(toSquare);
@@ -44,23 +36,26 @@ function getCapured(move: string, chess: Chess) {
 }
 
 function sortMvvlva(moves: string[], chess: Chess) {
-    const scoreMap = new Map<string, number>();
-    for (let i = 0; i < moves.length; i++) {
-        const m = moves[i];
-        const score = m.includes("x")
-            ? PIECE_VALUES[getCapured(m, chess)] * 10 - PIECE_VALUES[getPiece(m)]
-            : -INF_SCORE;
-        scoreMap.set(m, score);
+    if (moves.length <= 1) {
+        return moves;
     }
-    return moves.toSorted((a, b) => {
-        const aScore = scoreMap.get(a)!;
-        const bScore = scoreMap.get(b)!;
-        if (aScore === bScore) {
-            return 0;
+    const scores = Array.from<number>({ length: moves.length });
+    for (let i = 0; i < moves.length; i++) {
+        if (moves[i].includes("x")) {
+            scores[i] =
+                PIECE_VALUES[getCaptured(moves[i], chess)] * 10 - PIECE_VALUES[getPiece(moves[i])];
         } else {
-            return bScore - aScore;
+            scores[i] = -INF_SCORE;
         }
-    });
+    }
+    const moveIndices = Array.from({ length: moves.length }, (_, i) => i).toSorted(
+        (a, b) => scores[b] - scores[a]
+    );
+    const sortedMoves = Array.from<string>({ length: moves.length });
+    for (let i = 0; i < moves.length; i++) {
+        sortedMoves[i] = moves[moveIndices[i]];
+    }
+    return sortedMoves;
 }
 
 function evaluateStatic(chess: Chess) {
@@ -88,11 +83,7 @@ function quiescence(chess: Chess, alpha: number, beta: number, depth: number) {
     if (standPat > alpha) {
         alpha = standPat;
     }
-    const captureMoves = sortMvvlva(
-        chess.moves().filter((move) => move.includes("x")),
-        chess,
-    );
-    if (depth <= 0 || captureMoves.length === 0) {
+    if (depth <= 0) {
         return alpha;
     }
     if (chess.isCheckmate()) {
@@ -100,7 +91,12 @@ function quiescence(chess: Chess, alpha: number, beta: number, depth: number) {
     } else if (chess.isGameOver()) {
         return alpha;
     }
-    for (const move of captureMoves) {
+    const captureMoves = chess.moves().filter((move) => move.includes("x"));
+    if (captureMoves.length === 0) {
+        return alpha;
+    }
+    const sortedMoves = sortMvvlva(captureMoves, chess);
+    for (const move of sortedMoves) {
         chess.move(move);
         const score = -quiescence(chess, -beta, -alpha, depth - 1);
         chess.undo();
@@ -152,7 +148,7 @@ export default function getBestMove(fen: string) {
     let bestMove: string | null = null;
     for (const move of moves) {
         chess.move(move);
-        const score = -negamax(chess, SEARCH_DEPTH - 1, -INF_SCORE, INF_SCORE);
+        const score = -negamax(chess, SEARCH_DEPTH - 1, -INF_SCORE, -bestScore);
         chess.undo();
         if (score > bestScore) {
             bestScore = score;

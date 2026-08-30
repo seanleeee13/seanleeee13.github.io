@@ -10,7 +10,7 @@ import {
     supabase,
     type LevelInterface,
     type ListInterface,
-    type PListInterface,
+    type PListInterface
 } from "components/utils";
 import { AppBar } from "components";
 import { cdavg, pdavg } from "../utils/calculate_difficulty_avg";
@@ -27,7 +27,7 @@ function Levels() {
                 const [levelResult, listResult, plistResult] = await Promise.all([
                     supabase.from("level").select("*"),
                     supabase.from("list").select("*").order("id"),
-                    supabase.from("plist").select("*").order("id"),
+                    supabase.from("plist").select("*").order("id")
                 ]);
                 if (levelResult.error) {
                     throw levelResult.error;
@@ -101,28 +101,40 @@ function Levels() {
         <>
             <AppBar
                 link={
-                    level_list === undefined ?
-                    [
-                        ["GFF", "/gff/"], ["List", "/gff/#/lists/"],
-                        [level_info.level_name, `/gff/#/levels/${level_info.level_id}/`]
-                    ] :
-                    [
-                        ["GFF", "/gff/"], ["List", "/gff/#/lists/"],
-                        [level_list, `/gff/#/lists/${level_list}/`],
-                        [level_info.level_name, `/gff/#/levels/${level_list}/${level_info.level_id}/`]
-                    ]
+                    level_list === undefined
+                        ? [
+                              ["GFF", "/gff/"],
+                              ["List", "/gff/#/lists/"],
+                              [level_info.level_name, `/gff/#/levels/${level_info.level_id}/`]
+                          ]
+                        : [
+                              ["GFF", "/gff/"],
+                              ["List", "/gff/#/lists/"],
+                              [level_list, `/gff/#/lists/${level_list}/`],
+                              [
+                                  level_info.level_name,
+                                  `/gff/#/levels/${level_list}/${level_info.level_id}/`
+                              ]
+                          ]
                 }
-                list={[...data.map((text) => [
-                    text[0][1], text.slice(1).map(
-                        (text_data) => [text_data[1], `/gff/#/lists/${text_data[0]}/`]
-                    )
-                ]), [
-                    "GFF", [
-                        ["리스트 목록", "/gff/#/lists/"],
-                        ["레벨 검색하기", "/gff/#/levels/"],
-                        ["레벨 업로드", "/gff/#/upload/"]
-                    ]
-                ]] as MenuListType}
+                list={
+                    [
+                        ...data.map((text) => [
+                            text[0][1],
+                            text
+                                .slice(1)
+                                .map((text_data) => [text_data[1], `/gff/#/lists/${text_data[0]}/`])
+                        ]),
+                        [
+                            "GFF",
+                            [
+                                ["리스트 목록", "/gff/#/lists/"],
+                                ["레벨 검색하기", "/gff/#/levels/"],
+                                ["레벨 업로드", "/gff/#/upload/"]
+                            ]
+                        ]
+                    ] as MenuListType
+                }
                 content={["GFF", "/gff/"]}
             />
             <Stack

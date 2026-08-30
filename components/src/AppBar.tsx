@@ -61,7 +61,7 @@ function AppBar({ link, list, content }: AppBarProps) {
         <Stack divider={<Divider />}>
             {list.map(([listName, listData], groupIdx) => (
                 <List key={`group-${groupIdx}`}>
-                    <ListItem sx={{fontWeight: "lg", color: "common.black"}}>{listName}</ListItem>
+                    <ListItem sx={{ fontWeight: "lg", color: "common.black" }}>{listName}</ListItem>
                     {listData.map(([name, href]) => (
                         <ListItemButton
                             key={`listitembutton-${href}`}
@@ -90,7 +90,7 @@ function AppBar({ link, list, content }: AppBarProps) {
                 alignItems: "center",
                 borderBottom: "1.5px solid #bcbfb6",
                 borderColor: "divider",
-                bgcolor: "#f6f8fa"
+                bgcolor: "#f6f8fa",
             }}
         >
             <Stack direction="row" alignItems="center" spacing={1} sx={{ width: "100%" }}>
@@ -113,15 +113,14 @@ function AppBar({ link, list, content }: AppBarProps) {
                                     "& svg": {
                                         fontSize: "30px",
                                     },
-                                    mr: 1
+                                    mr: 1,
                                 }}
                                 component="a"
                                 href="/"
                             >
                                 <ReactIcon />
                             </IconButton>
-                            {
-                                content === undefined ? null :
+                            {content === undefined ? null : (
                                 <>
                                     <Typography sx={{ transform: "rotate(270deg)" }}>
                                         <ExpandMoreIcon />
@@ -131,9 +130,11 @@ function AppBar({ link, list, content }: AppBarProps) {
                                         color="neutral"
                                         component="a"
                                         href={content[1]}
-                                    >{content[0]}</Button>
+                                    >
+                                        {content[0]}
+                                    </Button>
                                 </>
-                            }
+                            )}
                         </Stack>
                     </DialogTitle>
                     <br />

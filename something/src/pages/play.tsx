@@ -45,33 +45,56 @@ function PlaySelect() {
         <Box
             sx={{
                 backgroundImage: {
-                    "md": `linear-gradient(to right, black 40%, transparent 80%), url("${backgroundImage}")`,
-                    "sm": `linear-gradient(to bottom, black 60%, transparent 100%), url("${backgroundImage}")`
+                    md: `linear-gradient(to right, black 40%, transparent 80%), url("${backgroundImage}")`,
+                    sm: `linear-gradient(to bottom, black 60%, transparent 100%), url("${backgroundImage}")`
                 },
                 backgroundSize: "cover",
                 backgroundPosition: "center",
                 backgroundRepeat: "no-repeat",
                 height: "100vh",
-                width: "100vw",
+                width: "100vw"
             }}
         >
             <AppBar
-                link={[["Something", "/something/"], ["Play", "/something/#/play/"]]} 
-                list={[["Something", [["Main", "/something/"], ["Play", "/something/#/play/"]]]]}
+                link={[
+                    ["Something", "/something/"],
+                    ["Play", "/something/#/play/"]
+                ]}
+                list={[
+                    [
+                        "Something",
+                        [
+                            ["Main", "/something/"],
+                            ["Play", "/something/#/play/"]
+                        ]
+                    ]
+                ]}
                 content={["Something", "/something/"]}
             />
             <Stack sx={{ p: 4, mx: "auto", my: 5, maxWidth: 1000 }} spacing={3}>
-                <Typography level="h1" textColor="common.white">PLAY</Typography>
+                <Typography level="h1" textColor="common.white">
+                    PLAY
+                </Typography>
                 <FormControl>
-                    <FormLabel sx={{color: "white"}}>Color</FormLabel>
+                    <FormLabel sx={{ color: "white" }}>Color</FormLabel>
                     <RadioGroup
                         value={color}
                         onChange={(event) => {
                             setColor(event.target.value);
                         }}
                     >
-                        <Radio value="random" label="Random" variant="outlined" sx={{color: "white"}} />
-                        <Radio value="select" label="Select" variant="outlined" sx={{color: "white"}} />
+                        <Radio
+                            value="random"
+                            label="Random"
+                            variant="outlined"
+                            sx={{ color: "white" }}
+                        />
+                        <Radio
+                            value="select"
+                            label="Select"
+                            variant="outlined"
+                            sx={{ color: "white" }}
+                        />
                     </RadioGroup>
                 </FormControl>
                 <Stack spacing={1} direction="column">
@@ -88,7 +111,9 @@ function PlaySelect() {
                         >
                             <Option value="player">Player</Option>
                             {Object.entries(AIList).map(([id, name]) => (
-                                <Option value={id} key={`Option1-${id}`}>{name}</Option>
+                                <Option value={id} key={`Option1-${id}`}>
+                                    {name}
+                                </Option>
                             ))}
                         </Select>
                     </Stack>
@@ -105,13 +130,19 @@ function PlaySelect() {
                         >
                             <Option value="player">Player</Option>
                             {Object.entries(AIList).map(([id, name]) => (
-                                <Option value={id} key={`Option2-${id}`}>{name}</Option>
+                                <Option value={id} key={`Option2-${id}`}>
+                                    {name}
+                                </Option>
                             ))}
                         </Select>
                     </Stack>
                 </Stack>
                 <Button
-                    sx={{ maxWidth: "10%", transition: "transform 0.4s ease", "&:hover": { transform: "scale(1.1)" }}}
+                    sx={{
+                        maxWidth: "10%",
+                        transition: "transform 0.4s ease",
+                        "&:hover": { transform: "scale(1.1)" }
+                    }}
                     onClick={handlePlay}
                 >
                     Play
@@ -121,10 +152,7 @@ function PlaySelect() {
     );
 }
 
-const worker = new Worker(
-    new URL("../core/core.worker.ts", import.meta.url),
-    { type: "module" }
-);
+const worker = new Worker(new URL("../core/core.worker.ts", import.meta.url), { type: "module" });
 
 function PlayChess() {
     const [searchParams, _] = useSearchParams();
@@ -145,12 +173,12 @@ function PlayChess() {
     const [promotionDialog, setPromotionDialog] = useState(false);
     const [promotionWhite, setPromotionWhite] = useState(false);
     const [promotionFile, setPromotionFile] = useState(0);
-    const [promotion, setPromotion] = useState<{from: Square, to: Square}>();
+    const [promotion, setPromotion] = useState<{ from: Square; to: Square }>();
     const [hoveredSquare, setHoveredSquare] = useState(0);
     const audioRefs = useRef<{
-        move: HTMLAudioElement,
-        capture: HTMLAudioElement,
-        gameEnd: HTMLAudioElement
+        move: HTMLAudioElement;
+        capture: HTMLAudioElement;
+        gameEnd: HTMLAudioElement;
     } | null>(null);
     useEffect(() => {
         const Move = new Audio("/something/assets/Move.mp3");
@@ -176,7 +204,7 @@ function PlayChess() {
     const getValidMoves = useCallback(() => {
         const dests = new Map<Square, Square[]>();
         const moves = chessRef.current.moves({ verbose: true });
-        moves.forEach(m => {
+        moves.forEach((m) => {
             if (!dests.has(m.from)) {
                 dests.set(m.from, []);
             }
@@ -196,7 +224,7 @@ function PlayChess() {
                     chessBoard.clear();
                     chessBoard.put({ type: piece.type, color: piece.color }, fromSquare);
                     const moves = chessBoard.moves({ square: fromSquare, verbose: true });
-                    moves.forEach(m => {
+                    moves.forEach((m) => {
                         if (!premoveDests.has(fromSquare)) {
                             premoveDests.set(fromSquare, []);
                         }
@@ -226,7 +254,9 @@ function PlayChess() {
                 events: {
                     after: async (orig, dest) => {
                         const moves = chessRef.current.moves({ verbose: true });
-                        const isPromotionMove = moves.some(m => m.from === orig && m.to === dest && m.promotion);
+                        const isPromotionMove = moves.some(
+                            (m) => m.from === orig && m.to === dest && m.promotion
+                        );
                         if (isPromotionMove) {
                             setPromotionDialog(true);
                             setPromotionWhite(chessRef.current.turn() == "w");
@@ -234,7 +264,10 @@ function PlayChess() {
                             setPromotion({ from: orig as Square, to: dest as Square });
                             return;
                         }
-                        const moveResult = chessRef.current.move({ from: orig as Square, to: dest as Square });
+                        const moveResult = chessRef.current.move({
+                            from: orig as Square,
+                            to: dest as Square
+                        });
                         groundRef.current?.set({
                             movable: {
                                 dests: getValidMoves()
@@ -301,66 +334,69 @@ function PlayChess() {
             }
         };
     }, [groundRef, getValidMoves, player, getValidPremoves, ai]);
-    const MoveAI = useCallback((e: MessageEvent) => {
-        const AIMove = e.data.move;
-        if (!AIMove) {
-            return;
-        }
-        const AIMoveResult = chessRef.current.move(AIMove);
-        groundRef.current?.move(AIMoveResult.from, AIMoveResult.to);
-        groundRef.current?.set({
-            turnColor: chessRef.current.turn() === "w" ? "white" : "black",
-            movable: {
-                dests: getValidMoves()
-            },
-            premovable: {
-                customDests: getValidPremoves()
-            },
-            check: chessRef.current.isCheck(),
-            fen: chessRef.current.fen()
-        });
-        if (audioRefs.current) {
-            if (AIMoveResult.captured) {
-                audioRefs.current.capture.currentTime = 0;
-                audioRefs.current.capture.play().catch((err) => {
-                    console.log("Audio error:", err);
-                });
-            } else {
-                audioRefs.current.move.currentTime = 0;
-                audioRefs.current.move.play().catch((err) => {
-                    console.log("Audio error:", err);
-                });
+    const MoveAI = useCallback(
+        (e: MessageEvent) => {
+            const AIMove = e.data.move;
+            if (!AIMove) {
+                return;
             }
-        }
-        if (chessRef.current.isGameOver()) {
+            const AIMoveResult = chessRef.current.move(AIMove);
+            groundRef.current?.move(AIMoveResult.from, AIMoveResult.to);
             groundRef.current?.set({
-                viewOnly: true
+                turnColor: chessRef.current.turn() === "w" ? "white" : "black",
+                movable: {
+                    dests: getValidMoves()
+                },
+                premovable: {
+                    customDests: getValidPremoves()
+                },
+                check: chessRef.current.isCheck(),
+                fen: chessRef.current.fen()
             });
-            setTimeout(() => {
-                if (audioRefs.current) {
-                    audioRefs.current.gameEnd.currentTime = 0;
-                    audioRefs.current.gameEnd.play().catch((err) => {
+            if (audioRefs.current) {
+                if (AIMoveResult.captured) {
+                    audioRefs.current.capture.currentTime = 0;
+                    audioRefs.current.capture.play().catch((err) => {
+                        console.log("Audio error:", err);
+                    });
+                } else {
+                    audioRefs.current.move.currentTime = 0;
+                    audioRefs.current.move.play().catch((err) => {
                         console.log("Audio error:", err);
                     });
                 }
-            }, 100);
-            return;
-        }
-        const currentPremove = groundRef.current?.state.premovable.current;
-        if (currentPremove) {
-            const [orig, dest] = currentPremove;
-            const isLegal = chessRef.current.moves({ verbose: true }).some(
-                m => m.from === orig && m.to === dest
-            );
-            if (isLegal) {
-                if (groundRef.current) {
-                    setTimeout(groundRef.current.playPremove, 100);
-                }
-            } else {
-                groundRef.current?.cancelPremove();
             }
-        }
-    }, [getValidMoves, getValidPremoves]);
+            if (chessRef.current.isGameOver()) {
+                groundRef.current?.set({
+                    viewOnly: true
+                });
+                setTimeout(() => {
+                    if (audioRefs.current) {
+                        audioRefs.current.gameEnd.currentTime = 0;
+                        audioRefs.current.gameEnd.play().catch((err) => {
+                            console.log("Audio error:", err);
+                        });
+                    }
+                }, 100);
+                return;
+            }
+            const currentPremove = groundRef.current?.state.premovable.current;
+            if (currentPremove) {
+                const [orig, dest] = currentPremove;
+                const isLegal = chessRef.current
+                    .moves({ verbose: true })
+                    .some((m) => m.from === orig && m.to === dest);
+                if (isLegal) {
+                    if (groundRef.current) {
+                        setTimeout(groundRef.current.playPremove, 100);
+                    }
+                } else {
+                    groundRef.current?.cancelPremove();
+                }
+            }
+        },
+        [getValidMoves, getValidPremoves]
+    );
     useEffect(() => {
         worker.addEventListener("message", MoveAI);
         return () => {
@@ -371,13 +407,13 @@ function PlayChess() {
         return null;
     }
     if (white === "player" && black === "player") {
-        return "WHAT"
+        return "WHAT";
     }
     const handlePromotionSelect = (piece: "q" | "n" | "r" | "b") => {
         if (!promotion) {
             return;
         }
-        const move = {...promotion, promotion: piece};
+        const move = { ...promotion, promotion: piece };
         const moveResult = chessRef.current.move(move);
         if (!groundRef.current) {
             return;
@@ -391,7 +427,7 @@ function PlayChess() {
                 customDests: getValidPremoves()
             },
             check: chessRef.current.isCheck()
-        })
+        });
         if (audioRefs.current) {
             if (moveResult.captured) {
                 audioRefs.current.capture.currentTime = 0;
@@ -407,30 +443,54 @@ function PlayChess() {
         }
         setPromotionDialog(false);
         worker.postMessage({ aiType: ai, fen: chessRef.current.fen() }, {});
-    }
+    };
     return (
         <div style={{ display: "flex", flexWrap: "wrap" }}>
             <AppBar
-                link={[["Something", "/something/"], ["Play", "/something/#/play/"]]} 
-                list={[["Something", [["Main", "/something/"], ["Play", "/something/#/play/"]]]]}
+                link={[
+                    ["Something", "/something/"],
+                    ["Play", "/something/#/play/"]
+                ]}
+                list={[
+                    [
+                        "Something",
+                        [
+                            ["Main", "/something/"],
+                            ["Play", "/something/#/play/"]
+                        ]
+                    ]
+                ]}
                 content={["Something", "/something/"]}
             />
             <Stack sx={{ p: 4, mx: "auto", maxWidth: 1000 }} alignItems="center" spacing={10}>
                 <Typography level="h1">PLAY</Typography>
-                <div style={{ margin: "10px", aspectRatio: "1 / 1", height: "70vh", position: "relative" }}>
+                <div
+                    style={{
+                        margin: "10px",
+                        aspectRatio: "1 / 1",
+                        height: "70vh",
+                        position: "relative"
+                    }}
+                >
                     <div
-                        ref={boardRef} className="chessground"
+                        ref={boardRef}
+                        className="chessground"
                         style={{
-                            margin: 0, aspectRatio: "1 / 1", height: "70vh",
-                            zIndex: 100, position: "absolute"
+                            margin: 0,
+                            aspectRatio: "1 / 1",
+                            height: "70vh",
+                            zIndex: 100,
+                            position: "absolute"
                         }}
                     />
-                    {
-                        promotionDialog &&
+                    {promotionDialog && (
                         <div
                             style={{
-                                background: "rgba(255, 255, 255, 0.7)", zIndex: 101,
-                                position: "absolute", aspectRatio: "1 / 1", height: "70vh"
+                                background: "rgba(255, 255, 255, 0.7)",
+                                zIndex: 101,
+                                position: "absolute",
+                                aspectRatio: "1 / 1",
+                                height: "70vh"
                             }}
                             onClick={() => {
                                 setPromotionDialog(false);
@@ -446,7 +506,7 @@ function PlayChess() {
                                     },
                                     check: chessRef.current.isCheck()
                                 });
-                                console.log(groundRef.current?.state)
+                                console.log(groundRef.current?.state);
                             }}
                         >
                             <span
@@ -457,16 +517,18 @@ function PlayChess() {
                                     cursor: "pointer",
                                     borderRadius: hoveredSquare === 1 ? "0%" : "50%",
                                     backgroundColor: "#b0b0b0",
-                                    boxShadow: 
-                                        hoveredSquare === 1 ?
-                                        "inset 0 0 48px 8px hsl(22 100% 42%)" :
-                                        "inset 0 0 25px 3px gray",
-                                    pointerEvents: "all", position: "absolute",
-                                    width: "12.5%", height: "12.5%"
+                                    boxShadow:
+                                        hoveredSquare === 1
+                                            ? "inset 0 0 48px 8px hsl(22 100% 42%)"
+                                            : "inset 0 0 25px 3px gray",
+                                    pointerEvents: "all",
+                                    position: "absolute",
+                                    width: "12.5%",
+                                    height: "12.5%"
                                 }}
                                 onMouseEnter={() => setHoveredSquare(1)}
                                 onMouseLeave={() => hoveredSquare === 1 && setHoveredSquare(0)}
-                                onClick={e => {
+                                onClick={(e) => {
                                     e.stopPropagation();
                                     handlePromotionSelect("q");
                                 }}
@@ -474,39 +536,42 @@ function PlayChess() {
                                 <span
                                     style={{
                                         transition: "all 150ms ease",
-                                        width: "100%", height: "100%",
-                                        transform:
-                                            hoveredSquare === 1 ?
-                                            "none" : "scale(0.8)",
+                                        width: "100%",
+                                        height: "100%",
+                                        transform: hoveredSquare === 1 ? "none" : "scale(0.8)",
                                         pointerEvents: "none",
-                                        opacity: 1, left: 0, top: 0,
+                                        opacity: 1,
+                                        left: 0,
+                                        top: 0,
                                         position: "absolute",
                                         backgroundSize: "cover",
                                         willChange: "transform",
-                                        backgroundImage:
-                                            promotionWhite ?
-                                            `url(/something/assets/white-queen.svg)` :
-                                            `url(/something/assets/black-queen.svg)`
+                                        backgroundImage: promotionWhite
+                                            ? `url(/something/assets/white-queen.svg)`
+                                            : `url(/something/assets/black-queen.svg)`
                                     }}
                                 />
                             </span>
-                            <span style={{
-                                top: "12.5%",
-                                left: `${promotionWhite ? promotionFile * 12.5 : 87.5 - promotionFile * 12.5}%`,
+                            <span
+                                style={{
+                                    top: "12.5%",
+                                    left: `${promotionWhite ? promotionFile * 12.5 : 87.5 - promotionFile * 12.5}%`,
                                     transition: "all 150ms ease",
                                     cursor: "pointer",
                                     borderRadius: hoveredSquare === 2 ? "0%" : "50%",
                                     backgroundColor: "#b0b0b0",
-                                    boxShadow: 
-                                        hoveredSquare === 2 ?
-                                        "inset 0 0 48px 8px hsl(22 100% 42%)" :
-                                        "inset 0 0 25px 3px gray",
-                                    pointerEvents: "all", position: "absolute",
-                                    width: "12.5%", height: "12.5%"
+                                    boxShadow:
+                                        hoveredSquare === 2
+                                            ? "inset 0 0 48px 8px hsl(22 100% 42%)"
+                                            : "inset 0 0 25px 3px gray",
+                                    pointerEvents: "all",
+                                    position: "absolute",
+                                    width: "12.5%",
+                                    height: "12.5%"
                                 }}
                                 onMouseEnter={() => setHoveredSquare(2)}
                                 onMouseLeave={() => hoveredSquare === 2 && setHoveredSquare(0)}
-                                onClick={e => {
+                                onClick={(e) => {
                                     e.stopPropagation();
                                     handlePromotionSelect("n");
                                 }}
@@ -514,39 +579,42 @@ function PlayChess() {
                                 <span
                                     style={{
                                         transition: "all 150ms ease",
-                                        width: "100%", height: "100%",
-                                        transform:
-                                            hoveredSquare === 2 ?
-                                            "none" : "scale(0.8)",
+                                        width: "100%",
+                                        height: "100%",
+                                        transform: hoveredSquare === 2 ? "none" : "scale(0.8)",
                                         pointerEvents: "none",
-                                        opacity: 1, left: 0, top: 0,
+                                        opacity: 1,
+                                        left: 0,
+                                        top: 0,
                                         position: "absolute",
                                         backgroundSize: "cover",
                                         willChange: "transform",
-                                        backgroundImage:
-                                            promotionWhite ?
-                                            `url(/something/assets/white-knight.svg)` :
-                                            `url(/something/assets/black-knight.svg)`
+                                        backgroundImage: promotionWhite
+                                            ? `url(/something/assets/white-knight.svg)`
+                                            : `url(/something/assets/black-knight.svg)`
                                     }}
                                 />
                             </span>
-                            <span style={{
-                                top: "25%",
-                                left: `${promotionWhite ? promotionFile * 12.5 : 87.5 - promotionFile * 12.5}%`,
+                            <span
+                                style={{
+                                    top: "25%",
+                                    left: `${promotionWhite ? promotionFile * 12.5 : 87.5 - promotionFile * 12.5}%`,
                                     transition: "all 150ms ease",
                                     cursor: "pointer",
                                     borderRadius: hoveredSquare === 3 ? "0%" : "50%",
                                     backgroundColor: "#b0b0b0",
-                                    boxShadow: 
-                                        hoveredSquare === 3 ?
-                                        "inset 0 0 48px 8px hsl(22 100% 42%)" :
-                                        "inset 0 0 25px 3px gray",
-                                    pointerEvents: "all", position: "absolute",
-                                    width: "12.5%", height: "12.5%"
+                                    boxShadow:
+                                        hoveredSquare === 3
+                                            ? "inset 0 0 48px 8px hsl(22 100% 42%)"
+                                            : "inset 0 0 25px 3px gray",
+                                    pointerEvents: "all",
+                                    position: "absolute",
+                                    width: "12.5%",
+                                    height: "12.5%"
                                 }}
                                 onMouseEnter={() => setHoveredSquare(3)}
                                 onMouseLeave={() => hoveredSquare === 3 && setHoveredSquare(0)}
-                                onClick={e => {
+                                onClick={(e) => {
                                     e.stopPropagation();
                                     handlePromotionSelect("r");
                                 }}
@@ -554,39 +622,42 @@ function PlayChess() {
                                 <span
                                     style={{
                                         transition: "all 150ms ease",
-                                        width: "100%", height: "100%",
-                                        transform:
-                                            hoveredSquare === 3 ?
-                                            "none" : "scale(0.8)",
+                                        width: "100%",
+                                        height: "100%",
+                                        transform: hoveredSquare === 3 ? "none" : "scale(0.8)",
                                         pointerEvents: "none",
-                                        opacity: 1, left: 0, top: 0,
+                                        opacity: 1,
+                                        left: 0,
+                                        top: 0,
                                         position: "absolute",
                                         backgroundSize: "cover",
                                         willChange: "transform",
-                                        backgroundImage:
-                                            promotionWhite ?
-                                            `url(/something/assets/white-rook.svg)` :
-                                            `url(/something/assets/black-rook.svg)`
+                                        backgroundImage: promotionWhite
+                                            ? `url(/something/assets/white-rook.svg)`
+                                            : `url(/something/assets/black-rook.svg)`
                                     }}
                                 />
                             </span>
-                            <span style={{
-                                top: "37.5%",
-                                left: `${promotionWhite ? promotionFile * 12.5 : 87.5 - promotionFile * 12.5}%`,
+                            <span
+                                style={{
+                                    top: "37.5%",
+                                    left: `${promotionWhite ? promotionFile * 12.5 : 87.5 - promotionFile * 12.5}%`,
                                     transition: "all 150ms ease",
                                     cursor: "pointer",
                                     borderRadius: hoveredSquare === 4 ? "0%" : "50%",
                                     backgroundColor: "#b0b0b0",
-                                    boxShadow: 
-                                        hoveredSquare === 4 ?
-                                        "inset 0 0 48px 8px hsl(22 100% 42%)" :
-                                        "inset 0 0 25px 3px gray",
-                                    pointerEvents: "all", position: "absolute",
-                                    width: "12.5%", height: "12.5%"
+                                    boxShadow:
+                                        hoveredSquare === 4
+                                            ? "inset 0 0 48px 8px hsl(22 100% 42%)"
+                                            : "inset 0 0 25px 3px gray",
+                                    pointerEvents: "all",
+                                    position: "absolute",
+                                    width: "12.5%",
+                                    height: "12.5%"
                                 }}
                                 onMouseEnter={() => setHoveredSquare(4)}
                                 onMouseLeave={() => hoveredSquare === 4 && setHoveredSquare(0)}
-                                onClick={e => {
+                                onClick={(e) => {
                                     e.stopPropagation();
                                     handlePromotionSelect("b");
                                 }}
@@ -594,24 +665,24 @@ function PlayChess() {
                                 <span
                                     style={{
                                         transition: "all 150ms ease",
-                                        width: "100%", height: "100%",
-                                        transform:
-                                            hoveredSquare === 4 ?
-                                            "none" : "scale(0.8)",
+                                        width: "100%",
+                                        height: "100%",
+                                        transform: hoveredSquare === 4 ? "none" : "scale(0.8)",
                                         pointerEvents: "none",
-                                        opacity: 1, left: 0, top: 0,
+                                        opacity: 1,
+                                        left: 0,
+                                        top: 0,
                                         position: "absolute",
                                         backgroundSize: "cover",
                                         willChange: "transform",
-                                        backgroundImage:
-                                            promotionWhite ?
-                                            `url(/something/assets/white-bishop.svg)` :
-                                            `url(/something/assets/black-bishop.svg)`
+                                        backgroundImage: promotionWhite
+                                            ? `url(/something/assets/white-bishop.svg)`
+                                            : `url(/something/assets/black-bishop.svg)`
                                     }}
                                 />
                             </span>
                         </div>
-                    }
+                    )}
                 </div>
             </Stack>
         </div>

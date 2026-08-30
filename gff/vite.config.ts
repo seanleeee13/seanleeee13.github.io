@@ -6,6 +6,6 @@ export default defineConfig({
     plugins: [react()],
     base: "/gff/",
     server: {
-        port: 5174,
-    },
+        port: 5174
+    }
 });

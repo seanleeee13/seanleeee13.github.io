@@ -21,7 +21,7 @@ import {
     supabase,
     type LevelInterface,
     type ListInterface,
-    type PListInterface,
+    type PListInterface
 } from "components/utils";
 import { cdavg, pdavg } from "../utils/calculate_difficulty_avg";
 import { ExpandMoreIcon, FilterListIcon, SearchIcon } from "components/assets";
@@ -40,13 +40,13 @@ function LevelsMain() {
     const [isFilterOpen, setIsFilterOpen] = useState(false);
     const [dimensions, setDimensions] = useState({
         width: window.innerWidth,
-        height: window.innerHeight,
+        height: window.innerHeight
     });
     useEffect(() => {
         const handleResize = () => {
             setDimensions({
                 width: window.innerWidth,
-                height: window.innerHeight,
+                height: window.innerHeight
             });
         };
         window.addEventListener("resize", handleResize);
@@ -59,7 +59,7 @@ function LevelsMain() {
                 const [levelResult, listResult, plistResult] = await Promise.all([
                     supabase.from("level").select("*").order("level_id", { ascending: false }),
                     supabase.from("list").select("*").order("id"),
-                    supabase.from("plist").select("*").order("id"),
+                    supabase.from("plist").select("*").order("id")
                 ]);
                 if (levelResult.error) {
                     throw levelResult.error;
@@ -91,7 +91,7 @@ function LevelsMain() {
     let cardSize: { width: number | string; height: number | string; side: "row" | "column" } = {
         width: 0,
         height: 0,
-        side: "row",
+        side: "row"
     };
     let fontSizeA: "h4" | "title-lg" | "title-md";
     let fontSizeB: "title-md" | "title-sm" | "body-lg";
@@ -145,7 +145,7 @@ function LevelsMain() {
         .filter(
             (level) =>
                 level.level_name.toLowerCase().includes(searchData.toLowerCase()) ||
-                level.level_id === +searchData,
+                level.level_id === +searchData
         )
         .toSorted((a, b) => {
             if (sortType === "id") {
@@ -182,18 +182,28 @@ function LevelsMain() {
     return (
         <>
             <AppBar
-                link={[["GFF", "/gff/"], ["Level", "q:/gff/#/levels"]]}
-                list={[...data.map((text) => [
-                    text[0][1], text.slice(1).map(
-                        (text_data) => [text_data[1], `/gff/#/lists/${text_data[0]}/`]
-                    )
-                ]), [
-                    "GFF", [
-                        ["리스트 목록", "/gff/#/lists/"],
-                        ["레벨 검색하기", "q:/gff/#/levels"],
-                        ["레벨 업로드", "/gff/#/upload/"]
-                    ]
-                ]] as MenuListType}
+                link={[
+                    ["GFF", "/gff/"],
+                    ["Level", "q:/gff/#/levels"]
+                ]}
+                list={
+                    [
+                        ...data.map((text) => [
+                            text[0][1],
+                            text
+                                .slice(1)
+                                .map((text_data) => [text_data[1], `/gff/#/lists/${text_data[0]}/`])
+                        ]),
+                        [
+                            "GFF",
+                            [
+                                ["리스트 목록", "/gff/#/lists/"],
+                                ["레벨 검색하기", "q:/gff/#/levels"],
+                                ["레벨 업로드", "/gff/#/upload/"]
+                            ]
+                        ]
+                    ] as MenuListType
+                }
                 content={["GFF", "/gff/"]}
             />
             <Stack spacing={2} sx={{ pb: 7, pt: 5, px: "12.5%" }}>
@@ -235,7 +245,7 @@ function LevelsMain() {
                 <AccordionGroup
                     transition={{
                         initial: "0.2s ease-out",
-                        expanded: "0.2s ease",
+                        expanded: "0.2s ease"
                     }}
                     sx={{ width: "75vw", position: "relative", overflow: "hidden", p: 0 }}
                 >
@@ -269,9 +279,9 @@ function LevelsMain() {
                             [`& .${selectClasses.indicator}`]: {
                                 transition: "0.2s",
                                 [`&.${selectClasses.expanded}`]: {
-                                    transform: "rotate(-180deg)",
-                                },
-                            },
+                                    transform: "rotate(-180deg)"
+                                }
+                            }
                         }}
                     >
                         <Option value="id">Level ID</Option>
@@ -313,7 +323,7 @@ function LevelsMain() {
                                         my: 0,
                                         height: cardSize.height,
                                         overflow: "hidden",
-                                        p: 0,
+                                        p: 0
                                     }}
                                 >
                                     <CardContent sx={{ height: "100%" }}>
@@ -334,7 +344,7 @@ function LevelsMain() {
                                                     href={"/gff/#/levels/" + sel_level?.level_id}
                                                     sx={{
                                                         color: "black",
-                                                        "&:hover": { textDecorationColor: "black" },
+                                                        "&:hover": { textDecorationColor: "black" }
                                                     }}
                                                 >
                                                     {sel_level.level_name}

@@ -16,7 +16,7 @@ import {
     type LevelInterface,
     type ListInterface,
     type PListInterface,
-    type UserInterface,
+    type UserInterface
 } from "components/utils";
 import Checkbox from "@mui/joy/Checkbox";
 import { AppBar } from "components";
@@ -35,7 +35,7 @@ function Upload() {
         co_creators: [] as string[],
         verifier: "",
         verified: true,
-        progress: null as null | number,
+        progress: null as null | number
     });
     const [levelUploadErrorData, ___] = useState({
         id: false,
@@ -45,7 +45,7 @@ function Upload() {
         co_creators: false,
         verifier: false,
         verified: false,
-        progress: false,
+        progress: false
     });
     const [loading, setLoading] = useState<boolean>(true);
     useEffect(() => {
@@ -53,7 +53,7 @@ function Upload() {
             try {
                 setLoading(true);
                 const {
-                    data: { session },
+                    data: { session }
                 } = await supabase.auth.getSession();
                 if (session?.user) {
                     const [levelResult, listResult, plistResult, userResult, userListResult] =
@@ -62,7 +62,7 @@ function Upload() {
                             supabase.from("list").select("*").order("id"),
                             supabase.from("plist").select("*").order("id"),
                             supabase.from("user").select("*").eq("id", session.user.id).single(),
-                            supabase.from("user").select("user_metadata"),
+                            supabase.from("user").select("user_metadata")
                         ]);
                     if (levelResult.error) {
                         throw levelResult.error;
@@ -95,7 +95,7 @@ function Upload() {
                         setUserNameList(
                             userListResult.data
                                 .map((data) => data?.user_metadata?.["gff:id"])
-                                .filter((val) => !!val) as string[],
+                                .filter((val) => !!val) as string[]
                         );
                     }
                 }
@@ -132,18 +132,28 @@ function Upload() {
     return (
         <>
             <AppBar
-                link={[["GFF", "/gff/"], ["Upload", "/gff/#/upload/"]]}
-                list={[...data.map((text) => [
-                    text[0][1], text.slice(1).map(
-                        (text_data) => [text_data[1], `/gff/#/lists/${text_data[0]}/`]
-                    )
-                ]), [
-                    "GFF", [
-                        ["리스트 목록", "/gff/#/lists/"],
-                        ["레벨 검색하기", "/gff/#/levels/"],
-                        ["레벨 업로드", "/gff/#/upload/"]
-                    ]
-                ]] as MenuListType}
+                link={[
+                    ["GFF", "/gff/"],
+                    ["Upload", "/gff/#/upload/"]
+                ]}
+                list={
+                    [
+                        ...data.map((text) => [
+                            text[0][1],
+                            text
+                                .slice(1)
+                                .map((text_data) => [text_data[1], `/gff/#/lists/${text_data[0]}/`])
+                        ]),
+                        [
+                            "GFF",
+                            [
+                                ["리스트 목록", "/gff/#/lists/"],
+                                ["레벨 검색하기", "/gff/#/levels/"],
+                                ["레벨 업로드", "/gff/#/upload/"]
+                            ]
+                        ]
+                    ] as MenuListType
+                }
                 content={["GFF", "/gff/"]}
             />
             <Stack sx={{ p: 4, mx: "auto", my: 5, maxWidth: 1000 }} spacing={3}>
@@ -185,7 +195,7 @@ function Upload() {
                                             }
                                             setLevelUploadInputData({
                                                 ...levelUploadInputData,
-                                                id: val,
+                                                id: val
                                             });
                                         }}
                                     />
@@ -200,7 +210,7 @@ function Upload() {
                                             val = val.slice(0, 20);
                                             setLevelUploadInputData({
                                                 ...levelUploadInputData,
-                                                name: val,
+                                                name: val
                                             });
                                         }}
                                     />
@@ -214,7 +224,7 @@ function Upload() {
                                             onChange={(__, newValue) => {
                                                 setLevelUploadInputData({
                                                     ...levelUploadInputData,
-                                                    host: newValue as string,
+                                                    host: newValue as string
                                                 });
                                             }}
                                         >
@@ -235,7 +245,7 @@ function Upload() {
                                             onChange={(__, newValue) => {
                                                 setLevelUploadInputData({
                                                     ...levelUploadInputData,
-                                                    publish: newValue as string,
+                                                    publish: newValue as string
                                                 });
                                             }}
                                         >
@@ -254,7 +264,7 @@ function Upload() {
                                             onChange={(__, newValue) => {
                                                 setLevelUploadInputData({
                                                     ...levelUploadInputData,
-                                                    co_creators: newValue as string[],
+                                                    co_creators: newValue as string[]
                                                 });
                                             }}
                                         >
@@ -278,7 +288,7 @@ function Upload() {
                                             onChange={(__, newValue) => {
                                                 setLevelUploadInputData({
                                                     ...levelUploadInputData,
-                                                    verifier: newValue as string,
+                                                    verifier: newValue as string
                                                 });
                                             }}
                                         >
@@ -302,7 +312,7 @@ function Upload() {
                                                     verified: event.target.checked,
                                                     progress: !event.target.checked
                                                         ? levelUploadInputData.progress
-                                                        : null,
+                                                        : null
                                                 });
                                             }}
                                         />
@@ -332,7 +342,7 @@ function Upload() {
                                                     progress:
                                                         event.target.value === ""
                                                             ? null
-                                                            : +event.target.value,
+                                                            : +event.target.value
                                                 });
                                             }}
                                         />

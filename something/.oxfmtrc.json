@@ -1,7 +1,9 @@
 {
+    "$schema": "./node_modules/oxfmt/configuration_schema.json",
     "singleQuote": false,
     "quoteProps": "as-needed",
     "semi": true,
     "tabWidth": 4,
-    "insertFinalNewline": false
+    "insertFinalNewline": false,
+    "trailingComma": "none"
 }

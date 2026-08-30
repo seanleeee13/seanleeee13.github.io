@@ -15,7 +15,7 @@ const router = createHashRouter([
     { path: "/levels/:level_list/:level_id", element: <Levels /> },
     { path: "/lists", element: <ListsMain /> },
     { path: "/levels", element: <LevelsMain /> },
-    { path: "/upload", element: <Upload /> },
+    { path: "/upload", element: <Upload /> }
 ]);
 
 function Router() {
@@ -25,7 +25,7 @@ function Router() {
         const fetchTableData = async () => {
             try {
                 const {
-                    data: { session },
+                    data: { session }
                 } = await supabase.auth.getSession();
                 if (session?.user) {
                     const userResult = await supabase

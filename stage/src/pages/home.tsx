@@ -10,7 +10,8 @@ function Home() {
     return (
         <>
             <AppBar
-                link={[["Stage", "/stage/"]]} list={[["Stage", [["Main", "/stage/"]]]]}
+                link={[["Stage", "/stage/"]]}
+                list={[["Stage", [["Main", "/stage/"]]]]}
                 content={["Stage", "/stage/"]}
             />
             <Stack sx={{ p: 4, mx: "auto", alignItems: "center" }} spacing={4}>
@@ -24,7 +25,7 @@ function Home() {
                         width: "70vw",
                         aspectRatio: "3 / 1",
                         display: "block",
-                        "&:hover": { textDecoration: "none" },
+                        "&:hover": { textDecoration: "none" }
                     }}
                 />
                 <Stack spacing={1} direction="row" width="70vw">
@@ -43,7 +44,7 @@ function Home() {
                             border: "1.5px solid",
                             borderColor: "black",
                             borderRadius: "sm",
-                            p: 6,
+                            p: 6
                         }}
                         spacing={3}
                     >
