@@ -226,8 +226,7 @@ function Lists() {
                                 </CardContent>
                             </Card>
                         ) : null;
-                    })
-                }
+                    })}
             </Box>
         </>
     );

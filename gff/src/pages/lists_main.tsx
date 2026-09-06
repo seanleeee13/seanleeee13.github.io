@@ -95,10 +95,7 @@ function ListsMain() {
                 content={["GFF", "/gff/"]}
             />
             <Box sx={{ overflowY: "auto", height: "calc(100vh - 64px)" }}>
-                <Stack
-                    sx={{ p: 4, mx: "auto", my: 5, maxWidth: 1000 }}
-                    spacing={3}
-                >
+                <Stack sx={{ p: 4, mx: "auto", my: 5, maxWidth: 1000 }} spacing={3}>
                     <Typography level="h3">리스트 목록</Typography>
                     <AccordionGroup
                         sx={{

@@ -93,10 +93,7 @@ function Home() {
                 content={["GFF", "/gff/"]}
             />
             <Box sx={{ overflowY: "auto", height: "calc(100vh - 64px)" }}>
-                <Stack
-                    sx={{ p: 4, mx: "auto", my: 5, maxWidth: 1000 }}
-                    spacing={3}
-                >
+                <Stack sx={{ p: 4, mx: "auto", my: 5, maxWidth: 1000 }} spacing={3}>
                     <Typography level="h1">Geometry Dash Friend Forum / GFF</Typography>
                     <Typography level="h3">1. 리스트 목록</Typography>
                     <AccordionGroup
@@ -161,17 +158,25 @@ function Home() {
                                         3. 1~2의 행위가 3회 이상 지속적으로 반복된 경우 (벌점 4점)
                                     </Typography>
                                     <Typography level="title-sm">
-                                        4. 1~2의 행위가 경고 문자 확인에도 불구하고 5회 이상 지속적으로
-                                        반복되거나 한 번에 많은 조작을 해서 바로잡기가 힘들게 된 경우
-                                        (벌점 7점)
+                                        4. 1~2의 행위가 경고 문자 확인에도 불구하고 5회 이상
+                                        지속적으로 반복되거나 한 번에 많은 조작을 해서 바로잡기가
+                                        힘들게 된 경우 (벌점 7점)
                                     </Typography>
                                     <Typography level="title-sm">
                                         벌점 1~2점: 경고 문자 및 이메일 발신
                                     </Typography>
-                                    <Typography level="title-sm">벌점 3점: 3일 간 GFF 차단</Typography>
-                                    <Typography level="title-sm">벌점 5점: 7일 간 GFF 차단</Typography>
-                                    <Typography level="title-sm">벌점 8점: 30일 간 GFF 차단</Typography>
-                                    <Typography level="title-sm">벌점 10점: 무기한 GFF 차단</Typography>
+                                    <Typography level="title-sm">
+                                        벌점 3점: 3일 간 GFF 차단
+                                    </Typography>
+                                    <Typography level="title-sm">
+                                        벌점 5점: 7일 간 GFF 차단
+                                    </Typography>
+                                    <Typography level="title-sm">
+                                        벌점 8점: 30일 간 GFF 차단
+                                    </Typography>
+                                    <Typography level="title-sm">
+                                        벌점 10점: 무기한 GFF 차단
+                                    </Typography>
                                 </Stack>
                             </AccordionDetails>
                         </Accordion>

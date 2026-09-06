@@ -16,8 +16,13 @@ function Home() {
             />
             <Stack
                 sx={{
-                    p: 4, mx: "auto", alignItems: "center", overflowY: "auto", height: "calc(100vh - 64px)"
-                }} spacing={4}
+                    p: 4,
+                    mx: "auto",
+                    alignItems: "center",
+                    overflowY: "auto",
+                    height: "calc(100vh - 64px)"
+                }}
+                spacing={4}
             >
                 <Link
                     href="/stage/"

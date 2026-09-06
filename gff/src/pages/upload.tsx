@@ -191,7 +191,9 @@ function Upload() {
                                         <Stack spacing={2} direction="row" alignItems="center">
                                             <Input
                                                 placeholder="ID"
-                                                endDecorator={<Typography textColor="red">*</Typography>}
+                                                endDecorator={
+                                                    <Typography textColor="red">*</Typography>
+                                                }
                                                 error={levelUploadErrorData.id}
                                                 value={levelUploadInputData.id}
                                                 sx={{ flexGrow: 1 }}
@@ -213,7 +215,11 @@ function Upload() {
                                             <Checkbox
                                                 label="Is GDPS"
                                                 checked={levelUploadInputData.isGDPS}
-                                                color={levelUploadErrorData.isGDPS ? "danger" : "primary"}
+                                                color={
+                                                    levelUploadErrorData.isGDPS
+                                                        ? "danger"
+                                                        : "primary"
+                                                }
                                                 onChange={(event) => {
                                                     setLevelUploadInputData({
                                                         ...levelUploadInputData,
@@ -232,12 +238,14 @@ function Upload() {
                                                         </Typography>
                                                     </Box>
                                                 }
-                                                variant="solid" color="primary"
+                                                variant="solid"
+                                                color="primary"
                                             >
                                                 <div
                                                     className="MuiAvatar-root MuiAvatar-variantSolid MuiAvatar-colorPrimary MuiAvatar-sizeSm css-1eqmqvu-JoyAvatar-root"
                                                     style={{
-                                                        background: "radial-gradient(circle, var(--joy-palette-primary-500) 45%, transparent 70.71%)",
+                                                        background:
+                                                            "radial-gradient(circle, var(--joy-palette-primary-500) 45%, transparent 70.71%)",
                                                         borderRadius: "50%",
                                                         width: "40px",
                                                         height: "40px",
@@ -249,12 +257,16 @@ function Upload() {
                                                         justifyContent: "center",
                                                         display: "inline-flex"
                                                     }}
-                                                >?</div>
+                                                >
+                                                    ?
+                                                </div>
                                             </Tooltip>
                                         </Stack>
                                         <Input
                                             placeholder="Level Name"
-                                            endDecorator={<Typography textColor="red">*</Typography>}
+                                            endDecorator={
+                                                <Typography textColor="red">*</Typography>
+                                            }
                                             error={levelUploadErrorData.name}
                                             value={levelUploadInputData.name}
                                             onChange={(event) => {
@@ -282,7 +294,10 @@ function Upload() {
                                                 }}
                                             >
                                                 {[users?.user_metadata?.["gff:id"]].map((text) => (
-                                                    <Option key={`option-host-${text}`} value={text}>
+                                                    <Option
+                                                        key={`option-host-${text}`}
+                                                        value={text}
+                                                    >
                                                         {text}
                                                     </Option>
                                                 ))}
@@ -362,7 +377,11 @@ function Upload() {
                                             <Checkbox
                                                 label="Verified"
                                                 checked={levelUploadInputData.verified}
-                                                color={levelUploadErrorData.verified ? "danger" : "primary"}
+                                                color={
+                                                    levelUploadErrorData.verified
+                                                        ? "danger"
+                                                        : "primary"
+                                                }
                                                 onChange={(event) => {
                                                     setLevelUploadInputData({
                                                         ...levelUploadInputData,
@@ -419,14 +438,12 @@ function Upload() {
                                         />
                                         <Button
                                             startDecorator={
-                                                levelUploadInputData.thumbnail === null
-                                                ? <UploadIcon />
-                                                : null
+                                                levelUploadInputData.thumbnail === null ? (
+                                                    <UploadIcon />
+                                                ) : null
                                             }
                                             endDecorator={
-                                                levelUploadInputData.thumbnail === null
-                                                ? null
-                                                : (
+                                                levelUploadInputData.thumbnail === null ? null : (
                                                     <IconButton
                                                         size="sm"
                                                         sx={{
@@ -449,18 +466,19 @@ function Upload() {
                                             sx={{
                                                 width: "fit-content",
                                                 height: "44px",
-                                                pr: levelUploadInputData.thumbnail === null ? "16px" : "6px",
+                                                pr:
+                                                    levelUploadInputData.thumbnail === null
+                                                        ? "16px"
+                                                        : "6px",
                                                 "&:has(button:hover)": {
                                                     backgroundColor: "transparent"
                                                 }
                                             }}
                                             component="label"
                                         >
-                                            {
-                                                levelUploadInputData.thumbnail === null
+                                            {levelUploadInputData.thumbnail === null
                                                 ? "Upload Thumbnail Image"
-                                                : levelUploadInputData.thumbnail.name
-                                            }
+                                                : levelUploadInputData.thumbnail.name}
                                             <input
                                                 type="file"
                                                 style={{

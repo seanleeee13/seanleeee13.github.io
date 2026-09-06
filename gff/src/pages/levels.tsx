@@ -140,7 +140,11 @@ function Levels() {
             <Box sx={{ overflowY: "auto", height: "calc(100vh - 64px)" }}>
                 <Stack
                     sx={{
-                        p: 4, mx: "auto", my: 5, maxWidth: 1000, alignItems: "center"
+                        p: 4,
+                        mx: "auto",
+                        my: 5,
+                        maxWidth: 1000,
+                        alignItems: "center"
                     }}
                     spacing={3}
                 >
@@ -173,7 +177,7 @@ function Levels() {
                             sx={{ width: "55%", aspectRatio: "16 / 9" }}
                         />
                     ) : level_info.imbed_image.includes("youtu.be") ||
-                    level_info.imbed_image.includes("youtube.com") ? (
+                      level_info.imbed_image.includes("youtube.com") ? (
                         <iframe
                             src={level_info.imbed_image}
                             sandbox="allow-scripts allow-same-origin allow-presentation"
@@ -198,7 +202,7 @@ function Levels() {
                         등재일: {level_info.upload_time.split("T")[0]}
                         {level_list
                             ? ` / ${level_list} 1위 기간: ` +
-                            `${lists.find((item) => item.name === level_list)?.levels.find((item) => item[0] === +level_id)?.[1]}`
+                              `${lists.find((item) => item.name === level_list)?.levels.find((item) => item[0] === +level_id)?.[1]}`
                             : ""}
                     </Typography>
                     {level_info.victory.length === 0 ? (

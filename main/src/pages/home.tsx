@@ -146,7 +146,8 @@ function MyPage() {
             />
             <Box sx={{ overflowY: "auto", height: "calc(100vh - 64px)" }}>
                 <Stack
-                    direction="column" spacing={5}
+                    direction="column"
+                    spacing={5}
                     sx={{ p: 4, mx: "auto", my: 5, maxWidth: 1000 }}
                 >
                     <Typography level="h1">환영합니다, {users?.name}님!</Typography>
@@ -191,7 +192,9 @@ function MyPage() {
                                         >
                                             {name}
                                         </Typography>
-                                        <Typography level="body-lg">{descriptionmap[id]}</Typography>
+                                        <Typography level="body-lg">
+                                            {descriptionmap[id]}
+                                        </Typography>
                                         <Typography level="body-sm">Permission: {role}</Typography>
                                     </Card>
                                 );
@@ -253,7 +256,8 @@ function IntroPage() {
             />
             <Box sx={{ overflowY: "auto", height: "calc(100vh - 64px)" }}>
                 <Stack
-                    direction="column" spacing={4}
+                    direction="column"
+                    spacing={4}
                     sx={{ p: 4, mx: "auto", my: 5, maxWidth: 1000 }}
                 >
                     <Stack spacing={1.5}>

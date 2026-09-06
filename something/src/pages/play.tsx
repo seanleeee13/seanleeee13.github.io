@@ -43,7 +43,9 @@ function PlaySelect() {
         } else {
             sp = { white: p1, black: p2 };
         }
-        navigate(`/play?white=${encodeURIComponent(sp.white)}&black=${encodeURIComponent(sp.black)}`)
+        navigate(
+            `/play?white=${encodeURIComponent(sp.white)}&black=${encodeURIComponent(sp.black)}`
+        );
     };
     return (
         <>
@@ -240,7 +242,7 @@ function PlayChess() {
         chessRef.current.setHeader("Round", "1");
         chessRef.current.setHeader("White", white);
         chessRef.current.setHeader("Black", black);
-    }, []);
+    }, [white, black]);
     useEffect(() => {
         const Move = new Audio("/something/assets/Move.mp3");
         const Capture = new Audio("/something/assets/Capture.mp3");
@@ -277,16 +279,22 @@ function PlayChess() {
                     if (piece.type === "p") {
                         const enemyColor = piece.color === "w" ? "b" : "w";
                         const dir = piece.color === "w" ? 1 : -1;
-                        const nextRank = (8 - r) + dir;
+                        const nextRank = 8 - r + dir;
                         if (c > 0) {
-                            chessBoard.put({ type: "p", color: enemyColor }, `${String.fromCharCode(97 + c - 1)}${nextRank}` as Square);
+                            chessBoard.put(
+                                { type: "p", color: enemyColor },
+                                `${String.fromCharCode(97 + c - 1)}${nextRank}` as Square
+                            );
                         }
                         if (c < 7) {
-                            chessBoard.put({ type: "p", color: enemyColor }, `${String.fromCharCode(97 + c + 1)}${nextRank}` as Square);
+                            chessBoard.put(
+                                { type: "p", color: enemyColor },
+                                `${String.fromCharCode(97 + c + 1)}${nextRank}` as Square
+                            );
                         }
                     }
                     if (piece.type === "k") {
-                        const {k, q} = chessRef.current.getCastlingRights(piece.color);
+                        const { k, q } = chessRef.current.getCastlingRights(piece.color);
                         const rookRank = piece.color === "w" ? 1 : 8;
                         if (k) {
                             chessBoard.put({ type: "r", color: piece.color }, `h${rookRank}`);
@@ -294,7 +302,7 @@ function PlayChess() {
                         if (q) {
                             chessBoard.put({ type: "r", color: piece.color }, `a${rookRank}`);
                         }
-                        chessBoard.setCastlingRights(piece.color, {k, q});
+                        chessBoard.setCastlingRights(piece.color, { k, q });
                     }
                     const moves = chessBoard.moves({ square: fromSquare, verbose: true });
                     moves.forEach((m) => {
@@ -334,7 +342,6 @@ function PlayChess() {
         } else {
             setEndDialog("none");
         }
-        workerRef.current?.removeEventListener("message", MoveAI);
         workerRef.current?.terminate();
         workerRef.current = null;
     }, []);
@@ -412,7 +419,9 @@ function PlayChess() {
                         }
                         workerRef.current?.postMessage(
                             {
-                                aiType: players[chessRef.current.turn() === "w" ? "white" : "black"][1],
+                                aiType: players[
+                                    chessRef.current.turn() === "w" ? "white" : "black"
+                                ][1],
                                 fen: chessRef.current.fen()
                             },
                             {}
@@ -445,7 +454,7 @@ function PlayChess() {
                 groundRef.current.destroy();
             }
         };
-    }, [groundRef, getValidMoves, player, getValidPremoves, handleGameEnd]);
+    }, [groundRef, getValidMoves, player, getValidPremoves, handleGameEnd, players]);
     const MoveAI = useCallback(
         (e: MessageEvent) => {
             const AIMove = e.data.move;
@@ -495,10 +504,13 @@ function PlayChess() {
             }
             if (player === "none" || player === "both") {
                 if (player === "none") {
-                    workerRef.current?.postMessage({
-                        aiType: players[chessRef.current.turn() === "w" ? "white" : "black"][1],
-                        fen: chessRef.current.fen()
-                    }, {});
+                    workerRef.current?.postMessage(
+                        {
+                            aiType: players[chessRef.current.turn() === "w" ? "white" : "black"][1],
+                            fen: chessRef.current.fen()
+                        },
+                        {}
+                    );
                 }
             } else {
                 const currentPremove = groundRef.current?.state.premovable.current;
@@ -517,7 +529,7 @@ function PlayChess() {
                 }
             }
         },
-        [getValidMoves, getValidPremoves, handleGameEnd]
+        [getValidMoves, getValidPremoves, handleGameEnd, player, players]
     );
     useEffect(() => {
         const worker = new Worker(new URL("../core/core.worker.ts", import.meta.url), {
@@ -532,10 +544,13 @@ function PlayChess() {
         };
     }, [MoveAI]);
     useEffect(() => {
-        if (white !== "player") {
-            workerRef.current?.postMessage({ aiType: players.white[1], fen: chessRef.current.fen() }, {});
+        if (!players.white[0]) {
+            workerRef.current?.postMessage(
+                { aiType: players.white[1], fen: chessRef.current.fen() },
+                {}
+            );
         }
-    }, [white, black, players]);
+    }, [players]);
     const isWhiteInvalid = !white || (white !== "player" && !Object.keys(AIList).includes(white));
     const isBlackInvalid = !black || (black !== "player" && !Object.keys(AIList).includes(black));
     if (isWhiteInvalid && isBlackInvalid) {
@@ -582,10 +597,13 @@ function PlayChess() {
             }
         }
         setPromotionDialog(false);
-        workerRef.current?.postMessage({
-            aiType: players[chessRef.current.turn() === "w" ? "white" : "black"][1],
-            fen: chessRef.current.fen()
-        }, {});
+        workerRef.current?.postMessage(
+            {
+                aiType: players[chessRef.current.turn() === "w" ? "white" : "black"][1],
+                fen: chessRef.current.fen()
+            },
+            {}
+        );
     };
     return (
         <div style={{ display: "flex", flexWrap: "wrap" }}>
@@ -690,7 +708,10 @@ function PlayChess() {
                                             variant="outlined"
                                             onClick={async (event) => {
                                                 const button = event.currentTarget as HTMLElement;
-                                                if (!button || button.textContent === "복사 완료!") {
+                                                if (
+                                                    !button ||
+                                                    button.textContent === "복사 완료!"
+                                                ) {
                                                     return;
                                                 }
                                                 try {

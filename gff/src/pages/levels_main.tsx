@@ -308,7 +308,12 @@ function LevelsMain() {
                     <Grid
                         container
                         spacing={4}
-                        sx={{ width: "fit-content", mx: "auto", justifyContent: "center", flexGrow: 1 }}
+                        sx={{
+                            width: "fit-content",
+                            mx: "auto",
+                            justifyContent: "center",
+                            flexGrow: 1
+                        }}
                     >
                         {sorted.map((text, index) => {
                             let sel_level = levels.find((item) => item.level_id === text.level_id);
@@ -342,10 +347,14 @@ function LevelsMain() {
                                                     <Link
                                                         level={fontSizeA}
                                                         fontWeight="xl"
-                                                        href={"/gff/#/levels/" + sel_level?.level_id}
+                                                        href={
+                                                            "/gff/#/levels/" + sel_level?.level_id
+                                                        }
                                                         sx={{
                                                             color: "black",
-                                                            "&:hover": { textDecorationColor: "black" }
+                                                            "&:hover": {
+                                                                textDecorationColor: "black"
+                                                            }
                                                         }}
                                                     >
                                                         {sel_level.level_name}

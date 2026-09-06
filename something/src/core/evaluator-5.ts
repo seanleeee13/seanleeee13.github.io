@@ -43,8 +43,9 @@ function sortMvvlva(moves: string[], chess: Chess) {
     for (let i = 0; i < moves.length; i++) {
         if (moves[i].includes("x")) {
             scores[i] =
-                PIECE_VALUES[getCaptured(moves[i], chess)] * 10 - PIECE_VALUES[getPiece(moves[i])]
-                + Math.random() * 0.1;
+                PIECE_VALUES[getCaptured(moves[i], chess)] * 10 -
+                PIECE_VALUES[getPiece(moves[i])] +
+                Math.random() * 0.1;
         } else {
             scores[i] = -INF_SCORE + Math.random() * 0.1;
         }
