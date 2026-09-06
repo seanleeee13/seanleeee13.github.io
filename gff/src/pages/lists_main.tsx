@@ -11,6 +11,7 @@ import { useState, useEffect } from "react";
 import { supabase, type ListInterface, type PListInterface } from "components/utils";
 import { AppBar } from "components";
 import { ExpandMoreIcon } from "components/assets";
+import { Box } from "@mui/joy";
 
 function ListsMain() {
     const [lists, setLists] = useState<ListInterface[]>([]);
@@ -93,42 +94,47 @@ function ListsMain() {
                 }
                 content={["GFF", "/gff/"]}
             />
-            <Stack sx={{ p: 4, mx: "auto", my: 5, maxWidth: 1000 }} spacing={3}>
-                <Typography level="h3">리스트 목록</Typography>
-                <AccordionGroup
-                    sx={{
-                        maxWidth: 400,
-                        [`& .${accordionSummaryClasses.indicator}`]: {
-                            transition: "0.2s"
-                        },
-                        [`& [aria-expanded="true"] .${accordionSummaryClasses.indicator}`]: {
-                            transform: "rotate(180deg)"
-                        }
-                    }}
-                    color="primary"
-                    variant="outlined"
+            <Box sx={{ overflowY: "auto", height: "calc(100vh - 64px)" }}>
+                <Stack
+                    sx={{ p: 4, mx: "auto", my: 5, maxWidth: 1000 }}
+                    spacing={3}
                 >
-                    {data.map((text) => (
-                        <Accordion key={`map-group-${text}`}>
-                            <AccordionSummary indicator={<ExpandMoreIcon />}>
-                                <Typography component="span">
-                                    {text[0][1]} / {text[0][0]}
-                                </Typography>
-                            </AccordionSummary>
-                            <AccordionDetails>
-                                {text.slice(1).map((text_data) => (
-                                    <Link
-                                        href={"gff/#/lists/" + text_data[0]}
-                                        key={`map-map-group-${text_data}`}
-                                    >
-                                        {text_data[1]} / {text_data[0]}
-                                    </Link>
-                                ))}
-                            </AccordionDetails>
-                        </Accordion>
-                    ))}
-                </AccordionGroup>
-            </Stack>
+                    <Typography level="h3">리스트 목록</Typography>
+                    <AccordionGroup
+                        sx={{
+                            maxWidth: 400,
+                            [`& .${accordionSummaryClasses.indicator}`]: {
+                                transition: "0.2s"
+                            },
+                            [`& [aria-expanded="true"] .${accordionSummaryClasses.indicator}`]: {
+                                transform: "rotate(180deg)"
+                            }
+                        }}
+                        color="primary"
+                        variant="outlined"
+                    >
+                        {data.map((text) => (
+                            <Accordion key={`map-group-${text}`}>
+                                <AccordionSummary indicator={<ExpandMoreIcon />}>
+                                    <Typography component="span">
+                                        {text[0][1]} / {text[0][0]}
+                                    </Typography>
+                                </AccordionSummary>
+                                <AccordionDetails>
+                                    {text.slice(1).map((text_data) => (
+                                        <Link
+                                            href={"gff/#/lists/" + text_data[0]}
+                                            key={`map-map-group-${text_data}`}
+                                        >
+                                            {text_data[1]} / {text_data[0]}
+                                        </Link>
+                                    ))}
+                                </AccordionDetails>
+                            </Accordion>
+                        ))}
+                    </AccordionGroup>
+                </Stack>
+            </Box>
         </>
     );
 }

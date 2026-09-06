@@ -20,6 +20,8 @@ import {
 } from "components/utils";
 import Checkbox from "@mui/joy/Checkbox";
 import { AppBar } from "components";
+import { Button, IconButton, Textarea, Tooltip } from "@mui/joy";
+import { ClearIcon, UploadIcon } from "components/assets";
 
 function Upload() {
     const [_, setLevels] = useState<LevelInterface[]>([]);
@@ -29,23 +31,29 @@ function Upload() {
     const [userNameList, setUserNameList] = useState<string[]>([]);
     const [levelUploadInputData, setLevelUploadInputData] = useState({
         id: "",
+        isGDPS: false,
         name: "",
-        host: "",
-        publish: "",
+        publish: null as string | null,
+        host: null as string | null,
         co_creators: [] as string[],
-        verifier: "",
+        verifier: null as string | null,
         verified: true,
-        progress: null as null | number
+        progress: null as null | number,
+        description: "",
+        thumbnail: null as File | null
     });
     const [levelUploadErrorData, ___] = useState({
         id: false,
+        isGDPS: false,
         name: false,
         host: false,
         publish: false,
         co_creators: false,
         verifier: false,
         verified: false,
-        progress: false
+        progress: false,
+        description: false,
+        thumbnail: false
     });
     const [loading, setLoading] = useState<boolean>(true);
     useEffect(() => {
@@ -156,208 +164,330 @@ function Upload() {
                 }
                 content={["GFF", "/gff/"]}
             />
-            <Stack sx={{ p: 4, mx: "auto", my: 5, maxWidth: 1000 }} spacing={3}>
-                <Typography level="h1">레벨 업로드하기</Typography>
-                <Typography level="h3">
-                    지난 3달간 여러분이 원하던 바로 그 기능이 추가되었습니다.
-                </Typography>
-                <Typography level="body-xs">근데 아직 BDL은 안됩니다.</Typography>
-                <Tabs aria-label="tab-1" defaultValue={0}>
-                    <TabList>
-                        <Tab>레벨 업로드하기</Tab>
-                        <Tab>리스트에 등재하기</Tab>
-                    </TabList>
-                    <TabPanel value={0}>
-                        <Stack spacing={2}>
-                            <Typography level="h4">
-                                다음 칸들을 모두 채워넣어 레벨을 업로드하세요.
-                            </Typography>
-                            <Typography level="title-md">
-                                <Typography textColor="red">*</Typography> 표시는 필수 입력
-                                항목입니다.
-                            </Typography>
-                            <br />
-                            <Box alignItems="center" width="100%">
-                                <Stack spacing={2} maxWidth={500} width="auto" mx="auto">
-                                    <Input
-                                        placeholder="ID"
-                                        endDecorator={<Typography textColor="red">*</Typography>}
-                                        error={levelUploadErrorData.id}
-                                        value={levelUploadInputData.id}
-                                        onChange={(event) => {
-                                            let val = event.target.value;
-                                            val = val.replace(/[^0-9]/g, "");
-                                            if (val.length > 1) {
-                                                val = val.replace(/^0+/, "");
-                                                if (val === "") {
-                                                    val = "0";
+            <Box sx={{ overflowY: "auto", height: "calc(100vh - 64px)" }}>
+                <Stack sx={{ p: 4, mx: "auto", my: 5, maxWidth: 1000 }} spacing={3}>
+                    <Typography level="h1">레벨 업로드하기</Typography>
+                    <Typography level="h3">
+                        지난 3달간 여러분이 원하던 바로 그 기능이 추가되었습니다.
+                    </Typography>
+                    <Typography level="body-xs">근데 아직 BDL은 안됩니다.</Typography>
+                    <Tabs aria-label="tab-1" defaultValue={0}>
+                        <TabList>
+                            <Tab>레벨 업로드하기</Tab>
+                            <Tab>리스트에 등재하기</Tab>
+                        </TabList>
+                        <TabPanel value={0}>
+                            <Stack spacing={2}>
+                                <Typography level="h4">
+                                    다음 칸들을 모두 채워넣어 레벨을 업로드하세요.
+                                </Typography>
+                                <Typography level="title-md">
+                                    <Typography textColor="red">*</Typography> 표시는 필수 입력
+                                    항목입니다.
+                                </Typography>
+                                <br />
+                                <Box alignItems="center" width="100%">
+                                    <Stack spacing={2} maxWidth={500} width="auto" mx="auto">
+                                        <Stack spacing={2} direction="row" alignItems="center">
+                                            <Input
+                                                placeholder="ID"
+                                                endDecorator={<Typography textColor="red">*</Typography>}
+                                                error={levelUploadErrorData.id}
+                                                value={levelUploadInputData.id}
+                                                sx={{ flexGrow: 1 }}
+                                                onChange={(event) => {
+                                                    let val = event.target.value;
+                                                    val = val.replace(/[^0-9]/g, "");
+                                                    if (val.length > 1) {
+                                                        val = val.replace(/^0+/, "");
+                                                        if (val === "") {
+                                                            val = "0";
+                                                        }
+                                                    }
+                                                    setLevelUploadInputData({
+                                                        ...levelUploadInputData,
+                                                        id: val
+                                                    });
+                                                }}
+                                            />
+                                            <Checkbox
+                                                label="Is GDPS"
+                                                checked={levelUploadInputData.isGDPS}
+                                                color={levelUploadErrorData.isGDPS ? "danger" : "primary"}
+                                                onChange={(event) => {
+                                                    setLevelUploadInputData({
+                                                        ...levelUploadInputData,
+                                                        isGDPS: event.target.checked
+                                                    });
+                                                }}
+                                            />
+                                            <Tooltip
+                                                title={
+                                                    <Box textAlign="center">
+                                                        <Typography textColor="common.white">
+                                                            만약 레벨이 본 서버와 GDPS에
+                                                        </Typography>
+                                                        <Typography textColor="common.white">
+                                                            모두 존재한다면 체크박스를 해제하세요.
+                                                        </Typography>
+                                                    </Box>
                                                 }
-                                            }
-                                            setLevelUploadInputData({
-                                                ...levelUploadInputData,
-                                                id: val
-                                            });
-                                        }}
-                                    />
-                                    <Input
-                                        placeholder="Level Name"
-                                        endDecorator={<Typography textColor="red">*</Typography>}
-                                        error={levelUploadErrorData.name}
-                                        value={levelUploadInputData.name}
-                                        onChange={(event) => {
-                                            let val = event.target.value;
-                                            val = val.replace(/[^A-Za-z0-9 ]/g, "");
-                                            val = val.slice(0, 20);
-                                            setLevelUploadInputData({
-                                                ...levelUploadInputData,
-                                                name: val
-                                            });
-                                        }}
-                                    />
-                                    <FormControl error={levelUploadErrorData.host}>
-                                        <Select
-                                            placeholder="Host"
-                                            endDecorator={
-                                                <Typography textColor="red">*</Typography>
-                                            }
-                                            value={levelUploadInputData.host}
-                                            onChange={(__, newValue) => {
-                                                setLevelUploadInputData({
-                                                    ...levelUploadInputData,
-                                                    host: newValue as string
-                                                });
-                                            }}
-                                        >
-                                            {[users?.user_metadata?.["gff:id"]].map((text) => (
-                                                <Option key={`option-host-${text}`} value={text}>
-                                                    {text}
-                                                </Option>
-                                            ))}
-                                        </Select>
-                                    </FormControl>
-                                    <FormControl error={levelUploadErrorData.publish}>
-                                        <Select
-                                            placeholder="Publish"
-                                            endDecorator={
-                                                <Typography textColor="red">*</Typography>
-                                            }
-                                            value={levelUploadInputData.publish}
-                                            onChange={(__, newValue) => {
-                                                setLevelUploadInputData({
-                                                    ...levelUploadInputData,
-                                                    publish: newValue as string
-                                                });
-                                            }}
-                                        >
-                                            {userNameList.map((text) => (
-                                                <Option key={`option-publish-${text}`} value={text}>
-                                                    {text}
-                                                </Option>
-                                            ))}
-                                        </Select>
-                                    </FormControl>
-                                    <FormControl error={levelUploadErrorData.co_creators}>
-                                        <Select
-                                            placeholder="Co-creators"
-                                            multiple
-                                            value={levelUploadInputData.co_creators}
-                                            onChange={(__, newValue) => {
-                                                setLevelUploadInputData({
-                                                    ...levelUploadInputData,
-                                                    co_creators: newValue as string[]
-                                                });
-                                            }}
-                                        >
-                                            {userNameList.map((text) => (
-                                                <Option
-                                                    key={`option-co-creators-${text}`}
-                                                    value={text}
-                                                >
-                                                    {text}
-                                                </Option>
-                                            ))}
-                                        </Select>
-                                    </FormControl>
-                                    <FormControl error={levelUploadErrorData.verifier}>
-                                        <Select
-                                            placeholder="Verifier"
-                                            endDecorator={
-                                                <Typography textColor="red">*</Typography>
-                                            }
-                                            value={levelUploadInputData.verifier}
-                                            onChange={(__, newValue) => {
-                                                setLevelUploadInputData({
-                                                    ...levelUploadInputData,
-                                                    verifier: newValue as string
-                                                });
-                                            }}
-                                        >
-                                            {userNameList.map((text) => (
-                                                <Option
-                                                    key={`option-verifier-${text}`}
-                                                    value={text}
-                                                >
-                                                    {text}
-                                                </Option>
-                                            ))}
-                                        </Select>
-                                    </FormControl>
-                                    <Stack spacing={1} direction="row" alignItems="center">
-                                        <Checkbox
-                                            label="Verified"
-                                            checked={levelUploadInputData.verified}
+                                                variant="solid" color="primary"
+                                            >
+                                                <div
+                                                    className="MuiAvatar-root MuiAvatar-variantSolid MuiAvatar-colorPrimary MuiAvatar-sizeSm css-1eqmqvu-JoyAvatar-root"
+                                                    style={{
+                                                        background: "radial-gradient(circle, var(--joy-palette-primary-500) 45%, transparent 70.71%)",
+                                                        borderRadius: "50%",
+                                                        width: "40px",
+                                                        height: "40px",
+                                                        cursor: "default",
+                                                        userSelect: "none",
+                                                        WebkitUserSelect: "none",
+                                                        color: "white",
+                                                        alignItems: "center",
+                                                        justifyContent: "center",
+                                                        display: "inline-flex"
+                                                    }}
+                                                >?</div>
+                                            </Tooltip>
+                                        </Stack>
+                                        <Input
+                                            placeholder="Level Name"
+                                            endDecorator={<Typography textColor="red">*</Typography>}
+                                            error={levelUploadErrorData.name}
+                                            value={levelUploadInputData.name}
                                             onChange={(event) => {
+                                                let val = event.target.value;
+                                                val = val.replace(/[^A-Za-z0-9 ]/g, "");
+                                                val = val.slice(0, 20);
                                                 setLevelUploadInputData({
                                                     ...levelUploadInputData,
-                                                    verified: event.target.checked,
-                                                    progress: !event.target.checked
-                                                        ? levelUploadInputData.progress
-                                                        : null
+                                                    name: val
                                                 });
                                             }}
                                         />
-                                        <Input
-                                            placeholder="Progress"
-                                            disabled={levelUploadInputData.verified}
-                                            endDecorator={
-                                                !levelUploadInputData.verified ? null : (
+                                        <FormControl error={levelUploadErrorData.host}>
+                                            <Select
+                                                placeholder="Host"
+                                                endDecorator={
                                                     <Typography textColor="red">*</Typography>
+                                                }
+                                                value={levelUploadInputData.host}
+                                                onChange={(__, newValue) => {
+                                                    setLevelUploadInputData({
+                                                        ...levelUploadInputData,
+                                                        host: newValue as string
+                                                    });
+                                                }}
+                                            >
+                                                {[users?.user_metadata?.["gff:id"]].map((text) => (
+                                                    <Option key={`option-host-${text}`} value={text}>
+                                                        {text}
+                                                    </Option>
+                                                ))}
+                                            </Select>
+                                        </FormControl>
+                                        <FormControl error={levelUploadErrorData.publish}>
+                                            <Select
+                                                placeholder="Publish"
+                                                endDecorator={
+                                                    <Typography textColor="red">*</Typography>
+                                                }
+                                                value={levelUploadInputData.publish}
+                                                onChange={(__, newValue) => {
+                                                    setLevelUploadInputData({
+                                                        ...levelUploadInputData,
+                                                        publish: newValue as string
+                                                    });
+                                                }}
+                                            >
+                                                {userNameList.map((text) => (
+                                                    <Option
+                                                        key={`option-publish-${text}`}
+                                                        value={text}
+                                                    >
+                                                        {text}
+                                                    </Option>
+                                                ))}
+                                            </Select>
+                                        </FormControl>
+                                        <FormControl error={levelUploadErrorData.co_creators}>
+                                            <Select
+                                                placeholder="Co-creators"
+                                                multiple
+                                                value={levelUploadInputData.co_creators}
+                                                onChange={(__, newValue) => {
+                                                    setLevelUploadInputData({
+                                                        ...levelUploadInputData,
+                                                        co_creators: newValue as string[]
+                                                    });
+                                                }}
+                                            >
+                                                {userNameList.map((text) => (
+                                                    <Option
+                                                        key={`option-co-creators-${text}`}
+                                                        value={text}
+                                                    >
+                                                        {text}
+                                                    </Option>
+                                                ))}
+                                            </Select>
+                                        </FormControl>
+                                        <FormControl error={levelUploadErrorData.verifier}>
+                                            <Select
+                                                placeholder="Verifier"
+                                                endDecorator={
+                                                    <Typography textColor="red">*</Typography>
+                                                }
+                                                value={levelUploadInputData.verifier}
+                                                onChange={(__, newValue) => {
+                                                    setLevelUploadInputData({
+                                                        ...levelUploadInputData,
+                                                        verifier: newValue as string
+                                                    });
+                                                }}
+                                            >
+                                                {userNameList.map((text) => (
+                                                    <Option
+                                                        key={`option-verifier-${text}`}
+                                                        value={text}
+                                                    >
+                                                        {text}
+                                                    </Option>
+                                                ))}
+                                            </Select>
+                                        </FormControl>
+                                        <Stack spacing={1} direction="row" alignItems="center">
+                                            <Checkbox
+                                                label="Verified"
+                                                checked={levelUploadInputData.verified}
+                                                color={levelUploadErrorData.verified ? "danger" : "primary"}
+                                                onChange={(event) => {
+                                                    setLevelUploadInputData({
+                                                        ...levelUploadInputData,
+                                                        verified: event.target.checked,
+                                                        progress: !event.target.checked
+                                                            ? levelUploadInputData.progress
+                                                            : null
+                                                    });
+                                                }}
+                                            />
+                                            <Input
+                                                placeholder="Progress"
+                                                disabled={levelUploadInputData.verified}
+                                                endDecorator={
+                                                    !levelUploadInputData.verified ? null : (
+                                                        <Typography textColor="red">*</Typography>
+                                                    )
+                                                }
+                                                type="number"
+                                                error={levelUploadErrorData.progress}
+                                                value={
+                                                    levelUploadInputData.progress === null
+                                                        ? ""
+                                                        : levelUploadInputData.progress
+                                                }
+                                                onChange={(event) => {
+                                                    if (
+                                                        +event.target.value >= 100 ||
+                                                        +event.target.value < 0
+                                                    ) {
+                                                        return;
+                                                    }
+                                                    setLevelUploadInputData({
+                                                        ...levelUploadInputData,
+                                                        progress:
+                                                            event.target.value === ""
+                                                                ? null
+                                                                : +event.target.value
+                                                    });
+                                                }}
+                                            />
+                                        </Stack>
+                                        <Textarea
+                                            placeholder="Description"
+                                            error={levelUploadErrorData.description}
+                                            value={levelUploadInputData.description}
+                                            onChange={(event) => {
+                                                setLevelUploadInputData({
+                                                    ...levelUploadInputData,
+                                                    description: event.target.value
+                                                });
+                                            }}
+                                            minRows={3}
+                                        />
+                                        <Button
+                                            startDecorator={
+                                                levelUploadInputData.thumbnail === null
+                                                ? <UploadIcon />
+                                                : null
+                                            }
+                                            endDecorator={
+                                                levelUploadInputData.thumbnail === null
+                                                ? null
+                                                : (
+                                                    <IconButton
+                                                        size="sm"
+                                                        sx={{
+                                                            "& svg": {
+                                                                color: "var(--joy-palette-primary-500)"
+                                                            }
+                                                        }}
+                                                        onClick={() => {
+                                                            setLevelUploadInputData({
+                                                                ...levelUploadInputData,
+                                                                thumbnail: null
+                                                            });
+                                                        }}
+                                                    >
+                                                        <ClearIcon />
+                                                    </IconButton>
                                                 )
                                             }
-                                            type="number"
-                                            value={
-                                                levelUploadInputData.progress === null
-                                                    ? ""
-                                                    : levelUploadInputData.progress
-                                            }
-                                            onChange={(event) => {
-                                                if (
-                                                    +event.target.value >= 100 ||
-                                                    +event.target.value < 0
-                                                ) {
-                                                    return;
+                                            variant="outlined"
+                                            sx={{
+                                                width: "fit-content",
+                                                height: "44px",
+                                                pr: levelUploadInputData.thumbnail === null ? "16px" : "6px",
+                                                "&:has(button:hover)": {
+                                                    backgroundColor: "transparent"
                                                 }
-                                                setLevelUploadInputData({
-                                                    ...levelUploadInputData,
-                                                    progress:
-                                                        event.target.value === ""
-                                                            ? null
-                                                            : +event.target.value
-                                                });
                                             }}
-                                        />
+                                            component="label"
+                                        >
+                                            {
+                                                levelUploadInputData.thumbnail === null
+                                                ? "Upload Thumbnail Image"
+                                                : levelUploadInputData.thumbnail.name
+                                            }
+                                            <input
+                                                type="file"
+                                                style={{
+                                                    display: "none"
+                                                }}
+                                                onChange={(event) => {
+                                                    const file = event.target.files?.[0] || null;
+                                                    setLevelUploadInputData({
+                                                        ...levelUploadInputData,
+                                                        thumbnail: file
+                                                    });
+                                                }}
+                                            />
+                                        </Button>
                                     </Stack>
-                                </Stack>
-                            </Box>
-                        </Stack>
-                    </TabPanel>
-                    <TabPanel value={1}>
-                        <Typography level="h4">
-                            다음 칸들을 모두 채워넣어 레벨을 리스트에 등재하세요.
-                        </Typography>
-                    </TabPanel>
-                </Tabs>
-            </Stack>
+                                </Box>
+                            </Stack>
+                        </TabPanel>
+                        <TabPanel value={1}>
+                            <Typography level="h4">
+                                {/* 다음 칸들을 모두 채워넣어 레벨을 리스트에 등재하세요. */}
+                                레전---드 제작 중
+                            </Typography>
+                        </TabPanel>
+                    </Tabs>
+                </Stack>
+            </Box>
         </>
     );
 }

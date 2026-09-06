@@ -4,3 +4,5 @@ export { default as GithubIcon } from "./github.tsx";
 export { default as MenuIcon } from "./menu.tsx";
 export { default as ReactIcon } from "./react.tsx";
 export { default as SearchIcon } from "./search.tsx";
+export { default as UploadIcon } from "./upload.tsx";
+export { default as ClearIcon } from "./clear.tsx"

@@ -104,7 +104,7 @@ function Levels() {
                     level_list === undefined
                         ? [
                               ["GFF", "/gff/"],
-                              ["List", "/gff/#/lists/"],
+                              ["Level", "/gff/#/levels/"],
                               [level_info.level_name, `/gff/#/levels/${level_info.level_id}/`]
                           ]
                         : [
@@ -137,91 +137,95 @@ function Levels() {
                 }
                 content={["GFF", "/gff/"]}
             />
-            <Stack
-                sx={{ p: 4, mx: "auto", my: 5, maxWidth: 1000, alignItems: "center" }}
-                spacing={3}
-            >
-                <Typography level="h1">{level_info.level_name}</Typography>
-                <Typography level="h4">
-                    제작: {level_info.host}
-                    {level_info.co_creators.length === 0 ? (
-                        " / "
+            <Box sx={{ overflowY: "auto", height: "calc(100vh - 64px)" }}>
+                <Stack
+                    sx={{
+                        p: 4, mx: "auto", my: 5, maxWidth: 1000, alignItems: "center"
+                    }}
+                    spacing={3}
+                >
+                    <Typography level="h1">{level_info.level_name}</Typography>
+                    <Typography level="h4">
+                        제작: {level_info.host}
+                        {level_info.co_creators.length === 0 ? (
+                            " / "
+                        ) : (
+                            <>
+                                {" and "}
+                                <Tooltip title={level_info.co_creators.join(", ")} arrow>
+                                    <Typography level="h4" sx={{ textDecoration: "underline" }}>
+                                        more
+                                    </Typography>
+                                </Tooltip>
+                                {" / "}
+                            </>
+                        )}
+                        레벨 배포: {level_info.publish} / 베리파이: {level_info.verifier}
+                        {level_info.progress === null ? "" : ` (progress: ${level_info.progress}%)`}
+                    </Typography>
+                    <Typography level="title-md">
+                        {level_info.description ? `"${level_info.description}"` : ""}
+                    </Typography>
+                    {level_info.imbed_image === null || level_info.imbed_image === "" ? (
+                        <Box
+                            component="img"
+                            src={level_info.image}
+                            sx={{ width: "55%", aspectRatio: "16 / 9" }}
+                        />
+                    ) : level_info.imbed_image.includes("youtu.be") ||
+                    level_info.imbed_image.includes("youtube.com") ? (
+                        <iframe
+                            src={level_info.imbed_image}
+                            sandbox="allow-scripts allow-same-origin allow-presentation"
+                            title="YouTube video player"
+                            style={{ border: 0, aspectRatio: "16 / 9" }}
+                            allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                            allowFullScreen
+                            width="55%"
+                        />
+                    ) : (
+                        <Box
+                            component="img"
+                            src={level_info.imbed_image}
+                            sx={{ width: "55%", aspectRatio: "16 / 9" }}
+                        />
+                    )}
+                    <Typography level="title-md">
+                        ID: {level_info.level_id}
+                        {pdavg(diff) !== "na" && diff
+                            ? ` / 난이도: ${pdavg(diff)} (${diff[1]} / ${diff[2]}) / `
+                            : " / 난이도: N/A / "}
+                        등재일: {level_info.upload_time.split("T")[0]}
+                        {level_list
+                            ? ` / ${level_list} 1위 기간: ` +
+                            `${lists.find((item) => item.name === level_list)?.levels.find((item) => item[0] === +level_id)?.[1]}`
+                            : ""}
+                    </Typography>
+                    {level_info.victory.length === 0 ? (
+                        <Typography level="h3">클리어자 없음</Typography>
                     ) : (
                         <>
-                            {" and "}
-                            <Tooltip title={level_info.co_creators.join(", ")} arrow>
-                                <Typography level="h4" sx={{ textDecoration: "underline" }}>
-                                    more
-                                </Typography>
-                            </Tooltip>
-                            {" / "}
+                            <Typography level="h3">클리어자</Typography>
+                            <Table color="primary" variant="outlined">
+                                <thead>
+                                    <tr>
+                                        <th>순위</th>
+                                        <th>플레이어</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {level_info.victory.map((winner, index) => (
+                                        <tr key={`tr-${index + 1}`}>
+                                            <th>{index + 1}</th>
+                                            <th>{winner}</th>
+                                        </tr>
+                                    ))}
+                                </tbody>
+                            </Table>
                         </>
                     )}
-                    레벨 배포: {level_info.publish} / 베리파이: {level_info.verifier}
-                    {level_info.progress === null ? "" : ` (progress: ${level_info.progress}%)`}
-                </Typography>
-                <Typography level="title-md">
-                    {level_info.description ? `"${level_info.description}"` : ""}
-                </Typography>
-                {level_info.imbed_image === null || level_info.imbed_image === "" ? (
-                    <Box
-                        component="img"
-                        src={level_info.image}
-                        sx={{ width: "55%", aspectRatio: "16 / 9" }}
-                    />
-                ) : level_info.imbed_image.includes("youtu.be") ||
-                  level_info.imbed_image.includes("youtube.com") ? (
-                    <iframe
-                        src={level_info.imbed_image}
-                        sandbox="allow-scripts allow-same-origin allow-presentation"
-                        title="YouTube video player"
-                        style={{ border: 0, aspectRatio: "16 / 9" }}
-                        allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                        allowFullScreen
-                        width="55%"
-                    />
-                ) : (
-                    <Box
-                        component="img"
-                        src={level_info.imbed_image}
-                        sx={{ width: "55%", aspectRatio: "16 / 9" }}
-                    />
-                )}
-                <Typography level="title-md">
-                    ID: {level_info.level_id}
-                    {pdavg(diff) !== "na" && diff
-                        ? ` / 난이도: ${pdavg(diff)} (${diff[1]} / ${diff[2]}) / `
-                        : " / 난이도: N/A / "}
-                    등재일: {level_info.upload_time.split("T")[0]}
-                    {level_list
-                        ? ` / ${level_list} 1위 기간: ` +
-                          `${lists.find((item) => item.name === level_list)?.levels.find((item) => item[0] === +level_id)?.[1]}`
-                        : ""}
-                </Typography>
-                {level_info.victory.length === 0 ? (
-                    <Typography level="h3">클리어자 없음</Typography>
-                ) : (
-                    <>
-                        <Typography level="h3">클리어자</Typography>
-                        <Table color="primary" variant="outlined">
-                            <thead>
-                                <tr>
-                                    <th>순위</th>
-                                    <th>플레이어</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {level_info.victory.map((winner, index) => (
-                                    <tr key={`tr-${index + 1}`}>
-                                        <th>{index + 1}</th>
-                                        <th>{winner}</th>
-                                    </tr>
-                                ))}
-                            </tbody>
-                        </Table>
-                    </>
-                )}
-            </Stack>
+                </Stack>
+            </Box>
         </>
     );
 }

@@ -6,7 +6,7 @@ import CardContent from "@mui/joy/CardContent";
 import Link from "@mui/joy/Link";
 import CircularProgress from "@mui/joy/CircularProgress";
 import { useParams } from "react-router-dom";
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import {
     supabase,
     type LevelInterface,
@@ -164,70 +164,71 @@ function Lists() {
                 }
                 content={["GFF", "/gff/"]}
             />
-            {lists
-                .find((item) => item.name === level_list)
-                ?.levels.map((text, index) => {
-                    let sel_level = levels.find((item) => item.level_id === text[0]);
-                    let diff = cdavg(sel_level?.difficulty_votes);
-                    return sel_level ? (
-                        <Card
-                            key={`map-card-${index}`}
-                            sx={{
-                                width: cardSize.width,
-                                display: "flex",
-                                justifySelf: "center",
-                                my: 5,
-                                height: cardSize.height,
-                                overflow: "hidden",
-                                p: 0
-                            }}
-                        >
-                            <CardContent sx={{ height: "100%" }}>
-                                <Stack
-                                    spacing={1}
-                                    direction={cardSize.side}
-                                    sx={{ height: "100%" }}
-                                >
-                                    <Box
-                                        component="img"
-                                        src={sel_level.image}
-                                        sx={{ aspectRatio: "16 / 9", height: "100%" }}
-                                    />
-                                    <Stack spacing={1} sx={{ p: 2 }}>
-                                        <Link
-                                            level={fontSizeA}
-                                            fontWeight="xl"
-                                            href={
-                                                "/gff/#/levels/" +
-                                                level_list +
-                                                "/" +
-                                                sel_level?.level_id
-                                            }
-                                            sx={{
-                                                color: "black",
-                                                "&:hover": { textDecorationColor: "black" }
-                                            }}
-                                        >{`#${index + 1} - ${sel_level.level_name}`}</Link>
-                                        <Typography level={fontSizeB} fontWeight="lg">
-                                            {`Host: ${sel_level.host} / Verify: ${sel_level.verifier}`}
-                                        </Typography>
-                                        <Typography level={fontSizeC} fontWeight="md">
-                                            {`ID: ${sel_level.level_id}`}
-                                            {`${
-                                                pdavg(diff) !== "na" && diff
-                                                    ? ` / 난이도: ${pdavg(diff)}`
-                                                    : " / 난이도: N/A"
-                                            }`}
-                                            {text[1] === "" ? "" : ` / 1위 ${text[1]}`}
-                                        </Typography>
+            <Box sx={{ overflowY: "auto", height: "calc(100vh - 64px)" }}>
+                {lists
+                    .find((item) => item.name === level_list)
+                    ?.levels.map((text, index) => {
+                        let sel_level = levels.find((item) => item.level_id === text[0]);
+                        let diff = cdavg(sel_level?.difficulty_votes);
+                        return sel_level ? (
+                            <Card
+                                key={`map-card-${index}`}
+                                sx={{
+                                    width: cardSize.width,
+                                    display: "flex",
+                                    justifySelf: "center",
+                                    my: 5,
+                                    height: cardSize.height,
+                                    overflow: "hidden",
+                                    p: 0
+                                }}
+                            >
+                                <CardContent sx={{ height: "100%" }}>
+                                    <Stack
+                                        spacing={1}
+                                        direction={cardSize.side}
+                                        sx={{ height: "100%" }}
+                                    >
+                                        <Box
+                                            component="img"
+                                            src={sel_level.image}
+                                            sx={{ aspectRatio: "16 / 9", height: "100%" }}
+                                        />
+                                        <Stack spacing={1} sx={{ p: 2 }}>
+                                            <Link
+                                                level={fontSizeA}
+                                                fontWeight="xl"
+                                                href={
+                                                    "/gff/#/levels/" +
+                                                    level_list +
+                                                    "/" +
+                                                    sel_level?.level_id
+                                                }
+                                                sx={{
+                                                    color: "black",
+                                                    "&:hover": { textDecorationColor: "black" }
+                                                }}
+                                            >{`#${index + 1} - ${sel_level.level_name}`}</Link>
+                                            <Typography level={fontSizeB} fontWeight="lg">
+                                                {`Host: ${sel_level.host} / Verify: ${sel_level.verifier}`}
+                                            </Typography>
+                                            <Typography level={fontSizeC} fontWeight="md">
+                                                {`ID: ${sel_level.level_id}`}
+                                                {`${
+                                                    pdavg(diff) !== "na" && diff
+                                                        ? ` / 난이도: ${pdavg(diff)}`
+                                                        : " / 난이도: N/A"
+                                                }`}
+                                                {text[1] === "" ? "" : ` / 1위 ${text[1]}`}
+                                            </Typography>
+                                        </Stack>
                                     </Stack>
-                                </Stack>
-                            </CardContent>
-                        </Card>
-                    ) : (
-                        <React.Fragment key={`map-card-${index}`} />
-                    );
-                })}
+                                </CardContent>
+                            </Card>
+                        ) : null;
+                    })
+                }
+            </Box>
         </>
     );
 }

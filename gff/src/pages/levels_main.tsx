@@ -16,7 +16,7 @@ import selectClasses from "@mui/joy/Select/selectClasses";
 import Accordion from "@mui/joy/Accordion";
 import AccordionDetails from "@mui/joy/AccordionDetails";
 import AccordionGroup from "@mui/joy/AccordionGroup";
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import {
     supabase,
     type LevelInterface,
@@ -35,8 +35,8 @@ function LevelsMain() {
     const [sortType, setSortType] = useState<
         "id" | "name" | "rating" | "featured" | "vote" | string
     >("id");
-    const [sortAsc, setSortAsc] = React.useState<"asc" | "desc">("desc");
-    const [searchData, setSearchData] = React.useState<string>("");
+    const [sortAsc, setSortAsc] = useState<"asc" | "desc">("desc");
+    const [searchData, setSearchData] = useState<string>("");
     const [isFilterOpen, setIsFilterOpen] = useState(false);
     const [dimensions, setDimensions] = useState({
         width: window.innerWidth,
@@ -206,170 +206,170 @@ function LevelsMain() {
                 }
                 content={["GFF", "/gff/"]}
             />
-            <Stack spacing={2} sx={{ pb: 7, pt: 5, px: "12.5%" }}>
-                <Typography level="h3">레벨 검색</Typography>
-                <Stack
-                    direction="row"
-                    spacing={1}
-                    sx={{ width: "fit-content", mx: "auto", justifyItems: "center" }}
-                >
-                    <Input
-                        color="primary"
-                        disabled={false}
-                        placeholder="Search by level name or ID"
-                        size="lg"
-                        variant="outlined"
-                        value={searchData}
-                        onChange={(event) => {
-                            setSearchData(event.target.value);
-                        }}
-                        startDecorator={
-                            <IconButton
-                                onClick={() => {
-                                    setIsFilterOpen(!isFilterOpen);
-                                }}
-                            >
-                                <FilterListIcon />
-                            </IconButton>
-                        }
-                        sx={{ width: "75vw", "--Input-focusedThickness": "0rem" }}
-                    />
-                    <IconButton
-                        variant="solid"
-                        color="primary"
-                        sx={{ width: "45px", height: "45px" }}
+            <Box sx={{ overflowY: "auto", height: "calc(100vh - 64px)" }}>
+                <Stack spacing={2} sx={{ pb: 7, pt: 5, px: "12.5%" }}>
+                    <Typography level="h3">레벨 검색</Typography>
+                    <Stack
+                        direction="row"
+                        spacing={1}
+                        sx={{ width: "fit-content", mx: "auto", justifyItems: "center" }}
                     >
-                        <SearchIcon />
-                    </IconButton>
-                </Stack>
-                <AccordionGroup
-                    transition={{
-                        initial: "0.2s ease-out",
-                        expanded: "0.2s ease"
-                    }}
-                    sx={{ width: "75vw", position: "relative", overflow: "hidden", p: 0 }}
-                >
-                    <Accordion
-                        expanded={isFilterOpen}
-                        sx={{ width: "100%", padding: 0, minHeight: 0 }}
-                    >
-                        <AccordionDetails sx={{ padding: 0 }}>
-                            <Box sx={{ pb: 1.5, pt: 0.5 }}>
-                                <Card sx={{ width: "100%" }}>
-                                    <Stack spacing={2}>
-                                        <Typography level="h4">필터</Typography>
-                                        <Typography level="body-xs">나중에 할거임</Typography>
-                                    </Stack>
-                                </Card>
-                            </Box>
-                        </AccordionDetails>
-                    </Accordion>
-                </AccordionGroup>
-                <Stack direction="row" spacing={1}>
-                    <Select
-                        startDecorator="Sort by: "
-                        color="primary"
-                        defaultValue="id"
-                        indicator={<ExpandMoreIcon />}
-                        value={sortType}
-                        onChange={(_, value) => {
-                            if (value) setSortType(value);
-                        }}
-                        sx={{
-                            [`& .${selectClasses.indicator}`]: {
-                                transition: "0.2s",
-                                [`&.${selectClasses.expanded}`]: {
-                                    transform: "rotate(-180deg)"
-                                }
-                            }
-                        }}
-                    >
-                        <Option value="id">Level ID</Option>
-                        <Option value="name">Name</Option>
-                        <Option value="rating">Rating</Option>
-                        <Option value="featured">Featured</Option>
-                        <Option value="vote">Vote Count</Option>
-                    </Select>
-                    <ToggleButtonGroup
-                        color="primary"
-                        variant="outlined"
-                        value={sortAsc}
-                        onChange={(_, value) => {
-                            if (value) setSortAsc(value);
-                        }}
-                    >
-                        <Button value="asc">Asc</Button>
-                        <Button value="desc">Desc</Button>
-                    </ToggleButtonGroup>
-                </Stack>
-            </Stack>
-            <Box sx={{ px: 5 }}>
-                <Grid
-                    container
-                    spacing={4}
-                    sx={{ width: "fit-content", mx: "auto", justifyContent: "center", flexGrow: 1 }}
-                >
-                    {sorted.map((text, index) => {
-                        let sel_level = levels.find((item) => item.level_id === text.level_id);
-                        let diff = cdavg(sel_level?.difficulty_votes);
-                        return sel_level ? (
-                            <Grid sx={{ width: "fit-content" }} key={`grid-${text.level_id}`}>
-                                <Card
-                                    key={`map-card-${index}`}
-                                    sx={{
-                                        width: cardSize.width,
-                                        display: "flex",
-                                        justifySelf: "center",
-                                        my: 0,
-                                        height: cardSize.height,
-                                        overflow: "hidden",
-                                        p: 0
+                        <Input
+                            color="primary"
+                            disabled={false}
+                            placeholder="Search by level name or ID"
+                            size="lg"
+                            variant="outlined"
+                            value={searchData}
+                            onChange={(event) => {
+                                setSearchData(event.target.value);
+                            }}
+                            startDecorator={
+                                <IconButton
+                                    onClick={() => {
+                                        setIsFilterOpen(!isFilterOpen);
                                     }}
                                 >
-                                    <CardContent sx={{ height: "100%" }}>
-                                        <Stack
-                                            spacing={1}
-                                            direction={cardSize.side}
-                                            sx={{ height: "100%" }}
-                                        >
-                                            <Box
-                                                component="img"
-                                                src={sel_level.image}
-                                                sx={{ aspectRatio: "16 / 9", height: "100%" }}
-                                            />
-                                            <Stack spacing={1} sx={{ p: 2 }}>
-                                                <Link
-                                                    level={fontSizeA}
-                                                    fontWeight="xl"
-                                                    href={"/gff/#/levels/" + sel_level?.level_id}
-                                                    sx={{
-                                                        color: "black",
-                                                        "&:hover": { textDecorationColor: "black" }
-                                                    }}
-                                                >
-                                                    {sel_level.level_name}
-                                                </Link>
-                                                <Typography level={fontSizeB} fontWeight="lg">
-                                                    {`Host: ${sel_level.host} / Verify: ${sel_level.verifier}`}
-                                                </Typography>
-                                                <Typography level={fontSizeC} fontWeight="md">
-                                                    {`ID: ${sel_level.level_id}`}
-                                                    {`${
-                                                        pdavg(diff) !== "na" && diff
-                                                            ? ` / 난이도: ${pdavg(diff)}`
-                                                            : " / 난이도: N/A"
-                                                    }`}
-                                                </Typography>
-                                            </Stack>
+                                    <FilterListIcon />
+                                </IconButton>
+                            }
+                            sx={{ width: "75vw", "--Input-focusedThickness": "0rem" }}
+                        />
+                        <IconButton
+                            variant="solid"
+                            color="primary"
+                            sx={{ width: "45px", height: "45px" }}
+                        >
+                            <SearchIcon />
+                        </IconButton>
+                    </Stack>
+                    <AccordionGroup
+                        transition={{
+                            initial: "0.2s ease-out",
+                            expanded: "0.2s ease"
+                        }}
+                        sx={{ width: "75vw", position: "relative", overflow: "hidden", p: 0 }}
+                    >
+                        <Accordion
+                            expanded={isFilterOpen}
+                            sx={{ width: "100%", padding: 0, minHeight: 0 }}
+                        >
+                            <AccordionDetails sx={{ padding: 0 }}>
+                                <Box sx={{ pb: 1.5, pt: 0.5 }}>
+                                    <Card sx={{ width: "100%" }}>
+                                        <Stack spacing={2}>
+                                            <Typography level="h4">필터</Typography>
+                                            <Typography level="body-xs">나중에 할거임</Typography>
                                         </Stack>
-                                    </CardContent>
-                                </Card>
-                            </Grid>
-                        ) : (
-                            <React.Fragment key={`map-card-${index}`} />
-                        );
-                    })}
-                </Grid>
+                                    </Card>
+                                </Box>
+                            </AccordionDetails>
+                        </Accordion>
+                    </AccordionGroup>
+                    <Stack direction="row" spacing={1}>
+                        <Select
+                            startDecorator="Sort by: "
+                            color="primary"
+                            defaultValue="id"
+                            indicator={<ExpandMoreIcon />}
+                            value={sortType}
+                            onChange={(_, value) => {
+                                if (value) setSortType(value);
+                            }}
+                            sx={{
+                                [`& .${selectClasses.indicator}`]: {
+                                    transition: "0.2s",
+                                    [`&.${selectClasses.expanded}`]: {
+                                        transform: "rotate(-180deg)"
+                                    }
+                                }
+                            }}
+                        >
+                            <Option value="id">Level ID</Option>
+                            <Option value="name">Name</Option>
+                            <Option value="rating">Rating</Option>
+                            <Option value="featured">Featured</Option>
+                            <Option value="vote">Vote Count</Option>
+                        </Select>
+                        <ToggleButtonGroup
+                            color="primary"
+                            variant="outlined"
+                            value={sortAsc}
+                            onChange={(_, value) => {
+                                if (value) setSortAsc(value);
+                            }}
+                        >
+                            <Button value="asc">Asc</Button>
+                            <Button value="desc">Desc</Button>
+                        </ToggleButtonGroup>
+                    </Stack>
+                </Stack>
+                <Box sx={{ px: 5 }}>
+                    <Grid
+                        container
+                        spacing={4}
+                        sx={{ width: "fit-content", mx: "auto", justifyContent: "center", flexGrow: 1 }}
+                    >
+                        {sorted.map((text, index) => {
+                            let sel_level = levels.find((item) => item.level_id === text.level_id);
+                            let diff = cdavg(sel_level?.difficulty_votes);
+                            return sel_level ? (
+                                <Grid sx={{ width: "fit-content" }} key={`grid-${text.level_id}`}>
+                                    <Card
+                                        key={`map-card-${index}`}
+                                        sx={{
+                                            width: cardSize.width,
+                                            display: "flex",
+                                            justifySelf: "center",
+                                            my: 0,
+                                            height: cardSize.height,
+                                            overflow: "hidden",
+                                            p: 0
+                                        }}
+                                    >
+                                        <CardContent sx={{ height: "100%" }}>
+                                            <Stack
+                                                spacing={1}
+                                                direction={cardSize.side}
+                                                sx={{ height: "100%" }}
+                                            >
+                                                <Box
+                                                    component="img"
+                                                    src={sel_level.image}
+                                                    sx={{ aspectRatio: "16 / 9", height: "100%" }}
+                                                />
+                                                <Stack spacing={1} sx={{ p: 2 }}>
+                                                    <Link
+                                                        level={fontSizeA}
+                                                        fontWeight="xl"
+                                                        href={"/gff/#/levels/" + sel_level?.level_id}
+                                                        sx={{
+                                                            color: "black",
+                                                            "&:hover": { textDecorationColor: "black" }
+                                                        }}
+                                                    >
+                                                        {sel_level.level_name}
+                                                    </Link>
+                                                    <Typography level={fontSizeB} fontWeight="lg">
+                                                        {`Host: ${sel_level.host} / Verify: ${sel_level.verifier}`}
+                                                    </Typography>
+                                                    <Typography level={fontSizeC} fontWeight="md">
+                                                        {`ID: ${sel_level.level_id}`}
+                                                        {`${
+                                                            pdavg(diff) !== "na" && diff
+                                                                ? ` / 난이도: ${pdavg(diff)}`
+                                                                : " / 난이도: N/A"
+                                                        }`}
+                                                    </Typography>
+                                                </Stack>
+                                            </Stack>
+                                        </CardContent>
+                                    </Card>
+                                </Grid>
+                            ) : null;
+                        })}
+                    </Grid>
+                </Box>
             </Box>
         </>
     );

@@ -2,7 +2,7 @@ import Typography from "@mui/joy/Typography";
 import Stack from "@mui/joy/Stack";
 import Button from "@mui/joy/Button";
 import Box from "@mui/joy/Box";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import Radio from "@mui/joy/Radio";
 import FormControl from "@mui/joy/FormControl";
@@ -27,21 +27,23 @@ function PlaySelect() {
     const [color, setColor] = useState("random");
     const [p1, setP1] = useState("player");
     const [p2, setP2] = useState("Evaluator-5");
-    const [_, setSearchParams] = useSearchParams();
+    const navigate = useNavigate();
     const handlePlay = () => {
         if (color === "" || p1 === "" || p2 === "") {
             return;
         }
+        let sp;
         if (color === "random") {
             const isPlayerWhite = Math.random() < 0.5;
             if (isPlayerWhite) {
-                setSearchParams({ white: p1, black: p2 });
+                sp = { white: p1, black: p2 };
             } else {
-                setSearchParams({ white: p2, black: p1 });
+                sp = { white: p2, black: p1 };
             }
         } else {
-            setSearchParams({ white: p1, black: p2 });
+            sp = { white: p1, black: p2 };
         }
+        navigate(`/play?white=${encodeURIComponent(sp.white)}&black=${encodeURIComponent(sp.black)}`)
     };
     return (
         <>
@@ -162,16 +164,28 @@ function PlaySelect() {
 
 function PlayChess() {
     const workerRef = useRef<Worker | null>(null);
-    const [searchParams, _] = useSearchParams();
-    const white = searchParams.get("white");
-    const black = searchParams.get("black");
-    const player = white === "player" ? "w" : black === "player" ? "b" : "none";
-    let ai = null;
-    if (player !== "none") {
-        if (player === "w") {
-            ai = black;
+    const [searchParams, setSearchParams] = useSearchParams();
+    const white = searchParams.get("white")!;
+    const black = searchParams.get("black")!;
+    const players = useMemo(
+        () => ({
+            white: [white === "player", white] as [boolean, string],
+            black: [black === "player", black] as [boolean, string]
+        }),
+        [white, black]
+    );
+    let player: "white" | "black" | "both" | "none";
+    if (players.white[0]) {
+        if (players.black[0]) {
+            player = "both";
         } else {
-            ai = white;
+            player = "white";
+        }
+    } else {
+        if (players.black[0]) {
+            player = "black";
+        } else {
+            player = "none";
         }
     }
     const boardRef = useRef<HTMLDivElement>(null);
@@ -220,6 +234,14 @@ function PlayChess() {
         gameEnd: HTMLAudioElement;
     } | null>(null);
     useEffect(() => {
+        chessRef.current.setHeader("Event", "Something Chess");
+        chessRef.current.setHeader("Site", "Something Chess AI");
+        chessRef.current.setHeader("Date", new Date().toISOString().split("T")[0]);
+        chessRef.current.setHeader("Round", "1");
+        chessRef.current.setHeader("White", white);
+        chessRef.current.setHeader("Black", black);
+    }, []);
+    useEffect(() => {
         const Move = new Audio("/something/assets/Move.mp3");
         const Capture = new Audio("/something/assets/Capture.mp3");
         const GameEnd = new Audio("/something/assets/GameEnd.mp3");
@@ -241,7 +263,6 @@ function PlayChess() {
         return dests;
     }, []);
     const getValidPremoves = useCallback(() => {
-        console.log(chessRef.current.turn());
         const premoveDests = new Map<Square, Square[]>();
         const board = chessRef.current.board();
         for (let r = 0; r < 8; r++) {
@@ -285,8 +306,6 @@ function PlayChess() {
                 }
             }
         }
-        console.log(premoveDests);
-        console.log(chessRef.current.getCastlingRights("w"));
         return premoveDests;
     }, []);
     const handleGameEnd = useCallback(() => {
@@ -295,20 +314,29 @@ function PlayChess() {
         if (chessRef.current.isCheckmate()) {
             if (chessRef.current.turn() === "b") {
                 setEndDialog("white:checkmate");
+                chessRef.current.setHeader("Result", "1-0");
             } else {
                 setEndDialog("black:checkmate");
+                chessRef.current.setHeader("Result", "0-1");
             }
         } else if (chessRef.current.isStalemate()) {
             setEndDialog("draw:stalemate");
+            chessRef.current.setHeader("Result", "1/2-1/2");
         } else if (chessRef.current.isDrawByFiftyMoves()) {
             setEndDialog("draw:50moves");
+            chessRef.current.setHeader("Result", "1/2-1/2");
         } else if (chessRef.current.isThreefoldRepetition()) {
             setEndDialog("draw:repetition");
+            chessRef.current.setHeader("Result", "1/2-1/2");
         } else if (chessRef.current.isInsufficientMaterial()) {
             setEndDialog("draw:insufficientMaterials");
+            chessRef.current.setHeader("Result", "1/2-1/2");
         } else {
             setEndDialog("none");
         }
+        workerRef.current?.removeEventListener("message", MoveAI);
+        workerRef.current?.terminate();
+        workerRef.current = null;
     }, []);
     useEffect(() => {
         const lightTile = "f0dab7";
@@ -323,7 +351,7 @@ function PlayChess() {
             turnColor: "white",
             autoCastle: true,
             movable: {
-                color: player === "none" ? undefined : player === "w" ? "white" : "black",
+                color: player === "none" ? undefined : player,
                 free: false,
                 dests: getValidMoves(),
                 events: {
@@ -382,18 +410,18 @@ function PlayChess() {
                             setTimeout(handleGameEnd, 300);
                             return;
                         }
-                        if (!ai) {
-                            return;
-                        }
                         workerRef.current?.postMessage(
-                            { aiType: ai, fen: chessRef.current.fen() },
+                            {
+                                aiType: players[chessRef.current.turn() === "w" ? "white" : "black"][1],
+                                fen: chessRef.current.fen()
+                            },
                             {}
                         );
                     }
                 }
             },
             premovable: {
-                enabled: true,
+                enabled: player === "white" || player === "black",
                 showDests: true,
                 castle: true,
                 customDests: getValidPremoves(),
@@ -402,7 +430,11 @@ function PlayChess() {
                 }
             },
             check: false,
-            orientation: player === "b" ? "black" : "white"
+            orientation: player === "black" ? "black" : "white",
+            drawable: {
+                enabled: true,
+                visible: true
+            }
         };
         if (boardRef.current) {
             groundRef.current = Chessground(boardRef.current, config);
@@ -413,7 +445,7 @@ function PlayChess() {
                 groundRef.current.destroy();
             }
         };
-    }, [groundRef, getValidMoves, player, getValidPremoves, ai, handleGameEnd]);
+    }, [groundRef, getValidMoves, player, getValidPremoves, handleGameEnd]);
     const MoveAI = useCallback(
         (e: MessageEvent) => {
             const AIMove = e.data.move;
@@ -461,18 +493,27 @@ function PlayChess() {
                 setTimeout(handleGameEnd, 300);
                 return;
             }
-            const currentPremove = groundRef.current?.state.premovable.current;
-            if (currentPremove) {
-                const [orig, dest] = currentPremove;
-                const isLegal = chessRef.current
-                    .moves({ verbose: true })
-                    .some((m) => m.from === orig && m.to === dest);
-                if (isLegal) {
-                    if (groundRef.current) {
-                        setTimeout(groundRef.current.playPremove, 100);
+            if (player === "none" || player === "both") {
+                if (player === "none") {
+                    workerRef.current?.postMessage({
+                        aiType: players[chessRef.current.turn() === "w" ? "white" : "black"][1],
+                        fen: chessRef.current.fen()
+                    }, {});
+                }
+            } else {
+                const currentPremove = groundRef.current?.state.premovable.current;
+                if (currentPremove) {
+                    const [orig, dest] = currentPremove;
+                    const isLegal = chessRef.current
+                        .moves({ verbose: true })
+                        .some((m) => m.from === orig && m.to === dest);
+                    if (isLegal) {
+                        if (groundRef.current) {
+                            setTimeout(groundRef.current.playPremove, 100);
+                        }
+                    } else {
+                        groundRef.current?.cancelPremove();
                     }
-                } else {
-                    groundRef.current?.cancelPremove();
                 }
             }
         },
@@ -491,12 +532,18 @@ function PlayChess() {
         };
     }, [MoveAI]);
     useEffect(() => {
-        if (white !== "player" && black === "player") {
-            workerRef.current?.postMessage({ aiType: ai, fen: chessRef.current.fen() }, {});
+        if (white !== "player") {
+            workerRef.current?.postMessage({ aiType: players.white[1], fen: chessRef.current.fen() }, {});
         }
-    }, [white, black, ai]);
-    if (ai && !Object.keys(AIList).includes(ai)) {
-        return null;
+    }, [white, black, players]);
+    const isWhiteInvalid = !white || (white !== "player" && !Object.keys(AIList).includes(white));
+    const isBlackInvalid = !black || (black !== "player" && !Object.keys(AIList).includes(black));
+    if (isWhiteInvalid && isBlackInvalid) {
+        setSearchParams({});
+    } else if (isWhiteInvalid) {
+        setSearchParams({ black });
+    } else if (isBlackInvalid) {
+        setSearchParams({ white });
     }
     if (white === "player" && black === "player") {
         return "WHAT";
@@ -535,7 +582,10 @@ function PlayChess() {
             }
         }
         setPromotionDialog(false);
-        workerRef.current?.postMessage({ aiType: ai, fen: chessRef.current.fen() }, {});
+        workerRef.current?.postMessage({
+            aiType: players[chessRef.current.turn() === "w" ? "white" : "black"][1],
+            fen: chessRef.current.fen()
+        }, {});
     };
     return (
         <div style={{ display: "flex", flexWrap: "wrap" }}>
@@ -636,6 +686,30 @@ function PlayChess() {
                                         >
                                             신규 봇
                                         </Button>
+                                        <Button
+                                            variant="outlined"
+                                            onClick={async (event) => {
+                                                const button = event.currentTarget as HTMLElement;
+                                                if (!button || button.textContent === "복사 완료!") {
+                                                    return;
+                                                }
+                                                try {
+                                                    await navigator.clipboard.writeText(
+                                                        chessRef.current.pgn({ maxWidth: 40 })
+                                                    );
+                                                    button.textContent = "복사 완료!";
+                                                    setTimeout(() => {
+                                                        if (button) {
+                                                            button.textContent = "PGN 복사";
+                                                        }
+                                                    }, 3000);
+                                                } catch (err) {
+                                                    console.log("PGN Copy Error:", err);
+                                                }
+                                            }}
+                                        >
+                                            PGN 복사
+                                        </Button>
                                     </Stack>
                                 </Stack>
                             </Card>
@@ -664,7 +738,6 @@ function PlayChess() {
                                     },
                                     check: chessRef.current.isCheck()
                                 });
-                                console.log(groundRef.current?.state);
                             }}
                         >
                             <span
@@ -852,7 +925,7 @@ function PlayChess() {
 }
 
 function Play() {
-    const [searchParams, _] = useSearchParams();
+    const [searchParams] = useSearchParams();
     const white = searchParams.get("white");
     const black = searchParams.get("black");
     if (white === null || black === null) {
