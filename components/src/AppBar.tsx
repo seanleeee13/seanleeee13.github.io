@@ -43,6 +43,7 @@ function AppBar({ link, list, content }: AppBarProps) {
                     <ExpandMoreIcon />
                 </Typography>
             }
+            sx={{ "@media (max-width: 500px)": { display: "none" } }}
         >
             {link.map(([name, href]) => (
                 <Button
@@ -83,7 +84,7 @@ function AppBar({ link, list, content }: AppBarProps) {
             sx={{
                 top: 0,
                 zIndex: 1100,
-                width: "100%",
+                width: "100vw",
                 height: "64px",
                 px: 2,
                 display: "flex",
@@ -94,7 +95,7 @@ function AppBar({ link, list, content }: AppBarProps) {
                 position: "sticky"
             }}
         >
-            <Stack direction="row" alignItems="center" spacing={1} sx={{ width: "100%" }}>
+            <Stack direction="row" alignItems="center" spacing={1} sx={{ width: "fit-content" }}>
                 <IconButton
                     variant="outlined"
                     color="neutral"
@@ -146,7 +147,18 @@ function AppBar({ link, list, content }: AppBarProps) {
                 <IconButton variant="plain" size="md" component="a" href="/">
                     <ReactIcon />
                 </IconButton>
-                {link.length !== 0 ? <Divider orientation="vertical" /> : null}
+                {
+                    link.length !== 0 ?
+                    <Box
+                        sx={{
+                            "@media (max-width: 500px)": { display: "none" },
+                            height: "36px"
+                        }}
+                    >
+                        <Divider orientation="vertical" sx={{ height: "36px" }} />
+                    </Box>
+                    : null
+                }
                 {linkElement}
             </Stack>
             {!hasSession ? (
@@ -154,7 +166,7 @@ function AppBar({ link, list, content }: AppBarProps) {
                     direction="row-reverse"
                     alignItems="center"
                     spacing={2}
-                    sx={{ width: "100%" }}
+                    sx={{ width: "fit-content", ml: "auto", "@media (max-width: 250px)": { display: "none" } }}
                 >
                     <Button
                         variant="solid"
@@ -180,7 +192,7 @@ function AppBar({ link, list, content }: AppBarProps) {
                     direction="row-reverse"
                     alignItems="center"
                     spacing={2}
-                    sx={{ width: "100%" }}
+                    sx={{ width: "fit-content", ml: "auto", "@media (max-width: 250px)": { display: "none" } }}
                 >
                     <Button variant="outlined" color="neutral" component="a" href={"/#/logout/"}>
                         Log Out

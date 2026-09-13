@@ -92,7 +92,7 @@ function Home() {
                 }
                 content={["GFF", "/gff/"]}
             />
-            <Box sx={{ overflowY: "auto", height: "calc(100vh - 64px)" }}>
+            <Box sx={{ overflowY: "auto", height: "calc(100vh - 64px)", scrollbarGutter: "stable both-edges" }}>
                 <Stack sx={{ p: 4, mx: "auto", my: 5, maxWidth: 1000 }} spacing={3}>
                     <Typography level="h1">Geometry Dash Friend Forum / GFF</Typography>
                     <Typography level="h3">1. 리스트 목록</Typography>

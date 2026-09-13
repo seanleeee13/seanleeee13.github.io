@@ -164,7 +164,7 @@ function Lists() {
                 }
                 content={["GFF", "/gff/"]}
             />
-            <Box sx={{ overflowY: "auto", height: "calc(100vh - 64px)" }}>
+            <Box sx={{ overflowY: "auto", height: "calc(100vh - 64px)", scrollbarGutter: "stable both-edges" }}>
                 {lists
                     .find((item) => item.name === level_list)
                     ?.levels.map((text, index) => {

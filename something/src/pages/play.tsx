@@ -27,9 +27,14 @@ function PlaySelect() {
     const [color, setColor] = useState("random");
     const [p1, setP1] = useState("player");
     const [p2, setP2] = useState("Evaluator-5");
+    const [error, setError] = useState(false);
     const navigate = useNavigate();
     const handlePlay = () => {
         if (color === "" || p1 === "" || p2 === "") {
+            return;
+        }
+        if (p1 === "player" && p2 === "player") {
+            setError(true);
             return;
         }
         let sp;
@@ -70,7 +75,7 @@ function PlaySelect() {
                 sx={{
                     backgroundImage: {
                         md: `linear-gradient(to right, black 40%, transparent 80%), url("${backgroundImage}")`,
-                        sm: `linear-gradient(to bottom, black 60%, transparent 100%), url("${backgroundImage}")`
+                        xs: `linear-gradient(to bottom, black 60%, transparent 100%), url("${backgroundImage}")`
                     },
                     backgroundSize: "cover",
                     backgroundPosition: "center",
@@ -81,7 +86,7 @@ function PlaySelect() {
                     zIndex: -1000
                 }}
             />
-            <Box sx={{ overflowY: "auto", height: "calc(100vh - 64px)" }}>
+            <Box sx={{ overflowY: "auto", height: "calc(100vh - 64px)", scrollbarGutter: "stable both-edges" }}>
                 <Stack sx={{ p: 4, mx: "auto", my: 5, maxWidth: 1000 }} spacing={3}>
                     <Typography level="h1" textColor="common.white">
                         PLAY
@@ -115,9 +120,15 @@ function PlaySelect() {
                             </Typography>
                             <Select
                                 value={p1}
+                                color={error ? "danger" : "primary"}
                                 size="sm"
                                 onChange={(__, newValue) => {
                                     setP1(newValue === null ? "" : newValue);
+                                    if (newValue === "player" && p2 === "player") {
+                                        setError(true);
+                                    } else {
+                                        setError(false);
+                                    }
                                 }}
                             >
                                 <Option value="player">Player</Option>
@@ -134,9 +145,15 @@ function PlaySelect() {
                             </Typography>
                             <Select
                                 value={p2}
+                                color={error ? "danger" : "primary"}
                                 size="sm"
                                 onChange={(__, newValue) => {
                                     setP2(newValue === null ? "" : newValue);
+                                    if (p1 === "player" && newValue === "player") {
+                                        setError(true);
+                                    } else {
+                                        setError(false);
+                                    }
                                 }}
                             >
                                 <Option value="player">Player</Option>
@@ -147,6 +164,13 @@ function PlaySelect() {
                                 ))}
                             </Select>
                         </Stack>
+                        {
+                            error
+                            ? <Typography level="title-sm" color="danger">
+                                AI를 1개 이상 선택하세요.
+                            </Typography>
+                            : null
+                        }
                     </Stack>
                     <Button
                         sx={{
@@ -260,6 +284,12 @@ function PlayChess() {
             if (!dests.has(m.from)) {
                 dests.set(m.from, []);
             }
+            if (m.san === "O-O") {
+                dests.get(m.from)!.push(`h${m.to[1]}` as Square);
+            }
+            if (m.san === "O-O-O") {
+                dests.get(m.from)!.push(`a${m.to[1]}` as Square);
+            }
             dests.get(m.from)!.push(m.to);
         });
         return dests;
@@ -308,6 +338,12 @@ function PlayChess() {
                     moves.forEach((m) => {
                         if (!premoveDests.has(fromSquare)) {
                             premoveDests.set(fromSquare, []);
+                        }
+                        if (m.san === "O-O") {
+                            premoveDests.get(m.from)!.push(`h${m.to[1]}` as Square);
+                        }
+                        if (m.san === "O-O-O") {
+                            premoveDests.get(m.from)!.push(`a${m.to[1]}` as Square);
                         }
                         premoveDests.get(fromSquare)!.push(m.to);
                     });
@@ -373,6 +409,17 @@ function PlayChess() {
                             setPromotionFile(dest[0].charCodeAt(0) - 97);
                             setPromotion({ from: orig as Square, to: dest as Square });
                             return;
+                        }
+                        if (
+                            chessRef.current.get(orig as Square)?.type === "k"
+                            && orig[0] === "e"
+                        ) {
+                            if (dest[0] === "a") {
+                                dest = `c${dest[1]}` as Square;
+                            }
+                            if (dest[0] === "h") {
+                                dest = `g${dest[1]}` as Square;
+                            }
                         }
                         const moveResult = chessRef.current.move({
                             from: orig as Square,
@@ -553,15 +600,11 @@ function PlayChess() {
     }, [players]);
     const isWhiteInvalid = !white || (white !== "player" && !Object.keys(AIList).includes(white));
     const isBlackInvalid = !black || (black !== "player" && !Object.keys(AIList).includes(black));
-    if (isWhiteInvalid && isBlackInvalid) {
+    if (isWhiteInvalid || isBlackInvalid) {
         setSearchParams({});
-    } else if (isWhiteInvalid) {
-        setSearchParams({ black });
-    } else if (isBlackInvalid) {
-        setSearchParams({ white });
     }
     if (white === "player" && black === "player") {
-        return "WHAT";
+        setSearchParams({});
     }
     const handlePromotionSelect = (piece: "q" | "n" | "r" | "b") => {
         if (!promotion) {

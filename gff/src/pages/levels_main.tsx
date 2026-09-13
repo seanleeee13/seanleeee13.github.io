@@ -206,7 +206,7 @@ function LevelsMain() {
                 }
                 content={["GFF", "/gff/"]}
             />
-            <Box sx={{ overflowY: "auto", height: "calc(100vh - 64px)" }}>
+            <Box sx={{ overflowY: "auto", height: "calc(100vh - 64px)", scrollbarGutter: "stable both-edges" }}>
                 <Stack spacing={2} sx={{ pb: 7, pt: 5, px: "12.5%" }}>
                     <Typography level="h3">레벨 검색</Typography>
                     <Stack

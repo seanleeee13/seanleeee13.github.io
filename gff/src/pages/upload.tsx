@@ -10,7 +10,7 @@ import Tabs from "@mui/joy/Tabs";
 import TabList from "@mui/joy/TabList";
 import TabPanel from "@mui/joy/TabPanel";
 import Tab from "@mui/joy/Tab";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import {
     supabase,
     type LevelInterface,
@@ -20,17 +20,21 @@ import {
 } from "components/utils";
 import Checkbox from "@mui/joy/Checkbox";
 import { AppBar } from "components";
-import { Button, IconButton, Textarea, Tooltip } from "@mui/joy";
+import { Button, IconButton, Modal, ModalClose, ModalDialog, Textarea } from "@mui/joy";
 import { ClearIcon, UploadIcon } from "components/assets";
 
 function Upload() {
+    const [open, setOpen] = useState(false);
     const [_, setLevels] = useState<LevelInterface[]>([]);
     const [lists, setLists] = useState<ListInterface[]>([]);
     const [plists, setPLists] = useState<PListInterface[]>([]);
     const [users, setUsers] = useState<UserInterface | null>(null);
     const [userNameList, setUserNameList] = useState<string[]>([]);
+    const fileInputRef = useRef<HTMLInputElement | null>(null);
     const [levelUploadInputData, setLevelUploadInputData] = useState({
         id: "",
+        GDPSId: "",
+        isMain: true,
         isGDPS: false,
         name: "",
         publish: null as string | null,
@@ -40,10 +44,13 @@ function Upload() {
         verified: true,
         progress: null as null | number,
         description: "",
-        thumbnail: null as File | null
+        thumbnail: null as File | null,
+        showcase: ""
     });
-    const [levelUploadErrorData, ___] = useState({
+    const [levelUploadErrorData, setLevelUploadErrorData] = useState({
         id: false,
+        GDPSId: false,
+        isMain: false,
         isGDPS: false,
         name: false,
         host: false,
@@ -53,7 +60,8 @@ function Upload() {
         verified: false,
         progress: false,
         description: false,
-        thumbnail: false
+        thumbnail: false,
+        showcase: false
     });
     const [loading, setLoading] = useState<boolean>(true);
     useEffect(() => {
@@ -115,6 +123,69 @@ function Upload() {
         };
         fetchTableData();
     }, []);
+    const handleUpload = () => {
+        const d = levelUploadInputData;
+        const e = new Map<keyof typeof levelUploadErrorData, unknown>();
+        const f = new Map<keyof typeof levelUploadInputData, unknown>();
+        console.log(d);
+        if (!d.isMain && !d.isGDPS) {
+            e.set("isMain", true);
+            e.set("isGDPS", true);
+        }
+        f.set("isMain", d.isMain);
+        f.set("isGDPS", d.isGDPS);
+        if (d.isGDPS) {
+            if (!Number.isInteger(+d.GDPSId) || +d.GDPSId <= 0) {
+                e.set("GDPSId", true);
+            }
+            f.set("id", -+d.GDPSId);
+            f.set("GDPSId", +d.GDPSId);
+        }
+        if (d.isMain) {
+            if (!Number.isInteger(+d.id) || +d.id <= 0) {
+                e.set("id", true);
+            }
+            f.set("id", +d.id);
+        }
+        if (!d.name) {
+            e.set("name", true);
+        }
+        f.set("name", d.name.replace(/[^A-Za-z0-9 ]/g, "").slice(0, 20));
+        if (!d.host) {
+            e.set("host", true);
+        }
+        f.set("host", d.host);
+        if (!d.publish) {
+            e.set("publish", true);
+        }
+        f.set("publish", d.publish);
+        f.set("co_creators", d.co_creators);
+        if (!d.verifier) {
+            e.set("verifier", true);
+        }
+        f.set("verifier", d.verifier);
+        f.set("verified", d.verified);
+        if (!d.verified && d.progress === null) {
+            e.set("progress", true);
+        }
+        f.set("progress", d.progress);
+        f.set("thumbnail", d.thumbnail);
+        const showcase = d.showcase
+            .replace("watch?v=", "embed/")
+            .replace("youtu.be", "youtube.com/embed")
+            .replace(/[?].*/, "");
+        if (showcase && !/^(https:\/\/)?(www[.])?youtube.com\/embed\/[a-zA-Z0-9_-]+$/i.test(showcase)) {
+            e.set("showcase", true);
+        }
+        f.set("showcase", showcase || null);
+        if (e.size > 0) {
+            setLevelUploadErrorData({
+                ...levelUploadErrorData,
+                ...Object.fromEntries([...e])
+            });
+            return;
+        }
+    }
     let text_val;
     const data = [];
     let last_data = "";
@@ -164,13 +235,12 @@ function Upload() {
                 }
                 content={["GFF", "/gff/"]}
             />
-            <Box sx={{ overflowY: "auto", height: "calc(100vh - 64px)" }}>
+            <Box sx={{ overflowY: "auto", height: "calc(100vh - 64px)", scrollbarGutter: "stable both-edges" }}>
                 <Stack sx={{ p: 4, mx: "auto", my: 5, maxWidth: 1000 }} spacing={3}>
                     <Typography level="h1">레벨 업로드하기</Typography>
                     <Typography level="h3">
                         지난 3달간 여러분이 원하던 바로 그 기능이 추가되었습니다.
                     </Typography>
-                    <Typography level="body-xs">근데 아직 BDL은 안됩니다.</Typography>
                     <Tabs aria-label="tab-1" defaultValue={0}>
                         <TabList>
                             <Tab>레벨 업로드하기</Tab>
@@ -189,14 +259,40 @@ function Upload() {
                                 <Box alignItems="center" width="100%">
                                     <Stack spacing={2} maxWidth={500} width="auto" mx="auto">
                                         <Stack spacing={2} direction="row" alignItems="center">
+                                            <Checkbox
+                                                label="Is Main"
+                                                checked={levelUploadInputData.isMain}
+                                                color={
+                                                    levelUploadErrorData.isMain
+                                                        ? "danger"
+                                                        : "primary"
+                                                }
+                                                onChange={(event) => {
+                                                    setLevelUploadInputData({
+                                                        ...levelUploadInputData,
+                                                        isMain: event.target.checked,
+                                                        isGDPS: !event.target.checked || levelUploadInputData.isGDPS,
+                                                        id: event.target.checked ? levelUploadInputData.id : ""
+                                                    });
+                                                    setLevelUploadErrorData({
+                                                        ...levelUploadErrorData,
+                                                        isMain: false,
+                                                        isGDPS: false,
+                                                        id: false
+                                                    });
+                                                }}
+                                            />
                                             <Input
-                                                placeholder="ID"
+                                                placeholder="Main ID"
                                                 endDecorator={
-                                                    <Typography textColor="red">*</Typography>
+                                                    levelUploadInputData.isMain ?
+                                                    <Typography textColor="red">*</Typography> :
+                                                    null
                                                 }
                                                 error={levelUploadErrorData.id}
                                                 value={levelUploadInputData.id}
                                                 sx={{ flexGrow: 1 }}
+                                                disabled={!levelUploadInputData.isMain}
                                                 onChange={(event) => {
                                                     let val = event.target.value;
                                                     val = val.replace(/[^0-9]/g, "");
@@ -210,8 +306,14 @@ function Upload() {
                                                         ...levelUploadInputData,
                                                         id: val
                                                     });
+                                                    setLevelUploadErrorData({
+                                                        ...levelUploadErrorData,
+                                                        id: false
+                                                    });
                                                 }}
                                             />
+                                        </Stack>
+                                        <Stack spacing={2} direction="row" alignItems="center">
                                             <Checkbox
                                                 label="Is GDPS"
                                                 checked={levelUploadInputData.isGDPS}
@@ -223,44 +325,48 @@ function Upload() {
                                                 onChange={(event) => {
                                                     setLevelUploadInputData({
                                                         ...levelUploadInputData,
-                                                        isGDPS: event.target.checked
+                                                        isMain: !event.target.checked || levelUploadInputData.isMain,
+                                                        isGDPS: event.target.checked,
+                                                        GDPSId: event.target.checked ? levelUploadInputData.GDPSId : ""
+                                                    });
+                                                    setLevelUploadErrorData({
+                                                        ...levelUploadErrorData,
+                                                        isMain: false,
+                                                        isGDPS: false,
+                                                        GDPSId: false
                                                     });
                                                 }}
                                             />
-                                            <Tooltip
-                                                title={
-                                                    <Box textAlign="center">
-                                                        <Typography textColor="common.white">
-                                                            만약 레벨이 본 서버와 GDPS에
-                                                        </Typography>
-                                                        <Typography textColor="common.white">
-                                                            모두 존재한다면 체크박스를 해제하세요.
-                                                        </Typography>
-                                                    </Box>
+                                            <Input
+                                                placeholder="GDPS ID"
+                                                endDecorator={
+                                                    levelUploadInputData.isGDPS ?
+                                                    <Typography textColor="red">*</Typography> :
+                                                    null
                                                 }
-                                                variant="solid"
-                                                color="primary"
-                                            >
-                                                <div
-                                                    className="MuiAvatar-root MuiAvatar-variantSolid MuiAvatar-colorPrimary MuiAvatar-sizeSm css-1eqmqvu-JoyAvatar-root"
-                                                    style={{
-                                                        background:
-                                                            "radial-gradient(circle, var(--joy-palette-primary-500) 45%, transparent 70.71%)",
-                                                        borderRadius: "50%",
-                                                        width: "40px",
-                                                        height: "40px",
-                                                        cursor: "default",
-                                                        userSelect: "none",
-                                                        WebkitUserSelect: "none",
-                                                        color: "white",
-                                                        alignItems: "center",
-                                                        justifyContent: "center",
-                                                        display: "inline-flex"
-                                                    }}
-                                                >
-                                                    ?
-                                                </div>
-                                            </Tooltip>
+                                                error={levelUploadErrorData.GDPSId}
+                                                value={levelUploadInputData.GDPSId}
+                                                sx={{ flexGrow: 1 }}
+                                                disabled={!levelUploadInputData.isGDPS}
+                                                onChange={(event) => {
+                                                    let val = event.target.value;
+                                                    val = val.replace(/[^0-9]/g, "");
+                                                    if (val.length > 1) {
+                                                        val = val.replace(/^0+/, "");
+                                                        if (val === "") {
+                                                            val = "0";
+                                                        }
+                                                    }
+                                                    setLevelUploadInputData({
+                                                        ...levelUploadInputData,
+                                                        GDPSId: val
+                                                    });
+                                                    setLevelUploadErrorData({
+                                                        ...levelUploadErrorData,
+                                                        GDPSId: false
+                                                    });
+                                                }}
+                                            />
                                         </Stack>
                                         <Input
                                             placeholder="Level Name"
@@ -277,6 +383,10 @@ function Upload() {
                                                     ...levelUploadInputData,
                                                     name: val
                                                 });
+                                                setLevelUploadErrorData({
+                                                    ...levelUploadErrorData,
+                                                    name: false
+                                                });
                                             }}
                                         />
                                         <FormControl error={levelUploadErrorData.host}>
@@ -290,6 +400,10 @@ function Upload() {
                                                     setLevelUploadInputData({
                                                         ...levelUploadInputData,
                                                         host: newValue as string
+                                                    });
+                                                    setLevelUploadErrorData({
+                                                        ...levelUploadErrorData,
+                                                        host: false
                                                     });
                                                 }}
                                             >
@@ -315,6 +429,10 @@ function Upload() {
                                                         ...levelUploadInputData,
                                                         publish: newValue as string
                                                     });
+                                                    setLevelUploadErrorData({
+                                                        ...levelUploadErrorData,
+                                                        publish: false
+                                                    });
                                                 }}
                                             >
                                                 {userNameList.map((text) => (
@@ -336,6 +454,10 @@ function Upload() {
                                                     setLevelUploadInputData({
                                                         ...levelUploadInputData,
                                                         co_creators: newValue as string[]
+                                                    });
+                                                    setLevelUploadErrorData({
+                                                        ...levelUploadErrorData,
+                                                        co_creators: false
                                                     });
                                                 }}
                                             >
@@ -360,6 +482,10 @@ function Upload() {
                                                     setLevelUploadInputData({
                                                         ...levelUploadInputData,
                                                         verifier: newValue as string
+                                                    });
+                                                    setLevelUploadErrorData({
+                                                        ...levelUploadErrorData,
+                                                        verifier: false
                                                     });
                                                 }}
                                             >
@@ -390,15 +516,19 @@ function Upload() {
                                                             ? levelUploadInputData.progress
                                                             : null
                                                     });
+                                                    setLevelUploadErrorData({
+                                                        ...levelUploadErrorData,
+                                                        progress: false
+                                                    })
                                                 }}
                                             />
                                             <Input
                                                 placeholder="Progress"
                                                 disabled={levelUploadInputData.verified}
                                                 endDecorator={
-                                                    !levelUploadInputData.verified ? null : (
+                                                    !levelUploadInputData.verified ? (
                                                         <Typography textColor="red">*</Typography>
-                                                    )
+                                                    ) : null
                                                 }
                                                 type="number"
                                                 error={levelUploadErrorData.progress}
@@ -421,6 +551,10 @@ function Upload() {
                                                                 ? null
                                                                 : +event.target.value
                                                     });
+                                                    setLevelUploadErrorData({
+                                                        ...levelUploadErrorData,
+                                                        progress: false
+                                                    });
                                                 }}
                                             />
                                         </Stack>
@@ -442,20 +576,31 @@ function Upload() {
                                                     <UploadIcon />
                                                 ) : null
                                             }
+                                            color={levelUploadErrorData.thumbnail ? "danger" : "primary"}
                                             endDecorator={
                                                 levelUploadInputData.thumbnail === null ? null : (
                                                     <IconButton
                                                         size="sm"
                                                         sx={{
                                                             "& svg": {
-                                                                color: "var(--joy-palette-primary-500)"
+                                                                color: levelUploadErrorData.thumbnail ?
+                                                                    "var(--joy-palette-danger-500)" :
+                                                                    "var(--joy-palette-primary-500)"
                                                             }
                                                         }}
+                                                        color={levelUploadErrorData.thumbnail ? "danger" : "primary"}
                                                         onClick={() => {
                                                             setLevelUploadInputData({
                                                                 ...levelUploadInputData,
                                                                 thumbnail: null
                                                             });
+                                                            setLevelUploadErrorData({
+                                                                ...levelUploadErrorData,
+                                                                thumbnail: false
+                                                            });
+                                                            if (fileInputRef.current) {
+                                                                fileInputRef.current.value = "";
+                                                            }
                                                         }}
                                                     >
                                                         <ClearIcon />
@@ -481,11 +626,29 @@ function Upload() {
                                                 : levelUploadInputData.thumbnail.name}
                                             <input
                                                 type="file"
+                                                ref={fileInputRef}
                                                 style={{
                                                     display: "none"
                                                 }}
+                                                accept="image/webp, image/avif, image/jpeg, image/png"
                                                 onChange={(event) => {
                                                     const file = event.target.files?.[0] || null;
+                                                    if (!file) {
+                                                        return;
+                                                    }
+                                                    console.log(file);
+                                                    if (file.size > 128 * 1024) {
+                                                        setLevelUploadErrorData({
+                                                            ...levelUploadErrorData,
+                                                            thumbnail: true
+                                                        });
+                                                        setOpen(true);
+                                                    } else {
+                                                        setLevelUploadErrorData({
+                                                            ...levelUploadErrorData,
+                                                            thumbnail: false
+                                                        });
+                                                    }
                                                     setLevelUploadInputData({
                                                         ...levelUploadInputData,
                                                         thumbnail: file
@@ -493,6 +656,34 @@ function Upload() {
                                                 }}
                                             />
                                         </Button>
+                                        <Modal open={open} onClose={() => { setOpen(false) }}>
+                                            <ModalDialog>
+                                                <ModalClose />
+                                                <Typography level="h4">용량 제한</Typography>
+                                                <Typography level="body-lg">이미지 파일 용량은 최대 128KB입니다.</Typography>
+                                            </ModalDialog>
+                                        </Modal>
+                                        <Input
+                                            placeholder="Youtube Showcase Video"
+                                            slotProps={{
+                                                input: { spellCheck: false }
+                                            }}
+                                            error={levelUploadErrorData.showcase}
+                                            value={levelUploadInputData.showcase}
+                                            onChange={(event) => {
+                                                setLevelUploadInputData({
+                                                    ...levelUploadInputData,
+                                                    showcase: event.target.value
+                                                });
+                                                setLevelUploadErrorData({
+                                                    ...levelUploadErrorData,
+                                                    showcase: false
+                                                });
+                                            }}
+                                        />
+                                        <Button
+                                            onClick={handleUpload}
+                                        >Submit!</Button>
                                     </Stack>
                                 </Box>
                             </Stack>

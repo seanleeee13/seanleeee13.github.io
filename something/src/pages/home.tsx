@@ -31,7 +31,7 @@ function Home() {
                 sx={{
                     backgroundImage: {
                         md: `linear-gradient(to right, black 40%, transparent 80%), url("${backgroundImage}")`,
-                        sm: `linear-gradient(to bottom, black 60%, transparent 100%), url("${backgroundImage}")`
+                        xs: `linear-gradient(to bottom, black 60%, transparent 100%), url("${backgroundImage}")`
                     },
                     backgroundSize: "cover",
                     backgroundPosition: "center",
@@ -42,7 +42,7 @@ function Home() {
                     zIndex: -1000
                 }}
             />
-            <Box sx={{ overflowY: "auto", height: "calc(100vh - 64px)" }}>
+            <Box sx={{ overflowY: "auto", height: "calc(100vh - 64px)", scrollbarGutter: "stable both-edges" }}>
                 <Stack
                     sx={{
                         p: 4,

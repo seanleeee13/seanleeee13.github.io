@@ -39,23 +39,16 @@ function sortMvvlva(moves: string[], chess: Chess) {
     if (moves.length <= 1) {
         return moves;
     }
-    const scores = Array.from<number>({ length: moves.length });
-    for (let i = 0; i < moves.length; i++) {
-        if (moves[i].includes("x")) {
-            scores[i] =
-                PIECE_VALUES[getCaptured(moves[i], chess)] * 10 -
-                PIECE_VALUES[getPiece(moves[i])] +
-                Math.random() * 0.1;
-        } else {
-            scores[i] = -INF_SCORE + Math.random() * 0.1;
-        }
-    }
-    const moveIndices = Array.from({ length: moves.length }, (_, i) => i).toSorted(
-        (a, b) => scores[b] - scores[a]
-    );
+    const moveObjects = Array.from(moves, (move) => {
+        const score = move.includes("x")
+            ? PIECE_VALUES[getCaptured(move, chess)] * 10 - PIECE_VALUES[getPiece(move)] + Math.random() * 0.1
+            : -INF_SCORE + Math.random() * 0.1;
+        return { move, score };
+    });
+    moveObjects.sort((a, b) => b.score - a.score);
     const sortedMoves = Array.from<string>({ length: moves.length });
     for (let i = 0; i < moves.length; i++) {
-        sortedMoves[i] = moves[moveIndices[i]];
+        sortedMoves[i] = moveObjects[i].move;
     }
     return sortedMoves;
 }
@@ -150,7 +143,7 @@ export default function getBestMove(fen: string) {
     let bestMove: string | null = null;
     for (const move of moves) {
         chess.move(move);
-        const score = -negamax(chess, SEARCH_DEPTH - 1, -INF_SCORE, -bestScore);
+        const score = -negamax(chess, SEARCH_DEPTH - 1, bestScore, INF_SCORE);
         chess.undo();
         if (score > bestScore) {
             bestScore = score;

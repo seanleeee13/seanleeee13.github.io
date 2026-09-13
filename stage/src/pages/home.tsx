@@ -20,7 +20,8 @@ function Home() {
                     mx: "auto",
                     alignItems: "center",
                     overflowY: "auto",
-                    height: "calc(100vh - 64px)"
+                    height: "calc(100vh - 64px)",
+                    scrollbarGutter: "stable both-edges"
                 }}
                 spacing={4}
             >
