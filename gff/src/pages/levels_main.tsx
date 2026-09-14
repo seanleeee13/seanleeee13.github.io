@@ -23,25 +23,40 @@ import {
     type ListInterface,
     type PListInterface
 } from "components/utils";
-import { cdavg, pdavg } from "../utils/calculate_difficulty_avg";
+import { cdavg, pdavg } from "../utils/calculate_difficulty_avg.ts";
 import { ExpandMoreIcon, FilterListIcon, SearchIcon } from "components/assets";
 import { AppBar } from "components";
+import { useNavigate, useSearchParams } from "react-router-dom";
+import { Checkbox } from "@mui/joy";
 
 function LevelsMain() {
+    const navigate = useNavigate();
+    const [searchParams, setSearchParams] = useSearchParams();
     const [levels, setLevels] = useState<LevelInterface[]>([]);
     const [lists, setLists] = useState<ListInterface[]>([]);
     const [plists, setPLists] = useState<PListInterface[]>([]);
     const [loading, setLoading] = useState<boolean>(true);
     const [sortType, setSortType] = useState<
         "id" | "name" | "rating" | "featured" | "vote" | string
-    >("id");
-    const [sortAsc, setSortAsc] = useState<"asc" | "desc">("desc");
+    >(searchParams.get("sorting") ?? "id");
+    const [sortAsc, setSortAsc] = useState<"asc" | "desc">(
+        (searchParams.get("sortDirection") as "asc" | "desc") ?? "desc"
+    );
     const [searchData, setSearchData] = useState<string>("");
     const [isFilterOpen, setIsFilterOpen] = useState(false);
     const [dimensions, setDimensions] = useState({
         width: window.innerWidth,
         height: window.innerHeight
     });
+    const [filters, setFilters] = useState({
+        main: searchParams.get("filterMain") !== "0",
+        gdps: searchParams.get("filterGDPS") !== "0"
+    });
+    const updateParam = (key: string, value: string) => {
+        const nextParams = new URLSearchParams(searchParams);
+        nextParams.set(key, value);
+        setSearchParams(nextParams, { replace: true });
+    };
     useEffect(() => {
         const handleResize = () => {
             setDimensions({
@@ -147,9 +162,22 @@ function LevelsMain() {
                 level.level_name.toLowerCase().includes(searchData.toLowerCase()) ||
                 level.level_id === +searchData
         )
+        .filter((text) => {
+            let c = true;
+            if (!filters.main && text.gdps_id === null) {
+                c = false;
+            }
+            if (!filters.gdps && text.main_id === null) {
+                c = false;
+            }
+            if (!filters.main && !filters.gdps) {
+                c = false;
+            }
+            return c;
+        })
         .toSorted((a, b) => {
             if (sortType === "id") {
-                return a.level_id - b.level_id;
+                return Math.abs(a.level_id) - Math.abs(b.level_id);
             } else if (sortType === "name") {
                 return a.level_name.toLowerCase() > b.level_name.toLowerCase() ? 1 : -1;
             } else if (sortType === "rating") {
@@ -206,7 +234,13 @@ function LevelsMain() {
                 }
                 content={["GFF", "/gff/"]}
             />
-            <Box sx={{ overflowY: "auto", height: "calc(100vh - 64px)", scrollbarGutter: "stable both-edges" }}>
+            <Box
+                sx={{
+                    overflowY: "auto",
+                    height: "calc(100vh - 64px)",
+                    scrollbarGutter: "stable both-edges"
+                }}
+            >
                 <Stack spacing={2} sx={{ pb: 7, pt: 5, px: "12.5%" }}>
                     <Typography level="h3">레벨 검색</Typography>
                     <Stack
@@ -259,7 +293,34 @@ function LevelsMain() {
                                     <Card sx={{ width: "100%" }}>
                                         <Stack spacing={2}>
                                             <Typography level="h4">필터</Typography>
-                                            <Typography level="body-xs">나중에 할거임</Typography>
+                                            <Checkbox
+                                                label="Main Server"
+                                                checked={filters.main}
+                                                onChange={(event) => {
+                                                    updateParam(
+                                                        "filterMain",
+                                                        event.target.checked ? "1" : "0"
+                                                    );
+                                                    setFilters({
+                                                        ...filters,
+                                                        main: event.target.checked
+                                                    });
+                                                }}
+                                            />
+                                            <Checkbox
+                                                label="GDPS"
+                                                checked={filters.gdps}
+                                                onChange={(event) => {
+                                                    updateParam(
+                                                        "filterGDPS",
+                                                        event.target.checked ? "1" : "0"
+                                                    );
+                                                    setFilters({
+                                                        ...filters,
+                                                        gdps: event.target.checked
+                                                    });
+                                                }}
+                                            />
                                         </Stack>
                                     </Card>
                                 </Box>
@@ -274,7 +335,15 @@ function LevelsMain() {
                             indicator={<ExpandMoreIcon />}
                             value={sortType}
                             onChange={(_, value) => {
-                                if (value) setSortType(value);
+                                if (value) {
+                                    const currentHash = window.location.hash;
+                                    if (currentHash.endsWith("/")) {
+                                        const endHash = currentHash.replace(/\/+$/, "");
+                                        window.location.href = endHash;
+                                    }
+                                    updateParam("sorting", value);
+                                    setSortType(value);
+                                }
                             }}
                             sx={{
                                 [`& .${selectClasses.indicator}`]: {
@@ -296,7 +365,15 @@ function LevelsMain() {
                             variant="outlined"
                             value={sortAsc}
                             onChange={(_, value) => {
-                                if (value) setSortAsc(value);
+                                if (value) {
+                                    const currentHash = window.location.hash;
+                                    if (currentHash.endsWith("/")) {
+                                        const endHash = currentHash.replace(/\/+$/, "");
+                                        window.location.href = endHash;
+                                    }
+                                    updateParam("sortDirection", value);
+                                    setSortAsc(value);
+                                }
                             }}
                         >
                             <Button value="asc">Asc</Button>
@@ -329,7 +406,11 @@ function LevelsMain() {
                                             my: 0,
                                             height: cardSize.height,
                                             overflow: "hidden",
-                                            p: 0
+                                            p: 0,
+                                            cursor: "pointer"
+                                        }}
+                                        onClick={() => {
+                                            navigate("/levels/" + sel_level?.level_id + "/");
                                         }}
                                     >
                                         <CardContent sx={{ height: "100%" }}>
@@ -348,7 +429,9 @@ function LevelsMain() {
                                                         level={fontSizeA}
                                                         fontWeight="xl"
                                                         href={
-                                                            "/gff/#/levels/" + sel_level?.level_id
+                                                            "/gff/#/levels/" +
+                                                            sel_level?.level_id +
+                                                            "/"
                                                         }
                                                         sx={{
                                                             color: "black",
@@ -363,7 +446,9 @@ function LevelsMain() {
                                                         {`Host: ${sel_level.host} / Verify: ${sel_level.verifier}`}
                                                     </Typography>
                                                     <Typography level={fontSizeC} fontWeight="md">
-                                                        {`ID: ${sel_level.level_id}`}
+                                                        {((sel_level.level_id < 0 && "GDPS ") ||
+                                                            "") +
+                                                            `ID: ${Math.abs(sel_level.level_id)}`}
                                                         {`${
                                                             pdavg(diff) !== "na" && diff
                                                                 ? ` / 난이도: ${pdavg(diff)}`

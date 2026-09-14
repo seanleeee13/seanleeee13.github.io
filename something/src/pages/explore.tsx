@@ -35,7 +35,13 @@ function Explore() {
                     zIndex: -1000
                 }}
             />
-            <Box sx={{ overflowY: "auto", height: "calc(100vh - 64px)", scrollbarGutter: "stable both-edges" }}>
+            <Box
+                sx={{
+                    overflowY: "auto",
+                    height: "calc(100vh - 64px)",
+                    scrollbarGutter: "stable both-edges"
+                }}
+            >
                 <Stack
                     sx={{
                         px: 4,
@@ -88,18 +94,24 @@ function Explore() {
                                     <Stack direction="column" alignItems="center" spacing={1}>
                                         <Typography level="h2">{data.name}</Typography>
                                         <Typography level="title-lg">
-                                            by {
-                                                data.developer.length > 1
-                                                ? <>
+                                            by{" "}
+                                            {data.developer.length > 1 ? (
+                                                <>
                                                     {`${data.developer[0]} and `}
-                                                    <Tooltip title={data.developer.slice(1).join(", ")} arrow>
-                                                        <Typography sx={{ textDecoration: "underline" }}>
+                                                    <Tooltip
+                                                        title={data.developer.slice(1).join(", ")}
+                                                        arrow
+                                                    >
+                                                        <Typography
+                                                            sx={{ textDecoration: "underline" }}
+                                                        >
                                                             more
                                                         </Typography>
                                                     </Tooltip>
                                                 </>
-                                                : data.developer[0]
-                                            }
+                                            ) : (
+                                                data.developer[0]
+                                            )}
                                         </Typography>
                                     </Stack>
                                     <Divider />

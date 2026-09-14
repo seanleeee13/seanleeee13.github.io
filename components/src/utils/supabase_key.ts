@@ -20,6 +20,8 @@ export interface LevelInterface {
     image: string;
     upload_time: string;
     imbed_image: string;
+    gdps_id: number;
+    main_id: number;
 }
 
 export interface ListInterface {

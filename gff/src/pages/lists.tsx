@@ -5,7 +5,7 @@ import Card from "@mui/joy/Card";
 import CardContent from "@mui/joy/CardContent";
 import Link from "@mui/joy/Link";
 import CircularProgress from "@mui/joy/CircularProgress";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { useState, useEffect } from "react";
 import {
     supabase,
@@ -13,7 +13,7 @@ import {
     type ListInterface,
     type PListInterface
 } from "components/utils";
-import { cdavg, pdavg } from "../utils/calculate_difficulty_avg";
+import { cdavg, pdavg } from "../utils/calculate_difficulty_avg.ts";
 import { AppBar } from "components";
 
 function Lists() {
@@ -26,6 +26,7 @@ function Lists() {
         width: window.innerWidth,
         height: window.innerHeight
     });
+    const navigate = useNavigate();
     useEffect(() => {
         const handleResize = () => {
             setDimensions({
@@ -164,7 +165,13 @@ function Lists() {
                 }
                 content={["GFF", "/gff/"]}
             />
-            <Box sx={{ overflowY: "auto", height: "calc(100vh - 64px)", scrollbarGutter: "stable both-edges" }}>
+            <Box
+                sx={{
+                    overflowY: "auto",
+                    height: "calc(100vh - 64px)",
+                    scrollbarGutter: "stable both-edges"
+                }}
+            >
                 {lists
                     .find((item) => item.name === level_list)
                     ?.levels.map((text, index) => {
@@ -180,7 +187,13 @@ function Lists() {
                                     my: 5,
                                     height: cardSize.height,
                                     overflow: "hidden",
-                                    p: 0
+                                    p: 0,
+                                    cursor: "pointer"
+                                }}
+                                onClick={() => {
+                                    navigate(
+                                        "/levels/" + level_list + "/" + sel_level?.level_id + "/"
+                                    );
                                 }}
                             >
                                 <CardContent sx={{ height: "100%" }}>
@@ -202,7 +215,8 @@ function Lists() {
                                                     "/gff/#/levels/" +
                                                     level_list +
                                                     "/" +
-                                                    sel_level?.level_id
+                                                    sel_level?.level_id +
+                                                    "/"
                                                 }
                                                 sx={{
                                                     color: "black",

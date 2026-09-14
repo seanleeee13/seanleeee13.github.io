@@ -22,10 +22,12 @@ import Checkbox from "@mui/joy/Checkbox";
 import { AppBar } from "components";
 import { Button, IconButton, Modal, ModalClose, ModalDialog, Textarea } from "@mui/joy";
 import { ClearIcon, UploadIcon } from "components/assets";
+import uploadImage from "../utils/upload_image";
+import { useNavigate } from "react-router-dom";
 
 function Upload() {
     const [open, setOpen] = useState(false);
-    const [_, setLevels] = useState<LevelInterface[]>([]);
+    const [level, setLevels] = useState<LevelInterface[]>([]);
     const [lists, setLists] = useState<ListInterface[]>([]);
     const [plists, setPLists] = useState<PListInterface[]>([]);
     const [users, setUsers] = useState<UserInterface | null>(null);
@@ -64,6 +66,9 @@ function Upload() {
         showcase: false
     });
     const [loading, setLoading] = useState<boolean>(true);
+    const isGFFAdmin = (users?.role ?? []).find(
+        (text) => text[0] === "admin" || text[0] === "gff:admin"
+    );
     useEffect(() => {
         const fetchTableData = async () => {
             try {
@@ -123,17 +128,18 @@ function Upload() {
         };
         fetchTableData();
     }, []);
-    const handleUpload = () => {
+    const navigate = useNavigate();
+    const handleUpload = async () => {
         const d = levelUploadInputData;
         const e = new Map<keyof typeof levelUploadErrorData, unknown>();
         const f = new Map<keyof typeof levelUploadInputData, unknown>();
-        console.log(d);
         if (!d.isMain && !d.isGDPS) {
             e.set("isMain", true);
             e.set("isGDPS", true);
         }
         f.set("isMain", d.isMain);
         f.set("isGDPS", d.isGDPS);
+        f.set("GDPSId", null);
         if (d.isGDPS) {
             if (!Number.isInteger(+d.GDPSId) || +d.GDPSId <= 0) {
                 e.set("GDPSId", true);
@@ -174,18 +180,62 @@ function Upload() {
             .replace("watch?v=", "embed/")
             .replace("youtu.be", "youtube.com/embed")
             .replace(/[?].*/, "");
-        if (showcase && !/^(https:\/\/)?(www[.])?youtube.com\/embed\/[a-zA-Z0-9_-]+$/i.test(showcase)) {
+        if (
+            showcase &&
+            !/^(https:\/\/)?(www[.])?youtube.com\/embed\/[a-zA-Z0-9_-]+$/i.test(showcase)
+        ) {
             e.set("showcase", true);
         }
         f.set("showcase", showcase || null);
         if (e.size > 0) {
             setLevelUploadErrorData({
                 ...levelUploadErrorData,
-                ...Object.fromEntries([...e])
+                ...Object.fromEntries(e)
             });
             return;
         }
-    }
+        if (
+            level.find(
+                (text) =>
+                    f.get("id") === text.level_id ||
+                    +d["id"] === text.main_id ||
+                    +d["GDPSId"] === text.gdps_id
+            )
+        ) {
+            return;
+        }
+        const filePath =
+            (await uploadImage(
+                f.get("thumbnail") as File,
+                (f.get("name") as string).replaceAll(" ", "_") +
+                    "." +
+                    (f.get("thumbnail") as File).name.split(".").pop()
+            )) ??
+            "https://jtomgrgfszuhfqbrqgst.supabase.co/storage/v1/object/public/gd-thumbnail/placeholder.webp";
+        const u = new Map<keyof LevelInterface, unknown>();
+        u.set("level_id", f.get("id"));
+        u.set("level_name", f.get("name"));
+        u.set("host", f.get("host"));
+        u.set("publish", f.get("publish"));
+        u.set("co_creators", f.get("co_creators"));
+        u.set("verifier", f.get("verifier"));
+        u.set("progress", f.get("progress"));
+        u.set("description", f.get("description"));
+        u.set("difficulty_votes", {});
+        u.set("victory", []);
+        u.set("image", filePath);
+        u.set("imbed_image", f.get("showcase"));
+        u.set("gdps_id", f.get("GDPSId"));
+        u.set("main_id", (f.get("id") as number) < 0 ? null : f.get("id"));
+        const { error } = await supabase
+            .from("level")
+            .insert([Object.fromEntries(u) as unknown as LevelInterface]);
+        if (error) {
+            console.log("Level upload error:", error);
+        } else {
+            navigate(`/levels/${f.get("id")}/`);
+        }
+    };
     let text_val;
     const data = [];
     let last_data = "";
@@ -235,7 +285,13 @@ function Upload() {
                 }
                 content={["GFF", "/gff/"]}
             />
-            <Box sx={{ overflowY: "auto", height: "calc(100vh - 64px)", scrollbarGutter: "stable both-edges" }}>
+            <Box
+                sx={{
+                    overflowY: "auto",
+                    height: "calc(100vh - 64px)",
+                    scrollbarGutter: "stable both-edges"
+                }}
+            >
                 <Stack sx={{ p: 4, mx: "auto", my: 5, maxWidth: 1000 }} spacing={3}>
                     <Typography level="h1">레벨 업로드하기</Typography>
                     <Typography level="h3">
@@ -271,8 +327,12 @@ function Upload() {
                                                     setLevelUploadInputData({
                                                         ...levelUploadInputData,
                                                         isMain: event.target.checked,
-                                                        isGDPS: !event.target.checked || levelUploadInputData.isGDPS,
-                                                        id: event.target.checked ? levelUploadInputData.id : ""
+                                                        isGDPS:
+                                                            !event.target.checked ||
+                                                            levelUploadInputData.isGDPS,
+                                                        id: event.target.checked
+                                                            ? levelUploadInputData.id
+                                                            : ""
                                                     });
                                                     setLevelUploadErrorData({
                                                         ...levelUploadErrorData,
@@ -285,9 +345,9 @@ function Upload() {
                                             <Input
                                                 placeholder="Main ID"
                                                 endDecorator={
-                                                    levelUploadInputData.isMain ?
-                                                    <Typography textColor="red">*</Typography> :
-                                                    null
+                                                    levelUploadInputData.isMain ? (
+                                                        <Typography textColor="red">*</Typography>
+                                                    ) : null
                                                 }
                                                 error={levelUploadErrorData.id}
                                                 value={levelUploadInputData.id}
@@ -325,9 +385,13 @@ function Upload() {
                                                 onChange={(event) => {
                                                     setLevelUploadInputData({
                                                         ...levelUploadInputData,
-                                                        isMain: !event.target.checked || levelUploadInputData.isMain,
+                                                        isMain:
+                                                            !event.target.checked ||
+                                                            levelUploadInputData.isMain,
                                                         isGDPS: event.target.checked,
-                                                        GDPSId: event.target.checked ? levelUploadInputData.GDPSId : ""
+                                                        GDPSId: event.target.checked
+                                                            ? levelUploadInputData.GDPSId
+                                                            : ""
                                                     });
                                                     setLevelUploadErrorData({
                                                         ...levelUploadErrorData,
@@ -340,9 +404,9 @@ function Upload() {
                                             <Input
                                                 placeholder="GDPS ID"
                                                 endDecorator={
-                                                    levelUploadInputData.isGDPS ?
-                                                    <Typography textColor="red">*</Typography> :
-                                                    null
+                                                    levelUploadInputData.isGDPS ? (
+                                                        <Typography textColor="red">*</Typography>
+                                                    ) : null
                                                 }
                                                 error={levelUploadErrorData.GDPSId}
                                                 value={levelUploadInputData.GDPSId}
@@ -407,7 +471,10 @@ function Upload() {
                                                     });
                                                 }}
                                             >
-                                                {[users?.user_metadata?.["gff:id"]].map((text) => (
+                                                {(isGFFAdmin
+                                                    ? userNameList
+                                                    : [users?.user_metadata?.["gff:id"]]
+                                                ).map((text) => (
                                                     <Option
                                                         key={`option-host-${text}`}
                                                         value={text}
@@ -519,7 +586,7 @@ function Upload() {
                                                     setLevelUploadErrorData({
                                                         ...levelUploadErrorData,
                                                         progress: false
-                                                    })
+                                                    });
                                                 }}
                                             />
                                             <Input
@@ -576,19 +643,27 @@ function Upload() {
                                                     <UploadIcon />
                                                 ) : null
                                             }
-                                            color={levelUploadErrorData.thumbnail ? "danger" : "primary"}
+                                            color={
+                                                levelUploadErrorData.thumbnail
+                                                    ? "danger"
+                                                    : "primary"
+                                            }
                                             endDecorator={
                                                 levelUploadInputData.thumbnail === null ? null : (
                                                     <IconButton
                                                         size="sm"
                                                         sx={{
                                                             "& svg": {
-                                                                color: levelUploadErrorData.thumbnail ?
-                                                                    "var(--joy-palette-danger-500)" :
-                                                                    "var(--joy-palette-primary-500)"
+                                                                color: levelUploadErrorData.thumbnail
+                                                                    ? "var(--joy-palette-danger-500)"
+                                                                    : "var(--joy-palette-primary-500)"
                                                             }
                                                         }}
-                                                        color={levelUploadErrorData.thumbnail ? "danger" : "primary"}
+                                                        color={
+                                                            levelUploadErrorData.thumbnail
+                                                                ? "danger"
+                                                                : "primary"
+                                                        }
                                                         onClick={() => {
                                                             setLevelUploadInputData({
                                                                 ...levelUploadInputData,
@@ -656,11 +731,18 @@ function Upload() {
                                                 }}
                                             />
                                         </Button>
-                                        <Modal open={open} onClose={() => { setOpen(false) }}>
+                                        <Modal
+                                            open={open}
+                                            onClose={() => {
+                                                setOpen(false);
+                                            }}
+                                        >
                                             <ModalDialog>
                                                 <ModalClose />
                                                 <Typography level="h4">용량 제한</Typography>
-                                                <Typography level="body-lg">이미지 파일 용량은 최대 128KB입니다.</Typography>
+                                                <Typography level="body-lg">
+                                                    이미지 파일 용량은 최대 128KB입니다.
+                                                </Typography>
                                             </ModalDialog>
                                         </Modal>
                                         <Input
@@ -681,9 +763,7 @@ function Upload() {
                                                 });
                                             }}
                                         />
-                                        <Button
-                                            onClick={handleUpload}
-                                        >Submit!</Button>
+                                        <Button onClick={handleUpload}>Submit!</Button>
                                     </Stack>
                                 </Box>
                             </Stack>

@@ -13,7 +13,7 @@ import {
     type PListInterface
 } from "components/utils";
 import { AppBar } from "components";
-import { cdavg, pdavg } from "../utils/calculate_difficulty_avg";
+import { cdavg, pdavg } from "../utils/calculate_difficulty_avg.ts";
 
 function Levels() {
     const [levels, setLevels] = useState<LevelInterface[]>([]);
@@ -137,7 +137,13 @@ function Levels() {
                 }
                 content={["GFF", "/gff/"]}
             />
-            <Box sx={{ overflowY: "auto", height: "calc(100vh - 64px)", scrollbarGutter: "stable both-edges" }}>
+            <Box
+                sx={{
+                    overflowY: "auto",
+                    height: "calc(100vh - 64px)",
+                    scrollbarGutter: "stable both-edges"
+                }}
+            >
                 <Stack
                     sx={{
                         p: 4,
@@ -164,10 +170,10 @@ function Levels() {
                                 {" / "}
                             </>
                         )}
-                        레벨 배포: {level_info.publish} / 베리파이: {level_info.verifier}
+                        베리파이: {level_info.verifier}
                         {level_info.progress === null ? "" : ` (progress: ${level_info.progress}%)`}
                     </Typography>
-                    <Typography level="title-md">
+                    <Typography level="title-lg">
                         {level_info.description ? `"${level_info.description}"` : ""}
                     </Typography>
                     {level_info.imbed_image === null || level_info.imbed_image === "" ? (
@@ -194,8 +200,9 @@ function Levels() {
                             sx={{ width: "55%", aspectRatio: "16 / 9" }}
                         />
                     )}
-                    <Typography level="title-md">
-                        ID: {level_info.level_id}
+                    <Typography level="title-lg">
+                        Main ID: {level_info.main_id ?? "N/A"} / GDPS ID:{" "}
+                        {level_info.gdps_id ?? "N/A"}
                         {pdavg(diff) !== "na" && diff
                             ? ` / 난이도: ${pdavg(diff)} (${diff[1]} / ${diff[2]}) / `
                             : " / 난이도: N/A / "}

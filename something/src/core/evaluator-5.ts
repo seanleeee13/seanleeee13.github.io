@@ -41,7 +41,9 @@ function sortMvvlva(moves: string[], chess: Chess) {
     }
     const moveObjects = Array.from(moves, (move) => {
         const score = move.includes("x")
-            ? PIECE_VALUES[getCaptured(move, chess)] * 10 - PIECE_VALUES[getPiece(move)] + Math.random() * 0.1
+            ? PIECE_VALUES[getCaptured(move, chess)] * 10 -
+              PIECE_VALUES[getPiece(move)] +
+              Math.random() * 0.1
             : -INF_SCORE + Math.random() * 0.1;
         return { move, score };
     });

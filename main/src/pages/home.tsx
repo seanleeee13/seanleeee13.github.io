@@ -85,7 +85,13 @@ function MyPage() {
                         ["공통 기능", [["Log Out", "/#/logout/"]]]
                     ]}
                 />
-                <Box sx={{ overflowY: "auto", height: "calc(100vh - 64px)", scrollbarGutter: "stable both-edges" }}>
+                <Box
+                    sx={{
+                        overflowY: "auto",
+                        height: "calc(100vh - 64px)",
+                        scrollbarGutter: "stable both-edges"
+                    }}
+                >
                     <Stack
                         direction="column"
                         spacing={4}
@@ -144,7 +150,13 @@ function MyPage() {
                     ["공통 기능", [["Log Out", "/#/logout/"]]]
                 ]}
             />
-            <Box sx={{ overflowY: "auto", height: "calc(100vh - 64px)", scrollbarGutter: "stable both-edges" }}>
+            <Box
+                sx={{
+                    overflowY: "auto",
+                    height: "calc(100vh - 64px)",
+                    scrollbarGutter: "stable both-edges"
+                }}
+            >
                 <Stack
                     direction="column"
                     spacing={5}
@@ -254,7 +266,13 @@ function IntroPage() {
                     ["공통 기능", [["Log Out", "/#/logout/"]]]
                 ]}
             />
-            <Box sx={{ overflowY: "auto", height: "calc(100vh - 64px)", scrollbarGutter: "stable both-edges" }}>
+            <Box
+                sx={{
+                    overflowY: "auto",
+                    height: "calc(100vh - 64px)",
+                    scrollbarGutter: "stable both-edges"
+                }}
+            >
                 <Stack
                     direction="column"
                     spacing={4}

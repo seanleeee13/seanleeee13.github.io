@@ -86,7 +86,13 @@ function PlaySelect() {
                     zIndex: -1000
                 }}
             />
-            <Box sx={{ overflowY: "auto", height: "calc(100vh - 64px)", scrollbarGutter: "stable both-edges" }}>
+            <Box
+                sx={{
+                    overflowY: "auto",
+                    height: "calc(100vh - 64px)",
+                    scrollbarGutter: "stable both-edges"
+                }}
+            >
                 <Stack sx={{ p: 4, mx: "auto", my: 5, maxWidth: 1000 }} spacing={3}>
                     <Typography level="h1" textColor="common.white">
                         PLAY
@@ -164,13 +170,11 @@ function PlaySelect() {
                                 ))}
                             </Select>
                         </Stack>
-                        {
-                            error
-                            ? <Typography level="title-sm" color="danger">
+                        {error ? (
+                            <Typography level="title-sm" color="danger">
                                 AI를 1개 이상 선택하세요.
                             </Typography>
-                            : null
-                        }
+                        ) : null}
                     </Stack>
                     <Button
                         sx={{
@@ -410,10 +414,7 @@ function PlayChess() {
                             setPromotion({ from: orig as Square, to: dest as Square });
                             return;
                         }
-                        if (
-                            chessRef.current.get(orig as Square)?.type === "k"
-                            && orig[0] === "e"
-                        ) {
+                        if (chessRef.current.get(orig as Square)?.type === "k" && orig[0] === "e") {
                             if (dest[0] === "a") {
                                 dest = `c${dest[1]}` as Square;
                             }

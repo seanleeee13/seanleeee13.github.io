@@ -147,8 +147,7 @@ function AppBar({ link, list, content }: AppBarProps) {
                 <IconButton variant="plain" size="md" component="a" href="/">
                     <ReactIcon />
                 </IconButton>
-                {
-                    link.length !== 0 ?
+                {link.length !== 0 ? (
                     <Box
                         sx={{
                             "@media (max-width: 500px)": { display: "none" },
@@ -157,8 +156,7 @@ function AppBar({ link, list, content }: AppBarProps) {
                     >
                         <Divider orientation="vertical" sx={{ height: "36px" }} />
                     </Box>
-                    : null
-                }
+                ) : null}
                 {linkElement}
             </Stack>
             {!hasSession ? (
@@ -166,7 +164,11 @@ function AppBar({ link, list, content }: AppBarProps) {
                     direction="row-reverse"
                     alignItems="center"
                     spacing={2}
-                    sx={{ width: "fit-content", ml: "auto", "@media (max-width: 250px)": { display: "none" } }}
+                    sx={{
+                        width: "fit-content",
+                        ml: "auto",
+                        "@media (max-width: 250px)": { display: "none" }
+                    }}
                 >
                     <Button
                         variant="solid"
@@ -192,7 +194,11 @@ function AppBar({ link, list, content }: AppBarProps) {
                     direction="row-reverse"
                     alignItems="center"
                     spacing={2}
-                    sx={{ width: "fit-content", ml: "auto", "@media (max-width: 250px)": { display: "none" } }}
+                    sx={{
+                        width: "fit-content",
+                        ml: "auto",
+                        "@media (max-width: 250px)": { display: "none" }
+                    }}
                 >
                     <Button variant="outlined" color="neutral" component="a" href={"/#/logout/"}>
                         Log Out

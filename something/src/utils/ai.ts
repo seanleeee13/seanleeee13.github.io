@@ -8,15 +8,13 @@ export const AIFuncList = {
 };
 export const AIDataList = [
     {
-        "id": "Evaluator-5",
-        "name": "Evaluator-5",
-        "developer": [
-            "k_hxnsxol"
-        ],
-        "version": "1.0",
-        "depth": 5,
-        "algorithm": "Negamax",
-        "elo": 1500,
-        "description": "Just a normal AI"
+        id: "Evaluator-5",
+        name: "Evaluator-5",
+        developer: ["k_hxnsxol"],
+        version: "1.0",
+        depth: 5,
+        algorithm: "Negamax",
+        elo: 1500,
+        description: "Just a normal AI"
     }
 ];
