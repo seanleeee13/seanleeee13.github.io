@@ -36,7 +36,7 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
       - name: Run Linter
-        run: pnpm --filter main lint
+        run: pnpm --filter main --filter components lint
       - name: Build Project
         run: pnpm --filter main build
       - name: Upload artifact

@@ -4,5 +4,6 @@ packages:
   - 'something'
   - 'stage'
   - 'components'
+  - 'auto'
 
 minimumReleaseAge: 0

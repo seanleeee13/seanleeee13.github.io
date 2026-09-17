@@ -1,0 +1,21 @@
+{
+    "name": "auto",
+    "version": "1.0.0",
+    "private": true,
+    "type": "module",
+    "scripts": {
+        "lint": "oxlint",
+        "format": "oxfmt --write ."
+    },
+    "dependencies": {
+        "@supabase/supabase-js": "^2.116.0",
+        "dotenv": "^17.4.2"
+    },
+    "devDependencies": {
+        "@types/node": "^26.5.0",
+        "oxfmt": "^0.64.0",
+        "oxlint": "^1.79.0",
+        "typescript": "^7.0.2"
+    },
+    "packageManager": "pnpm@12.4.2"
+}

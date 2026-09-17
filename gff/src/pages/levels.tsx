@@ -14,6 +14,8 @@ import {
 } from "components/utils";
 import { AppBar } from "components";
 import { cdavg, pdavg } from "../utils/calculate_difficulty_avg.ts";
+import { Grid } from "@mui/joy";
+import VoteDiff from "../components/vote.tsx";
 
 function Levels() {
     const [levels, setLevels] = useState<LevelInterface[]>([]);
@@ -200,18 +202,54 @@ function Levels() {
                             sx={{ width: "55%", aspectRatio: "16 / 9" }}
                         />
                     )}
-                    <Typography level="title-lg">
-                        Main ID: {level_info.main_id ?? "N/A"} / GDPS ID:{" "}
-                        {level_info.gdps_id ?? "N/A"}
-                        {pdavg(diff) !== "na" && diff
-                            ? ` / 난이도: ${pdavg(diff)} (${diff[1]} / ${diff[2]}) / `
-                            : " / 난이도: N/A / "}
-                        등재일: {level_info.upload_time.split("T")[0]}
-                        {level_list
-                            ? ` / ${level_list} 1위 기간: ` +
-                              `${lists.find((item) => item.name === level_list)?.levels.find((item) => item[0] === +level_id)?.[1]}`
-                            : ""}
-                    </Typography>
+                    <Grid container spacing={4}>
+                        <Grid>
+                            <Stack sx={{ alignItems: "center" }} direction="column" spacing={0}>
+                                <Typography level="title-lg">Main ID</Typography>
+                                <Typography level="title-md">
+                                    {level_info.main_id ?? "N/A"}
+                                </Typography>
+                            </Stack>
+                        </Grid>
+                        <Grid>
+                            <Stack sx={{ alignItems: "center" }} direction="column" spacing={0}>
+                                <Typography level="title-lg">GDPS ID</Typography>
+                                <Typography level="title-md">
+                                    {level_info.gdps_id ?? "N/A"}
+                                </Typography>
+                            </Stack>
+                        </Grid>
+                        <Grid>
+                            <Stack sx={{ alignItems: "center" }} direction="column" spacing={0}>
+                                <Typography level="title-lg">난이도</Typography>
+                                <Typography level="title-md">
+                                    {pdavg(diff) !== "na" && diff
+                                        ? `${pdavg(diff)} (${diff[1]} / ${diff[2]})`
+                                        : "N/A"}
+                                </Typography>
+                            </Stack>
+                        </Grid>
+                        <Grid>
+                            <Stack sx={{ alignItems: "center" }} direction="column" spacing={0}>
+                                <Typography level="title-lg">등재일</Typography>
+                                <Typography level="title-md">
+                                    {level_info.upload_time.split("T")[0]}
+                                </Typography>
+                            </Stack>
+                        </Grid>
+                        <Grid>
+                            <Stack sx={{ alignItems: "center" }} direction="column" spacing={0}>
+                                <Typography level="title-lg">1위 기간</Typography>
+                                <Typography level="title-md">
+                                    {lists
+                                        .find((item) => item.name === level_list)
+                                        ?.levels.find((item) => item[0] === +level_id)?.[1] ??
+                                        "N/A"}
+                                </Typography>
+                            </Stack>
+                        </Grid>
+                    </Grid>
+                    <VoteDiff level_id={+level_id} />
                     {level_info.victory.length === 0 ? (
                         <Typography level="h3">클리어자 없음</Typography>
                     ) : (
