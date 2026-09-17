@@ -7,7 +7,7 @@ on:
       - "main/**"
       - "pnpm-lock.yaml"
       - ".github/workflows/deploy-main.yaml"
-      - "apply-change"
+      - "apply-change.txt"
 permissions:
   contents: write
   pages: write

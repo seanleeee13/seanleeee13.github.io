@@ -21,7 +21,7 @@ jobs:
         run: pnpm install --frozen-lockfile
       - name: Run Linter
         run: pnpm --filter auto lint
-      - name: Run Sync Script
+      - name: Run Script
         env:
           SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
         run: pnpm dlx --allow-build=esbuild tsx auto/src/gff/relist.ts
