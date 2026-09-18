@@ -44,7 +44,7 @@ function Upload() {
         description: "",
         thumbnail: null as File | null,
         showcase: "",
-        length: null as "tiny" | "small" | "medium" | "long" | "xl" | null,
+        length: null as "tiny" | "short" | "medium" | "long" | "xl" | null,
         original: "",
         song: ""
     });
@@ -181,7 +181,7 @@ function Upload() {
         if (!d.length || d.length === "tiny") {
             e.set("length", true);
         }
-        const lengthMap = { tiny: 0, small: 1, medium: 2, long: 3, xl: 4 };
+        const lengthMap = { tiny: 0, short: 1, medium: 2, long: 3, xl: 4 };
         f.set("length", d.length === null ? 0 : lengthMap[d.length]);
         f.set("original", +d.original);
         f.set("song", +d.song);
@@ -625,7 +625,7 @@ function Upload() {
                                         }}
                                     >
                                         <Option value="tiny">Tiny</Option>
-                                        <Option value="small">Small</Option>
+                                        <Option value="short">Short</Option>
                                         <Option value="medium">Medium</Option>
                                         <Option value="long">Long</Option>
                                         <Option value="xl">XL</Option>
