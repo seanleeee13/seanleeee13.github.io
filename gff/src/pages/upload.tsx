@@ -237,6 +237,9 @@ function Upload() {
         u.set("imbed_image", f.get("showcase"));
         u.set("gdps_id", f.get("GDPSId"));
         u.set("main_id", (f.get("id") as number) < 0 ? null : f.get("id"));
+        u.set("length", f.get("length"));
+        u.set("original", f.get("original"));
+        u.set("song", f.get("song"));
         const { error } = await supabase
             .from("level")
             .insert([Object.fromEntries(u) as unknown as LevelInterface]);
