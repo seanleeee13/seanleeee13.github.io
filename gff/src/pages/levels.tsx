@@ -202,7 +202,7 @@ function Levels() {
                             sx={{ width: "55%", aspectRatio: "16 / 9" }}
                         />
                     )}
-                    <Grid container spacing={4}>
+                    <Grid container spacing={4} sx={{ maxWidth: "65%" }} justifyContent="center">
                         <Grid>
                             <Stack sx={{ alignItems: "center" }} direction="column" spacing={0}>
                                 <Typography level="title-lg">Main ID</Typography>
@@ -246,6 +246,24 @@ function Levels() {
                                         ?.levels.find((item) => item[0] === +level_id)?.[1] ??
                                         "N/A"}
                                 </Typography>
+                            </Stack>
+                        </Grid>
+                        <Grid>
+                            <Stack sx={{ alignItems: "center" }} direction="column" spacing={0}>
+                                <Typography level="title-lg">레벨 길이</Typography>
+                                <Typography level="title-md">{level_info.length}</Typography>
+                            </Stack>
+                        </Grid>
+                        <Grid>
+                            <Stack sx={{ alignItems: "center" }} direction="column" spacing={0}>
+                                <Typography level="title-lg">원본 레벨 ID</Typography>
+                                <Typography level="title-md">{level_info.original}</Typography>
+                            </Stack>
+                        </Grid>
+                        <Grid>
+                            <Stack sx={{ alignItems: "center" }} direction="column" spacing={0}>
+                                <Typography level="title-lg">노래</Typography>
+                                <Typography level="title-md">{level_info.song}</Typography>
                             </Stack>
                         </Grid>
                     </Grid>

@@ -43,7 +43,10 @@ function Upload() {
         progress: null as null | number,
         description: "",
         thumbnail: null as File | null,
-        showcase: ""
+        showcase: "",
+        length: null as string | null,
+        original: "",
+        song: ""
     });
     const [levelUploadErrorData, setLevelUploadErrorData] = useState({
         id: false,
@@ -59,7 +62,10 @@ function Upload() {
         progress: false,
         description: false,
         thumbnail: false,
-        showcase: false
+        showcase: false,
+        length: false,
+        original: false,
+        song: false
     });
     const [loading, setLoading] = useState<boolean>(true);
     const isGFFAdmin = (users?.role ?? []).find(
@@ -171,6 +177,13 @@ function Upload() {
             e.set("progress", true);
         }
         f.set("progress", d.progress);
+        f.set("description", d.description);
+        if (!d.length || d.length === "tiny") {
+            e.set("length", true);
+        }
+        f.set("length", d.length);
+        f.set("original", +d.original);
+        f.set("song", +d.song);
         f.set("thumbnail", d.thumbnail);
         const showcase = d.showcase
             .replace("watch?v=", "embed/")
@@ -593,6 +606,78 @@ function Upload() {
                                         });
                                     }}
                                     minRows={3}
+                                />
+                                <FormControl error={levelUploadErrorData.length}>
+                                    <Select
+                                        placeholder="Length"
+                                        endDecorator={<Typography textColor="red">*</Typography>}
+                                        value={levelUploadInputData.length}
+                                        onChange={(__, newValue) => {
+                                            setLevelUploadInputData({
+                                                ...levelUploadInputData,
+                                                length: newValue as string
+                                            });
+                                            setLevelUploadErrorData({
+                                                ...levelUploadErrorData,
+                                                length: false
+                                            });
+                                        }}
+                                    >
+                                        <Option value="tiny">Tiny</Option>
+                                        <Option value="small">Small</Option>
+                                        <Option value="medium">Medium</Option>
+                                        <Option value="long">Long</Option>
+                                        <Option value="xl">XL</Option>
+                                    </Select>
+                                </FormControl>
+                                <Input
+                                    placeholder="Original Level ID"
+                                    error={levelUploadErrorData.original}
+                                    value={levelUploadInputData.original}
+                                    sx={{ flexGrow: 1 }}
+                                    onChange={(event) => {
+                                        let val = event.target.value;
+                                        val = val.replace(/[^0-9]/g, "");
+                                        if (val.length > 1) {
+                                            val = val.replace(/^0+/, "");
+                                            if (val === "") {
+                                                val = "0";
+                                            }
+                                        }
+                                        setLevelUploadInputData({
+                                            ...levelUploadInputData,
+                                            original: val
+                                        });
+                                        setLevelUploadErrorData({
+                                            ...levelUploadErrorData,
+                                            original: false
+                                        });
+                                    }}
+                                />
+                                <Input
+                                    placeholder="Song Number"
+                                    error={levelUploadErrorData.song}
+                                    value={levelUploadInputData.song}
+                                    endDecorator={<Typography textColor="red">*</Typography>}
+                                    sx={{ flexGrow: 1 }}
+                                    onChange={(event) => {
+                                        let val = event.target.value;
+                                        val = val.replace(/[^0-9]/g, "");
+                                        if (val.length > 1) {
+                                            val = val.replace(/^0+/, "");
+                                            if (val === "") {
+                                                val = "0";
+                                            }
+                                        }
+                                        setLevelUploadInputData({
+                                            ...levelUploadInputData,
+                                            song: val
+                                        });
+                                        setLevelUploadErrorData({
+                                            ...levelUploadErrorData,
+                                            song: false
+                                        });
+                                    }}
                                 />
                                 <Button
                                     startDecorator={
