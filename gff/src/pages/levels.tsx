@@ -251,7 +251,13 @@ function Levels() {
                         <Grid>
                             <Stack sx={{ alignItems: "center" }} direction="column" spacing={0}>
                                 <Typography level="title-lg">레벨 길이</Typography>
-                                <Typography level="title-md">{level_info.length}</Typography>
+                                <Typography level="title-md">
+                                    {
+                                        { 0: "tiny", 1: "small", 2: "medium", 3: "long", 4: "xl" }[
+                                            level_info.length
+                                        ]
+                                    }
+                                </Typography>
                             </Stack>
                         </Grid>
                         <Grid>

@@ -44,7 +44,7 @@ function Upload() {
         description: "",
         thumbnail: null as File | null,
         showcase: "",
-        length: null as string | null,
+        length: null as "tiny" | "small" | "medium" | "long" | "xl" | null,
         original: "",
         song: ""
     });
@@ -181,7 +181,8 @@ function Upload() {
         if (!d.length || d.length === "tiny") {
             e.set("length", true);
         }
-        f.set("length", d.length);
+        const lengthMap = { tiny: 0, small: 1, medium: 2, long: 3, xl: 4 };
+        f.set("length", d.length === null ? 0 : lengthMap[d.length]);
         f.set("original", +d.original);
         f.set("song", +d.song);
         f.set("thumbnail", d.thumbnail);
@@ -615,7 +616,7 @@ function Upload() {
                                         onChange={(__, newValue) => {
                                             setLevelUploadInputData({
                                                 ...levelUploadInputData,
-                                                length: newValue as string
+                                                length: newValue
                                             });
                                             setLevelUploadErrorData({
                                                 ...levelUploadErrorData,
