@@ -4,20 +4,31 @@ import supabase, {
 } from "../components/utils/supabase_key.ts";
 import { cdavg } from "./utils/calculate_difficulty_avg.ts";
 
-const [levelResult, listResult] = await Promise.all([
-    supabase.from("level").select("*"),
-    supabase.from("list").select("*").order("id")
-]);
+let levelResult, listResult;
 
-if (levelResult.error) {
+for (let i = 0; i < 3; i++) {
+    [levelResult, listResult] = await Promise.all([
+        supabase.from("level").select("*"),
+        supabase.from("list").select("*").order("id")
+    ]);
+    if (levelResult.error) {
+        continue;
+    }
+    if (listResult.error) {
+        continue;
+    }
+    break;
+}
+
+if (levelResult!.error) {
     process.exit(1);
 }
-if (listResult.error) {
+if (listResult!.error) {
     process.exit(1);
 }
 
-const levels = levelResult.data as LevelInterface[];
-const lists = listResult.data as ListInterface[];
+const levels = levelResult!.data as LevelInterface[];
+const lists = listResult!.data as ListInterface[];
 const TLL = lists.find((text) => text.name === "TLL");
 const NLL = lists.find((text) => text.name === "NLL");
 const CLL = lists.find((text) => text.name === "CLL");
