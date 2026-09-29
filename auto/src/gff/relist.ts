@@ -40,6 +40,9 @@ for (const level of levels) {
 }
 
 for (const level of levels) {
+    if (Object.keys(level.difficulty_votes).length === 0) {
+        continue;
+    }
     if (level.progress === null) {
         if (level.length === 1) {
             if (CLL && !CLL.levels.some((text) => text[0] === level.level_id)) {

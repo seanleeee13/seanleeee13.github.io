@@ -126,7 +126,7 @@ function ListsMain() {
                                 <AccordionDetails>
                                     {text.slice(1).map((text_data) => (
                                         <Link
-                                            href={"gff/#/lists/" + text_data[0]}
+                                            href={"#/lists/" + text_data[0]}
                                             key={`map-map-group-${text_data}`}
                                         >
                                             {text_data[1]} / {text_data[0]}
