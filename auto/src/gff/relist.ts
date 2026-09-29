@@ -40,7 +40,11 @@ for (const level of levels) {
 }
 
 for (const level of levels) {
-    if (Object.keys(level.difficulty_votes).length === 0) {
+    const avg = cdavg(level.difficulty_votes);
+    if (!avg) {
+        continue;
+    }
+    if (avg[3] >= 0.5) {
         continue;
     }
     if (level.progress === null) {
@@ -49,8 +53,7 @@ for (const level of levels) {
                 CLL.levels.push([level.level_id, ""]);
             }
         } else {
-            const avg = cdavg(level.difficulty_votes);
-            if (avg && avg[2] > 1) {
+            if (avg[2] >= 0.5) {
                 if (TLL && !TLL.levels.some((text) => text[0] === level.level_id)) {
                     TLL.levels.push([level.level_id, ""]);
                 }
