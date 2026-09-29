@@ -12,7 +12,7 @@ on:
     - cron: '27 * * * *'
   workflow_dispatch:
 jobs:
-  run-sync:
+  run:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
