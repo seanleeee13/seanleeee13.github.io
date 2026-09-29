@@ -1,5 +1,13 @@
 name: Auto Run [gff/relist] with Cron
 on:
+  push:
+    branches:
+      - main
+    paths:
+      - "auto/**"
+      - "pnpm-lock.yaml"
+      - ".github/workflows/auto-gff-relist.yaml"
+      - "apply-change.txt"
   schedule:
     - cron: '27 * * * *'
   workflow_dispatch:
