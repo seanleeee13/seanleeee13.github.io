@@ -224,7 +224,9 @@ function Levels() {
                                 <Typography level="title-lg">난이도</Typography>
                                 <Typography level="title-md">
                                     {pdavg(diff) !== "na" && diff
-                                        ? `${pdavg(diff)} (${diff[1]} / ${diff[2]})`
+                                        ? pdavg(diff) + (
+                                            diff[3] >= 0.5 ? "" : ` (${diff[1]} / ${diff[2]})`
+                                        )
                                         : "N/A"}
                                 </Typography>
                             </Stack>
@@ -250,10 +252,18 @@ function Levels() {
                         </Grid>
                         <Grid>
                             <Stack sx={{ alignItems: "center" }} direction="column" spacing={0}>
+                                <Typography level="title-lg">업로드</Typography>
+                                <Typography level="title-md">
+                                    {level_info.publish}
+                                </Typography>
+                            </Stack>
+                        </Grid>
+                        <Grid>
+                            <Stack sx={{ alignItems: "center" }} direction="column" spacing={0}>
                                 <Typography level="title-lg">레벨 길이</Typography>
                                 <Typography level="title-md">
                                     {
-                                        { 0: "tiny", 1: "short", 2: "medium", 3: "long", 4: "xl" }[
+                                        { 0: "Tiny", 1: "Short", 2: "Medium", 3: "Long", 4: "XL" }[
                                             level_info.length
                                         ]
                                     }
