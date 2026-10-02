@@ -13,7 +13,7 @@ import {
     type PListInterface
 } from "components/utils";
 import { AppBar } from "components";
-import { cdavg, pdavg } from "../utils/calculate_difficulty_avg.ts";
+import { cdavg } from "../utils/calculate_difficulty_avg.ts";
 import { Grid } from "@mui/joy";
 import VoteDiff from "../components/vote.tsx";
 
@@ -156,7 +156,59 @@ function Levels() {
                     }}
                     spacing={3}
                 >
-                    <Typography level="h1">{level_info.level_name}</Typography>
+                    <Stack direction="row" spacing={1}>
+                        <img
+                            src={`/gff/assets/${
+                                diff && diff[3] < 0.5
+                                    ? diff[0] === 0
+                                        ? {
+                                            1: "auto",
+                                            2: "easy",
+                                            3: "normal",
+                                            4: "hard",
+                                            5: "hard",
+                                            6: "harder",
+                                            7: "harder",
+                                            8: "insane",
+                                            9: "insane"
+                                        }[Math.round(diff[1])]
+                                        : diff[1] <= 5
+                                        ? "demon-easy"
+                                        : diff[1] <= 10
+                                            ? "demon-medium"
+                                            : diff[1] <= 15
+                                            ? "demon-hard"
+                                            : diff[1] <= 20
+                                                ? "demon-insane"
+                                                : "demon-extreme"
+                                    : "unrated"
+                            }${
+                                diff && diff[3] < 0.5
+                                    ? {
+                                        0: "",
+                                        1: "-featured",
+                                        2: "-epic",
+                                        3: "-legendary",
+                                        4: "-mythic"
+                                    }[Math.round(diff[2])]
+                                    : ""
+                            }.png`}
+                            width="48px"
+                            height="48px"
+                        />
+                        {
+                            diff && diff[3] >= 0.5
+                            ? <Tooltip title="Inappropriate" placement="top" arrow>
+                                <Typography level="body-lg" sx={{ textDecoration: "underline" }}>
+                                    IPP
+                                </Typography>
+                            </Tooltip>
+                            : null
+                        }
+                        <Typography level="h1">
+                            {level_info.level_name}
+                        </Typography>
+                    </Stack>
                     <Typography level="h4">
                         제작: {level_info.host}
                         {level_info.co_creators.length === 0 ? (
@@ -175,9 +227,13 @@ function Levels() {
                         베리파이: {level_info.verifier}
                         {level_info.progress === null ? "" : ` (progress: ${level_info.progress}%)`}
                     </Typography>
-                    <Typography level="title-lg">
-                        {level_info.description ? `"${level_info.description}"` : ""}
-                    </Typography>
+                    {
+                        level_info.description
+                        ? <Typography level="title-lg">
+                            {level_info.description}
+                        </Typography>
+                        : null
+                    }
                     {level_info.imbed_image === null || level_info.imbed_image === "" ? (
                         <Box
                             component="img"
@@ -216,18 +272,6 @@ function Levels() {
                                 <Typography level="title-lg">GDPS ID</Typography>
                                 <Typography level="title-md">
                                     {level_info.gdps_id ?? "N/A"}
-                                </Typography>
-                            </Stack>
-                        </Grid>
-                        <Grid>
-                            <Stack sx={{ alignItems: "center" }} direction="column" spacing={0}>
-                                <Typography level="title-lg">난이도</Typography>
-                                <Typography level="title-md">
-                                    {pdavg(diff) !== "na" && diff
-                                        ? pdavg(diff) + (
-                                            diff[3] >= 0.5 ? "" : ` (${diff[1]} / ${diff[2]})`
-                                        )
-                                        : "N/A"}
                                 </Typography>
                             </Stack>
                         </Grid>
@@ -280,7 +324,7 @@ function Levels() {
                         </Grid>
                         <Grid>
                             <Stack sx={{ alignItems: "center" }} direction="column" spacing={0}>
-                                <Typography level="title-lg">노래</Typography>
+                                <Typography level="title-lg">노래 ID</Typography>
                                 <Typography level="title-md">{level_info.song}</Typography>
                             </Stack>
                         </Grid>

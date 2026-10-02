@@ -13,7 +13,7 @@ import {
     type ListInterface,
     type PListInterface
 } from "components/utils";
-import { cdavg, pdavg } from "../utils/calculate_difficulty_avg.ts";
+import { cdavg } from "../utils/calculate_difficulty_avg.ts";
 import { AppBar } from "components";
 
 function Lists() {
@@ -23,15 +23,13 @@ function Lists() {
     const [loading, setLoading] = useState<boolean>(true);
     const { level_list } = useParams<{ level_list: string }>();
     const [dimensions, setDimensions] = useState({
-        width: window.innerWidth,
-        height: window.innerHeight
+        width: window.innerWidth
     });
     const navigate = useNavigate();
     useEffect(() => {
         const handleResize = () => {
             setDimensions({
-                width: window.innerWidth,
-                height: window.innerHeight
+                width: window.innerWidth
             });
         };
         window.addEventListener("resize", handleResize);
@@ -72,7 +70,6 @@ function Lists() {
         };
         fetchTableData();
     }, []);
-    const ratio = dimensions.width / dimensions.height;
     let cardSize: { width: number | string; height: number | string; side: "row" | "column" } = {
         width: 0,
         height: 0,
@@ -81,22 +78,24 @@ function Lists() {
     let fontSizeA: "h4" | "title-lg" | "title-md";
     let fontSizeB: "title-md" | "title-sm" | "body-lg";
     let fontSizeC: "body-sm" | "body-xs";
-    if (ratio >= 2) {
+    if (dimensions.width > 1200) {
         cardSize = { width: "70%", height: 135, side: "row" };
-    } else if (ratio >= 1.2) {
-        cardSize = { width: dimensions.height * 0.75, height: 135, side: "row" };
-    } else if (ratio >= 1.0) {
-        cardSize = { width: "62%", height: 135, side: "row" };
-    } else if (ratio >= 0.7) {
-        cardSize = { width: "90%", height: 135, side: "row" };
+    } else if (dimensions.width > 1000) {
+        cardSize = { width: "60%", height: 135, side: "row" };
+    } else if (dimensions.width > 850) {
+        cardSize = { width: "70%", height: 135, side: "row" };
+    } else if (dimensions.width > 600) {
+        cardSize = { width: "95%", height: 135, side: "row" };
+    } else if (dimensions.width > 400) {
+        cardSize = { width: "70%", height: "auto", side: "column" };
     } else {
-        cardSize = { width: "90%", height: "auto", side: "column" };
+        cardSize = { width: "95%", height: "auto", side: "column" };
     }
-    if (dimensions.width >= 1118.4) {
+    if (dimensions.width >= 850) {
         fontSizeA = "h4";
         fontSizeB = "title-md";
         fontSizeC = "body-sm";
-    } else if (dimensions.width >= 932) {
+    } else if (dimensions.width >= 600) {
         fontSizeA = "h4";
         fontSizeB = "title-sm";
         fontSizeC = "body-xs";
@@ -172,6 +171,11 @@ function Lists() {
                     scrollbarGutter: "stable both-edges"
                 }}
             >
+                <Typography level="h1" sx={{ display: "flex", justifySelf: "center", mt: 5 }}>
+                    {lists
+                        .find((item) => item.name === level_list)
+                        ?.long_name ?? ""}
+                </Typography>
                 {lists
                     .find((item) => item.name === level_list)
                     ?.levels.map((text, index) => {
@@ -208,31 +212,69 @@ function Lists() {
                                             sx={{ aspectRatio: "16 / 9", height: "100%" }}
                                         />
                                         <Stack spacing={1} sx={{ p: 2 }}>
-                                            <Link
-                                                level={fontSizeA}
-                                                fontWeight="xl"
-                                                href={
-                                                    "/gff/#/levels/" +
-                                                    level_list +
-                                                    "/" +
-                                                    sel_level?.level_id +
-                                                    "/"
-                                                }
-                                                sx={{
-                                                    color: "black",
-                                                    "&:hover": { textDecorationColor: "black" }
-                                                }}
-                                            >{`#${index + 1} - ${sel_level.level_name}`}</Link>
+                                            <Stack spacing={1} direction="row">
+                                                <Link
+                                                    level={fontSizeA}
+                                                    fontWeight="xl"
+                                                    href={
+                                                        "/gff/#/levels/" +
+                                                        level_list +
+                                                        "/" +
+                                                        sel_level?.level_id +
+                                                        "/"
+                                                    }
+                                                    sx={{
+                                                        color: "black",
+                                                        "&:hover": { textDecorationColor: "black" }
+                                                    }}
+                                                >
+                                                    {`#${index + 1} - ${sel_level.level_name}`}
+                                                </Link>
+                                                <img
+                                                    src={`/gff/assets/${
+                                                        diff && diff[3] < 0.5
+                                                            ? diff[0] === 0
+                                                                ? {
+                                                                    1: "auto",
+                                                                    2: "easy",
+                                                                    3: "normal",
+                                                                    4: "hard",
+                                                                    5: "hard",
+                                                                    6: "harder",
+                                                                    7: "harder",
+                                                                    8: "insane",
+                                                                    9: "insane"
+                                                                }[Math.round(diff[1])]
+                                                                : diff[1] <= 5
+                                                                ? "demon-easy"
+                                                                : diff[1] <= 10
+                                                                    ? "demon-medium"
+                                                                    : diff[1] <= 15
+                                                                    ? "demon-hard"
+                                                                    : diff[1] <= 20
+                                                                        ? "demon-insane"
+                                                                        : "demon-extreme"
+                                                            : "unrated"
+                                                    }${
+                                                        diff && diff[3] < 0.5
+                                                            ? {
+                                                                0: "",
+                                                                1: "-featured",
+                                                                2: "-epic",
+                                                                3: "-legendary",
+                                                                4: "-mythic"
+                                                            }[Math.round(diff[2])]
+                                                            : ""
+                                                    }.png`}
+                                                    width="30px"
+                                                    height="30px"
+                                                />
+                                            </Stack>
                                             <Typography level={fontSizeB} fontWeight="lg">
                                                 {`Host: ${sel_level.host} / Verify: ${sel_level.verifier}`}
                                             </Typography>
                                             <Typography level={fontSizeC} fontWeight="md">
                                                 {`ID: ${sel_level.level_id}`}
-                                                {`${
-                                                    pdavg(diff) !== "na" && diff
-                                                        ? ` / 난이도: ${pdavg(diff)}`
-                                                        : " / 난이도: N/A"
-                                                }`}
                                                 {text[1] === "" ? "" : ` / 1위 ${text[1]}`}
                                             </Typography>
                                         </Stack>
