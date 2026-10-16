@@ -80,7 +80,7 @@ for (const user of users) {
                 .map((val) => {
                     const vals = val.split(":");
                     return Object.fromEntries(
-                        Array.from({ length: vals.length / 2 }, (_, i) => [vals[i * 2], vals[i * 2 + 1]])
+                        Array.from({ length: vals.length / 2 }, (_, x) => [vals[x * 2], vals[x * 2 + 1]])
                     );
                 });
             await sleep(1000);
