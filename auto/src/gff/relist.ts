@@ -1,20 +1,30 @@
 import supabase, {
     type LevelInterface,
-    type ListInterface
+    type ListInterface,
+    type UserInterface
 } from "../components/utils/supabase_key.ts";
 import { cdavg } from "./utils/calculate_difficulty_avg.ts";
 
-let levelResult, listResult;
+let levelResult, listResult, userResult;
 
-for (let i = 0; i < 3; i++) {
-    [levelResult, listResult] = await Promise.all([
+const sleep = (ms: number): Promise<void> => {
+    return new Promise((resolve) => setTimeout(resolve, ms));
+};
+
+for (let i = 0; i < 5; i++) {
+    await sleep(1000);
+    [levelResult, listResult, userResult] = await Promise.all([
         supabase.from("level").select("*"),
-        supabase.from("list").select("*").order("id")
+        supabase.from("list").select("*").order("id"),
+        supabase.from("user").select("user_metadata")
     ]);
     if (levelResult.error) {
         continue;
     }
     if (listResult.error) {
+        continue;
+    }
+    if (userResult.error) {
         continue;
     }
     break;
@@ -26,13 +36,96 @@ if (levelResult!.error) {
 if (listResult!.error) {
     process.exit(1);
 }
+if (userResult!.error) {
+    process.exit(1);
+}
 
-const levels = levelResult!.data as LevelInterface[];
+let levels = levelResult!.data as LevelInterface[];
+const newLevels: LevelInterface[] = [];
 const lists = listResult!.data as ListInterface[];
 const TLL = lists.find((text) => text.name === "TLL");
 const NLL = lists.find((text) => text.name === "NLL");
 const CLL = lists.find((text) => text.name === "CLL");
 const ULL = lists.find((text) => text.name === "ULL");
+
+const users = (userResult!.data as UserInterface[])
+    .map(row => ({
+        "gff:id": row.user_metadata["gff:id"],
+        "gff:accid": row.user_metadata["gff:accid"]
+    }))
+    .filter(row => row["gff:id"] && row["gff:accid"])
+for (const user of users) {
+    const headers = {
+        "User-Agent": ""
+    };
+    const data = {
+        "type": 5,
+        "secret": "Wmfd2893gb7",
+        "str": user["gff:accid"]
+    };
+    let response: Record<string, string>[] | null = null;
+    for (let i = 0; i < 3; i++) {
+        try {
+            response = (await (await fetch(
+                "http://www.boomlings.com/database/getGJLevels21.php",
+                {
+                    method: "post",
+                    headers: headers,
+                    body: JSON.stringify(data)
+                }
+            ))
+                .text())
+                .split("#")[0]
+                .split("|")
+                .map((val) => {
+                    const vals = val.split(":");
+                    return Object.fromEntries(
+                        Array.from({ length: vals.length / 2 }, (_, i) => [vals[i * 2], vals[i * 2 + 1]])
+                    );
+                });
+            await sleep(1000);
+        } catch {
+            continue;
+        }
+    }
+    if (!response) {
+        continue;
+    }
+    for (const level of response) {
+        if (Object.entries(level).length <= 1) {
+            continue;
+        }
+        if (level["15"] === "0") {
+            continue;
+        }
+        if (levels.find(val => val.level_id === +level["1"])) {
+            continue;
+        }
+        const newLevel = {
+            level_id: +level["1"],
+            level_name: level["2"],
+            host: user["gff:id"],
+            publish: user["gff:id"],
+            co_creators: [] as string[],
+            verifier: user["gff:id"],
+            progress: null,
+            description: level["3"],
+            difficulty_votes: {},
+            victory: [] as string[],
+            image: "https://jtomgrgfszuhfqbrqgst.supabase.co/storage/v1/object/public/gd-thumbnail/placeholder.webp",
+            imbed_image: null,
+            gdps_id: null,
+            main_id: +level["1"],
+            length: +level["15"],
+            original: +level["30"],
+            song: level["35"] === "0" ? +level["12"] : +level["35"]
+        } as LevelInterface;
+        newLevels.push(newLevel);
+        await supabase.from("level").upsert(newLevel);
+    }
+}
+
+levels = [...levels, ...newLevels];
 
 const levelMap = new Map<number, LevelInterface>();
 for (const level of levels) {
