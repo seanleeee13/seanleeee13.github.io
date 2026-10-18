@@ -70,5 +70,5 @@ export interface UserInterface {
     role: [string, string][];
     vrole: [string, string][];
     name: string | null;
-    user_metadata: { "gff:id": string; "gff:accid": string; [key: string]: unknown };
+    user_metadata: { "gff:id": string; "gff:accid": string; "gff:state": string[]; "gff:stateUntil": string[]; [key: string]: unknown };
 }

@@ -28,6 +28,7 @@ function VoteDiff({ level_id }: VoteDiffProps) {
     const [ft, setFt] = useState<"nf" | "ft" | "ep" | "lg" | "mt">("nf");
     const [ipp, setIpp] = useState(false);
     const [success, setSuccess] = useState(false);
+    const [voteBan, setVoteBan] = useState(false);
     useEffect(() => {
         const getVoteData = async () => {
             const {
@@ -54,9 +55,10 @@ function VoteDiff({ level_id }: VoteDiffProps) {
                 console.log("User select error:", userError);
                 return;
             }
+            const user = userData as UserInterface;
             if (data) {
                 const voteData = (data as LevelInterface).difficulty_votes[
-                    userData.user_metadata["gff:id"]
+                    user.user_metadata["gff:id"]
                 ];
                 setDemon(voteData[0] === 1);
                 setPts(voteData[1]);
@@ -65,10 +67,23 @@ function VoteDiff({ level_id }: VoteDiffProps) {
                 );
                 setIpp(voteData[3] === 1);
             }
+            const stateArray = user.user_metadata?.["gff:state"] || [];
+            const stateUntilArray = user.user_metadata?.["gff:stateUntil"] || [];
+            const banIndex = stateArray.indexOf("voteBan");
+            if (banIndex !== -1) {
+                const banUntilStr = stateUntilArray[banIndex];
+                const banUntilDate = new Date(banUntilStr);
+                if (!isNaN(banUntilDate.getTime()) && banUntilDate > new Date()) {
+                    setVoteBan(true);
+                }
+            }
         };
         getVoteData();
     }, [level_id]);
     const handleVote = async () => {
+        if (voteBan) {
+            return;
+        }
         if (success) {
             return;
         }
@@ -115,6 +130,11 @@ function VoteDiff({ level_id }: VoteDiffProps) {
             setSuccess(false);
         }, 3000);
     };
+    if (voteBan) {
+        return (
+            <Typography level="h3">투표 차단됨</Typography>
+        );
+    }
     return (
         <AccordionGroup
             sx={{
