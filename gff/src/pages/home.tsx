@@ -95,6 +95,7 @@ function Home() {
     const levelWidth = 0.71269216419 * dimensions.width - 104;
     const [recentPage, setRecentPage] = useState(1);
     const [unratedPage, setUnratedPage] = useState(1);
+    const [beatenPage, setBeatenPage] = useState(1);
     const count = Math.max(Math.floor(levelWidth / 316), 1);
     let text_val;
     const data = [];
@@ -477,9 +478,9 @@ function Home() {
                     >
                         <IconButton
                             variant="plain"
-                            disabled={recentPage === 1}
+                            disabled={beatenPage === 1}
                             onClick={() => {
-                                setRecentPage(recentPage - 1);
+                                setRecentPage(beatenPage - 1);
                             }}
                         >
                             <Box sx={{ transform: "rotate(90deg)" }}>
@@ -492,7 +493,7 @@ function Home() {
                                     new Date(b.upload_time).getTime() -
                                     new Date(a.upload_time).getTime()
                             )
-                            .slice(recentPage - 1, recentPage + count - 1)
+                            .slice(beatenPage - 1, beatenPage + count - 1)
                             .map((sel_level, index) => {
                                 let diff = cdavg(sel_level?.difficulty_votes);
                                 return sel_level ? (
@@ -609,15 +610,15 @@ function Home() {
                         <IconButton
                             variant="plain"
                             disabled={
-                                unratedPage === 10 ||
-                                unratedPage ===
+                                beatenPage === 10 ||
+                                beatenPage ===
                                     levels.filter(
                                         (text) =>
                                             Object.keys(text.difficulty_votes).length === 0
                                     ).length
                             }
                             onClick={() => {
-                                setUnratedPage(unratedPage + 1);
+                                setUnratedPage(beatenPage + 1);
                             }}
                         >
                             <Box sx={{ transform: "rotate(270deg)" }}>
