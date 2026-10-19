@@ -205,7 +205,11 @@ function Lists() {
                                 }}
                                 onClick={() => {
                                     navigate(
-                                        "/levels/" + level_list + "/" + sel_level?.level_id + "/"
+                                        `/${beaten ? "b" : ""}levels/` +
+                                            level_list +
+                                            "/" +
+                                            sel_level?.level_id +
+                                            "/"
                                     );
                                 }}
                             >
@@ -226,7 +230,7 @@ function Lists() {
                                                     level={fontSizeA}
                                                     fontWeight="xl"
                                                     href={
-                                                        "/gff/#/levels/" +
+                                                        `/gff/#/${beaten ? "b" : ""}levels/` +
                                                         level_list +
                                                         "/" +
                                                         sel_level?.level_id +

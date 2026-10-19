@@ -318,7 +318,7 @@ function Levels({ beaten }: LevelsProps) {
                             <Stack sx={{ alignItems: "center" }} direction="column" spacing={0}>
                                 <Typography level="title-lg">원본 레벨 ID</Typography>
                                 <Typography level="title-md">
-                                    {level_info.original === 0 ? "N/A" : level_info.original}
+                                    {!level_info.original ? "N/A" : level_info.original}
                                 </Typography>
                             </Stack>
                         </Grid>
