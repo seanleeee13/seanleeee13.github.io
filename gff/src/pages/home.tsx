@@ -480,7 +480,7 @@ function Home() {
                             variant="plain"
                             disabled={beatenPage === 1}
                             onClick={() => {
-                                setRecentPage(beatenPage - 1);
+                                setBeatenPage(beatenPage - 1);
                             }}
                         >
                             <Box sx={{ transform: "rotate(90deg)" }}>
@@ -618,7 +618,7 @@ function Home() {
                                     ).length
                             }
                             onClick={() => {
-                                setUnratedPage(beatenPage + 1);
+                                setBeatenPage(beatenPage + 1);
                             }}
                         >
                             <Box sx={{ transform: "rotate(270deg)" }}>
