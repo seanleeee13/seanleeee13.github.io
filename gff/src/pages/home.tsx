@@ -23,6 +23,7 @@ import { useNavigate } from "react-router-dom";
 
 function Home() {
     const [levels, setLevels] = useState<LevelInterface[]>([]);
+    const [bLevels, setBLevels] = useState<LevelInterface[]>([]);
     const [lists, setLists] = useState<ListInterface[]>([]);
     const [plists, setPLists] = useState<PListInterface[]>([]);
     const [loading, setLoading] = useState<boolean>(true);
@@ -53,13 +54,17 @@ function Home() {
         const fetchTableData = async () => {
             try {
                 setLoading(true);
-                const [levelResult, listResult, plistResult] = await Promise.all([
+                const [levelResult, bLevelResult, listResult, plistResult] = await Promise.all([
                     supabase.from("level").select("*"),
+                    supabase.from("blevel").select("*"),
                     supabase.from("list").select("*").order("id"),
                     supabase.from("plist").select("*").order("id")
                 ]);
                 if (levelResult.error) {
                     throw levelResult.error;
+                }
+                if (bLevelResult.error) {
+                    throw bLevelResult.error;
                 }
                 if (listResult.error) {
                     throw listResult.error;
@@ -69,6 +74,9 @@ function Home() {
                 }
                 if (levelResult.data) {
                     setLevels(levelResult.data as LevelInterface[]);
+                }
+                if (bLevelResult.data) {
+                    setBLevels(bLevelResult.data as LevelInterface[]);
                 }
                 if (listResult.data) {
                     setLists(listResult.data as ListInterface[]);
@@ -456,6 +464,151 @@ function Home() {
                             </IconButton>
                         </Stack>
                     ) : null}
+                    <Typography level="h3">최근 깨진 레벨</Typography>
+                    <Stack
+                        sx={{
+                            overflowY: "visible",
+                            width: "100%",
+                            height: "fit-content",
+                            alignItems: "stretch",
+                            display: "flex"
+                        }}
+                        direction="row"
+                        spacing={2}
+                    >
+                        <IconButton
+                            variant="plain"
+                            disabled={recentPage === 1}
+                            onClick={() => {
+                                setRecentPage(recentPage - 1);
+                            }}
+                        >
+                            <Box sx={{ transform: "rotate(90deg)" }}>
+                                <ExpandMoreIcon />
+                            </Box>
+                        </IconButton>
+                        {bLevels
+                            .toSorted(
+                                (a, b) =>
+                                    new Date(b.upload_time).getTime() -
+                                    new Date(a.upload_time).getTime()
+                            )
+                            .slice(recentPage - 1, recentPage + count - 1)
+                            .map((sel_level, index) => {
+                                let diff = cdavg(sel_level?.difficulty_votes);
+                                return sel_level ? (
+                                    <Card
+                                        key={`map-card-${index}`}
+                                        sx={{
+                                            display: "flex",
+                                            justifySelf: "center",
+                                            my: 5,
+                                            overflow: "hidden",
+                                            p: 0,
+                                            cursor: "pointer",
+                                            flexShrink: 0,
+                                            flex: 1,
+                                            height: "auto"
+                                        }}
+                                        onClick={() => {
+                                            navigate("/levels/" + sel_level?.level_id + "/");
+                                        }}
+                                        ref={index === 0 ? cardRef : null}
+                                    >
+                                        <CardContent sx={{ height: "100%" }}>
+                                            <Stack
+                                                spacing={1}
+                                                direction="column"
+                                                sx={{ height: "100%" }}
+                                            >
+                                                <Box
+                                                    component="img"
+                                                    src={sel_level.image}
+                                                    sx={{ aspectRatio: "16 / 9", width: "100%" }}
+                                                />
+                                                <Stack spacing={1} sx={{ p: 2 }}>
+                                                    <Stack spacing={1} direction="row" width="100%">
+                                                        <Link
+                                                            level="h4"
+                                                            fontWeight="xl"
+                                                            href={
+                                                                "/gff/#/levels/" +
+                                                                sel_level?.level_id +
+                                                                "/"
+                                                            }
+                                                            sx={{
+                                                                color: "black",
+                                                                "&:hover": {
+                                                                    textDecorationColor: "black"
+                                                                }
+                                                            }}
+                                                        >
+                                                            {sel_level.level_name}
+                                                        </Link>
+                                                        <img
+                                                            src={`/gff/assets/${
+                                                                diff && diff[3] < 0.5
+                                                                    ? diff[0] === 0
+                                                                        ? {
+                                                                              1: "auto",
+                                                                              2: "easy",
+                                                                              3: "normal",
+                                                                              4: "hard",
+                                                                              5: "hard",
+                                                                              6: "harder",
+                                                                              7: "harder",
+                                                                              8: "insane",
+                                                                              9: "insane"
+                                                                          }[Math.round(diff[1])]
+                                                                        : diff[1] <= 5
+                                                                          ? "demon-easy"
+                                                                          : diff[1] <= 10
+                                                                            ? "demon-medium"
+                                                                            : diff[1] <= 15
+                                                                              ? "demon-hard"
+                                                                              : diff[1] <= 20
+                                                                                ? "demon-insane"
+                                                                                : "demon-extreme"
+                                                                    : "unrated"
+                                                            }${
+                                                                diff && diff[3] < 0.5
+                                                                    ? {
+                                                                          0: "",
+                                                                          1: "-featured",
+                                                                          2: "-epic",
+                                                                          3: "-legendary",
+                                                                          4: "-mythic"
+                                                                      }[Math.round(diff[2])]
+                                                                    : ""
+                                                            }.png`}
+                                                            width="30px"
+                                                            height="30px"
+                                                        />
+                                                    </Stack>
+                                                    <Typography level="title-sm" fontWeight="lg">
+                                                        {`Host: ${sel_level.host} / Verify: ${sel_level.verifier}`}
+                                                    </Typography>
+                                                    <Typography level="body-sm" fontWeight="md">
+                                                        {`ID: ${sel_level.level_id}`}
+                                                    </Typography>
+                                                </Stack>
+                                            </Stack>
+                                        </CardContent>
+                                    </Card>
+                                ) : null;
+                            })}
+                        <IconButton
+                            variant="plain"
+                            disabled={recentPage === 10}
+                            onClick={() => {
+                                setRecentPage(recentPage + 1);
+                            }}
+                        >
+                            <Box sx={{ transform: "rotate(270deg)" }}>
+                                <ExpandMoreIcon />
+                            </Box>
+                        </IconButton>
+                    </Stack>
                     <Typography level="h3">둘러보기</Typography>
                     <AccordionGroup
                         sx={{
