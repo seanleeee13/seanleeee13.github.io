@@ -12,7 +12,9 @@ const router = createHashRouter([
     { path: "/", element: <Home /> },
     { path: "/lists/:level_list", element: <Lists /> },
     { path: "/levels/:level_id", element: <Levels /> },
+    { path: "/blevels/:level_id", element: <Levels beaten /> },
     { path: "/levels/:level_list/:level_id", element: <Levels /> },
+    { path: "/blevels/:level_list/:level_id", element: <Levels beaten /> },
     { path: "/lists", element: <ListsMain /> },
     { path: "/levels", element: <LevelsMain /> },
     { path: "/upload", element: <Upload /> }

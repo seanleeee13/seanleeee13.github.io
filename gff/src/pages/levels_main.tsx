@@ -433,7 +433,9 @@ function LevelsMain() {
                                                             }
                                                             sx={{
                                                                 color: "black",
-                                                                "&:hover": { textDecorationColor: "black" }
+                                                                "&:hover": {
+                                                                    textDecorationColor: "black"
+                                                                }
                                                             }}
                                                         >
                                                             {sel_level.level_name}
@@ -443,35 +445,35 @@ function LevelsMain() {
                                                                 diff && diff[3] < 0.5
                                                                     ? diff[0] === 0
                                                                         ? {
-                                                                            1: "auto",
-                                                                            2: "easy",
-                                                                            3: "normal",
-                                                                            4: "hard",
-                                                                            5: "hard",
-                                                                            6: "harder",
-                                                                            7: "harder",
-                                                                            8: "insane",
-                                                                            9: "insane"
-                                                                        }[Math.round(diff[1])]
+                                                                              1: "auto",
+                                                                              2: "easy",
+                                                                              3: "normal",
+                                                                              4: "hard",
+                                                                              5: "hard",
+                                                                              6: "harder",
+                                                                              7: "harder",
+                                                                              8: "insane",
+                                                                              9: "insane"
+                                                                          }[Math.round(diff[1])]
                                                                         : diff[1] <= 5
-                                                                        ? "demon-easy"
-                                                                        : diff[1] <= 10
+                                                                          ? "demon-easy"
+                                                                          : diff[1] <= 10
                                                                             ? "demon-medium"
                                                                             : diff[1] <= 15
-                                                                            ? "demon-hard"
-                                                                            : diff[1] <= 20
+                                                                              ? "demon-hard"
+                                                                              : diff[1] <= 20
                                                                                 ? "demon-insane"
                                                                                 : "demon-extreme"
                                                                     : "unrated"
                                                             }${
                                                                 diff && diff[3] < 0.5
                                                                     ? {
-                                                                        0: "",
-                                                                        1: "-featured",
-                                                                        2: "-epic",
-                                                                        3: "-legendary",
-                                                                        4: "-mythic"
-                                                                    }[Math.round(diff[2])]
+                                                                          0: "",
+                                                                          1: "-featured",
+                                                                          2: "-epic",
+                                                                          3: "-legendary",
+                                                                          4: "-mythic"
+                                                                      }[Math.round(diff[2])]
                                                                     : ""
                                                             }.png`}
                                                             width="30px"

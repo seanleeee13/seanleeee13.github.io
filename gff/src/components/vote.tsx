@@ -131,9 +131,7 @@ function VoteDiff({ level_id }: VoteDiffProps) {
         }, 3000);
     };
     if (voteBan) {
-        return (
-            <Typography level="h3">투표 차단됨</Typography>
-        );
+        return <Typography level="h3">투표 차단됨</Typography>;
     }
     return (
         <AccordionGroup

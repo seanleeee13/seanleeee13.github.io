@@ -17,7 +17,14 @@ import { cdavg } from "../utils/calculate_difficulty_avg.ts";
 import { Grid } from "@mui/joy";
 import VoteDiff from "../components/vote.tsx";
 
-function Levels() {
+interface LevelsProps {
+    beaten?: boolean;
+}
+
+function Levels({ beaten }: LevelsProps) {
+    if (!beaten) {
+        beaten = false;
+    }
     const [levels, setLevels] = useState<LevelInterface[]>([]);
     const [lists, setLists] = useState<ListInterface[]>([]);
     const [plists, setPLists] = useState<PListInterface[]>([]);
@@ -27,7 +34,7 @@ function Levels() {
             try {
                 setLoading(true);
                 const [levelResult, listResult, plistResult] = await Promise.all([
-                    supabase.from("level").select("*"),
+                    supabase.from(beaten ? "blevel" : "level").select("*"),
                     supabase.from("list").select("*").order("id"),
                     supabase.from("plist").select("*").order("id")
                 ]);
@@ -56,7 +63,7 @@ function Levels() {
             }
         };
         fetchTableData();
-    }, []);
+    }, [beaten]);
     const { level_id, level_list } = useParams<{ level_id: string; level_list: string }>();
     if (!level_id) {
         return;
@@ -107,7 +114,10 @@ function Levels() {
                         ? [
                               ["GFF", "/gff/"],
                               ["Level", "/gff/#/levels/"],
-                              [level_info.level_name, `/gff/#/levels/${level_info.level_id}/`]
+                              [
+                                  level_info.level_name,
+                                  `/gff/#/${beaten ? "b" : ""}levels/${level_info.level_id}/`
+                              ]
                           ]
                         : [
                               ["GFF", "/gff/"],
@@ -115,7 +125,7 @@ function Levels() {
                               [level_list, `/gff/#/lists/${level_list}/`],
                               [
                                   level_info.level_name,
-                                  `/gff/#/levels/${level_list}/${level_info.level_id}/`
+                                  `/gff/#/${beaten ? "b" : ""}levels/${level_list}/${level_info.level_id}/`
                               ]
                           ]
                 }
@@ -162,52 +172,48 @@ function Levels() {
                                 diff && diff[3] < 0.5
                                     ? diff[0] === 0
                                         ? {
-                                            1: "auto",
-                                            2: "easy",
-                                            3: "normal",
-                                            4: "hard",
-                                            5: "hard",
-                                            6: "harder",
-                                            7: "harder",
-                                            8: "insane",
-                                            9: "insane"
-                                        }[Math.round(diff[1])]
+                                              1: "auto",
+                                              2: "easy",
+                                              3: "normal",
+                                              4: "hard",
+                                              5: "hard",
+                                              6: "harder",
+                                              7: "harder",
+                                              8: "insane",
+                                              9: "insane"
+                                          }[Math.round(diff[1])]
                                         : diff[1] <= 5
-                                        ? "demon-easy"
-                                        : diff[1] <= 10
+                                          ? "demon-easy"
+                                          : diff[1] <= 10
                                             ? "demon-medium"
                                             : diff[1] <= 15
-                                            ? "demon-hard"
-                                            : diff[1] <= 20
+                                              ? "demon-hard"
+                                              : diff[1] <= 20
                                                 ? "demon-insane"
                                                 : "demon-extreme"
                                     : "unrated"
                             }${
                                 diff && diff[3] < 0.5
                                     ? {
-                                        0: "",
-                                        1: "-featured",
-                                        2: "-epic",
-                                        3: "-legendary",
-                                        4: "-mythic"
-                                    }[Math.round(diff[2])]
+                                          0: "",
+                                          1: "-featured",
+                                          2: "-epic",
+                                          3: "-legendary",
+                                          4: "-mythic"
+                                      }[Math.round(diff[2])]
                                     : ""
                             }.png`}
                             width="48px"
                             height="48px"
                         />
-                        {
-                            diff && diff[3] >= 0.5
-                            ? <Tooltip title="Inappropriate" placement="top" arrow>
+                        {diff && diff[3] >= 0.5 ? (
+                            <Tooltip title="Inappropriate" placement="top" arrow>
                                 <Typography level="body-lg" sx={{ textDecoration: "underline" }}>
                                     IPP
                                 </Typography>
                             </Tooltip>
-                            : null
-                        }
-                        <Typography level="h1">
-                            {level_info.level_name}
-                        </Typography>
+                        ) : null}
+                        <Typography level="h1">{level_info.level_name}</Typography>
                     </Stack>
                     <Typography level="h4">
                         제작: {level_info.host}
@@ -227,13 +233,9 @@ function Levels() {
                         베리파이: {level_info.verifier}
                         {level_info.progress === null ? "" : ` (progress: ${level_info.progress}%)`}
                     </Typography>
-                    {
-                        level_info.description
-                        ? <Typography level="title-lg">
-                            {level_info.description}
-                        </Typography>
-                        : null
-                    }
+                    {level_info.description ? (
+                        <Typography level="title-lg">{level_info.description}</Typography>
+                    ) : null}
                     {level_info.imbed_image === null || level_info.imbed_image === "" ? (
                         <Box
                             component="img"
@@ -297,9 +299,7 @@ function Levels() {
                         <Grid>
                             <Stack sx={{ alignItems: "center" }} direction="column" spacing={0}>
                                 <Typography level="title-lg">업로드</Typography>
-                                <Typography level="title-md">
-                                    {level_info.publish}
-                                </Typography>
+                                <Typography level="title-md">{level_info.publish}</Typography>
                             </Stack>
                         </Grid>
                         <Grid>
@@ -329,7 +329,7 @@ function Levels() {
                             </Stack>
                         </Grid>
                     </Grid>
-                    <VoteDiff level_id={+level_id} />
+                    {beaten ? null : <VoteDiff level_id={+level_id} />}
                     {level_info.victory.length === 0 ? (
                         <Typography level="h3">클리어자 없음</Typography>
                     ) : (

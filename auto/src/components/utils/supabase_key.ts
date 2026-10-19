@@ -29,27 +29,6 @@ export interface LevelInterface {
     song: number;
 }
 
-export interface BLevelInterface {
-    level_id: number;
-    level_name: string;
-    host: string;
-    publish: string;
-    co_creators: string[];
-    verifier: string;
-    progress: number | null;
-    description: string;
-    difficulty_votes: Record<string, number[]>;
-    victory: string[];
-    image: string;
-    upload_time: string;
-    imbed_image: string | null;
-    gdps_id: number | null;
-    main_id: number | null;
-    length: number;
-    original: number;
-    song: number;
-}
-
 export interface ListInterface {
     id: number;
     name: string;
@@ -70,5 +49,11 @@ export interface UserInterface {
     role: [string, string][];
     vrole: [string, string][];
     name: string | null;
-    user_metadata: { "gff:id": string; "gff:accid": string; "gff:state": string[]; "gff:stateUntil": string[]; [key: string]: unknown };
+    user_metadata: {
+        "gff:id": string;
+        "gff:accid": string;
+        "gff:state": string[];
+        "gff:stateUntil": string[];
+        [key: string]: unknown;
+    };
 }

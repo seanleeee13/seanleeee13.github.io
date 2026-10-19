@@ -18,6 +18,7 @@ import { AppBar } from "components";
 
 function Lists() {
     const [levels, setLevels] = useState<LevelInterface[]>([]);
+    const [bLevels, setBLevels] = useState<LevelInterface[]>([]);
     const [lists, setLists] = useState<ListInterface[]>([]);
     const [plists, setPLists] = useState<PListInterface[]>([]);
     const [loading, setLoading] = useState<boolean>(true);
@@ -39,13 +40,17 @@ function Lists() {
         const fetchTableData = async () => {
             try {
                 setLoading(true);
-                const [levelResult, listResult, plistResult] = await Promise.all([
+                const [levelResult, bLevelResult, listResult, plistResult] = await Promise.all([
                     supabase.from("level").select("*"),
+                    supabase.from("blevel").select("*"),
                     supabase.from("list").select("*").order("id"),
                     supabase.from("plist").select("*").order("id")
                 ]);
                 if (levelResult.error) {
                     throw levelResult.error;
+                }
+                if (bLevelResult.error) {
+                    throw bLevelResult.error;
                 }
                 if (listResult.error) {
                     throw listResult.error;
@@ -55,6 +60,9 @@ function Lists() {
                 }
                 if (levelResult.data) {
                     setLevels(levelResult.data as LevelInterface[]);
+                }
+                if (bLevelResult.data) {
+                    setBLevels(bLevelResult.data as LevelInterface[]);
                 }
                 if (listResult.data) {
                     setLists(listResult.data as ListInterface[]);
@@ -136,6 +144,7 @@ function Lists() {
         return;
     }
     type MenuListType = [string, [string, string][]][];
+    const beaten = lists.find((val) => val.name === level_list)?.parent === "BLL";
     return (
         <>
             <AppBar
@@ -172,14 +181,14 @@ function Lists() {
                 }}
             >
                 <Typography level="h1" sx={{ display: "flex", justifySelf: "center", mt: 5 }}>
-                    {lists
-                        .find((item) => item.name === level_list)
-                        ?.long_name ?? ""}
+                    {lists.find((item) => item.name === level_list)?.long_name ?? ""}
                 </Typography>
                 {lists
                     .find((item) => item.name === level_list)
                     ?.levels.map((text, index) => {
-                        let sel_level = levels.find((item) => item.level_id === text[0]);
+                        let sel_level = (beaten ? bLevels : levels).find(
+                            (item) => item.level_id === text[0]
+                        );
                         let diff = cdavg(sel_level?.difficulty_votes);
                         return sel_level ? (
                             <Card
@@ -235,35 +244,35 @@ function Lists() {
                                                         diff && diff[3] < 0.5
                                                             ? diff[0] === 0
                                                                 ? {
-                                                                    1: "auto",
-                                                                    2: "easy",
-                                                                    3: "normal",
-                                                                    4: "hard",
-                                                                    5: "hard",
-                                                                    6: "harder",
-                                                                    7: "harder",
-                                                                    8: "insane",
-                                                                    9: "insane"
-                                                                }[Math.round(diff[1])]
+                                                                      1: "auto",
+                                                                      2: "easy",
+                                                                      3: "normal",
+                                                                      4: "hard",
+                                                                      5: "hard",
+                                                                      6: "harder",
+                                                                      7: "harder",
+                                                                      8: "insane",
+                                                                      9: "insane"
+                                                                  }[Math.round(diff[1])]
                                                                 : diff[1] <= 5
-                                                                ? "demon-easy"
-                                                                : diff[1] <= 10
+                                                                  ? "demon-easy"
+                                                                  : diff[1] <= 10
                                                                     ? "demon-medium"
                                                                     : diff[1] <= 15
-                                                                    ? "demon-hard"
-                                                                    : diff[1] <= 20
+                                                                      ? "demon-hard"
+                                                                      : diff[1] <= 20
                                                                         ? "demon-insane"
                                                                         : "demon-extreme"
                                                             : "unrated"
                                                     }${
                                                         diff && diff[3] < 0.5
                                                             ? {
-                                                                0: "",
-                                                                1: "-featured",
-                                                                2: "-epic",
-                                                                3: "-legendary",
-                                                                4: "-mythic"
-                                                            }[Math.round(diff[2])]
+                                                                  0: "",
+                                                                  1: "-featured",
+                                                                  2: "-epic",
+                                                                  3: "-legendary",
+                                                                  4: "-mythic"
+                                                              }[Math.round(diff[2])]
                                                             : ""
                                                     }.png`}
                                                     width="30px"

@@ -9,7 +9,12 @@ import Stack from "@mui/joy/Stack";
 import Button from "@mui/joy/Button";
 import CircularProgress from "@mui/joy/CircularProgress";
 import { useState, useEffect, useRef } from "react";
-import { supabase, type LevelInterface, type ListInterface, type PListInterface } from "components/utils";
+import {
+    supabase,
+    type LevelInterface,
+    type ListInterface,
+    type PListInterface
+} from "components/utils";
 import { ExpandMoreIcon } from "components/assets";
 import { AppBar } from "components";
 import { Box, Card, CardContent, IconButton } from "@mui/joy";
@@ -151,165 +156,23 @@ function Home() {
                         spacing={2}
                     >
                         <IconButton
-                            variant="plain" disabled={recentPage === 1}
-                            onClick={() => { setRecentPage(recentPage - 1); }}
+                            variant="plain"
+                            disabled={recentPage === 1}
+                            onClick={() => {
+                                setRecentPage(recentPage - 1);
+                            }}
                         >
                             <Box sx={{ transform: "rotate(90deg)" }}>
                                 <ExpandMoreIcon />
                             </Box>
                         </IconButton>
                         {levels
-                        .toSorted((a, b) => (
-                            new Date(b.upload_time).getTime() - new Date(a.upload_time).getTime()
-                        ))
-                        .slice(recentPage - 1, recentPage + count - 1)
-                        .map((sel_level, index) => {
-                            let diff = cdavg(sel_level?.difficulty_votes);
-                            return sel_level ? (
-                                <Card
-                                    key={`map-card-${index}`}
-                                    sx={{
-                                        display: "flex",
-                                        justifySelf: "center",
-                                        my: 5,
-                                        overflow: "hidden",
-                                        p: 0,
-                                        cursor: "pointer",
-                                        flexShrink: 0,
-                                        flex: 1,
-                                        height: "auto"
-                                    }}
-                                    onClick={() => {
-                                        navigate(
-                                            "/levels/" + sel_level?.level_id + "/"
-                                        );
-                                    }}
-                                    ref={index === 0 ? cardRef : null}
-                                >
-                                    <CardContent sx={{ height: "100%" }}>
-                                        <Stack
-                                            spacing={1}
-                                            direction="column"
-                                            sx={{ height: "100%" }}
-                                        >
-                                            <Box
-                                                component="img"
-                                                src={sel_level.image}
-                                                sx={{ aspectRatio: "16 / 9", width: "100%" }}
-                                            />
-                                            <Stack spacing={1} sx={{ p: 2 }}>
-                                                <Stack spacing={1} direction="row" width="100%">
-                                                    <Link
-                                                        level="h4"
-                                                        fontWeight="xl"
-                                                        href={
-                                                            "/gff/#/levels/" +
-                                                            sel_level?.level_id +
-                                                            "/"
-                                                        }
-                                                        sx={{
-                                                            color: "black",
-                                                            "&:hover": { textDecorationColor: "black" }
-                                                        }}
-                                                    >
-                                                        {sel_level.level_name}
-                                                    </Link>
-                                                    <img
-                                                        src={`/gff/assets/${
-                                                            diff && diff[3] < 0.5
-                                                                ? diff[0] === 0
-                                                                    ? {
-                                                                        1: "auto",
-                                                                        2: "easy",
-                                                                        3: "normal",
-                                                                        4: "hard",
-                                                                        5: "hard",
-                                                                        6: "harder",
-                                                                        7: "harder",
-                                                                        8: "insane",
-                                                                        9: "insane"
-                                                                    }[Math.round(diff[1])]
-                                                                    : diff[1] <= 5
-                                                                    ? "demon-easy"
-                                                                    : diff[1] <= 10
-                                                                        ? "demon-medium"
-                                                                        : diff[1] <= 15
-                                                                        ? "demon-hard"
-                                                                        : diff[1] <= 20
-                                                                            ? "demon-insane"
-                                                                            : "demon-extreme"
-                                                                : "unrated"
-                                                        }${
-                                                            diff && diff[3] < 0.5
-                                                                ? {
-                                                                    0: "",
-                                                                    1: "-featured",
-                                                                    2: "-epic",
-                                                                    3: "-legendary",
-                                                                    4: "-mythic"
-                                                                }[Math.round(diff[2])]
-                                                                : ""
-                                                        }.png`}
-                                                        width="30px"
-                                                        height="30px"
-                                                    />
-                                                </Stack>
-                                                <Typography level="title-sm" fontWeight="lg">
-                                                    {`Host: ${sel_level.host} / Verify: ${sel_level.verifier}`}
-                                                </Typography>
-                                                <Typography level="body-sm" fontWeight="md">
-                                                    {`ID: ${sel_level.level_id}`}
-                                                </Typography>
-                                            </Stack>
-                                        </Stack>
-                                    </CardContent>
-                                </Card>
-                            ) : null;
-                        })}
-                        <IconButton
-                            variant="plain" disabled={recentPage === 10}
-                            onClick={() => { setRecentPage(recentPage + 1) }}
-                        >
-                            <Box sx={{ transform: "rotate(270deg)" }}>
-                                <ExpandMoreIcon />
-                            </Box>
-                        </IconButton>
-                    </Stack>
-                    {
-                        levels
-                            .filter((text) => Object.keys(text.difficulty_votes).length === 0)
-                            .length !== 0
-                        ? <Typography level="h3">미레이팅 레벨</Typography>
-                        : null
-                    }
-                    {
-                        levels
-                            .filter((text) => Object.keys(text.difficulty_votes).length === 0)
-                            .length !== 0
-                        ? <Stack
-                            sx={{
-                                overflowY: "visible",
-                                height: "fit-content",
-                                alignItems: "stretch",
-                                display: "flex"
-                            }}
-                            direction="row"
-                            spacing={2}
-                        >
-                            <IconButton
-                                variant="plain" disabled={unratedPage === 1}
-                                onClick={() => { setUnratedPage(unratedPage - 1); }}
-                            >
-                                <Box sx={{ transform: "rotate(90deg)" }}>
-                                    <ExpandMoreIcon />
-                                </Box>
-                            </IconButton>
-                            {levels
-                            .filter((text) => Object.keys(text.difficulty_votes).length === 0)
-                            .toSorted((a, b) => (
-                                new Date(b.upload_time).getTime() - new Date(a.upload_time).getTime()
-                            ))
-                            .slice(unratedPage - 1, unratedPage + count - 1)
+                            .toSorted(
+                                (a, b) =>
+                                    new Date(b.upload_time).getTime() -
+                                    new Date(a.upload_time).getTime()
+                            )
+                            .slice(recentPage - 1, recentPage + count - 1)
                             .map((sel_level, index) => {
                                 let diff = cdavg(sel_level?.difficulty_votes);
                                 return sel_level ? (
@@ -323,15 +186,13 @@ function Home() {
                                             p: 0,
                                             cursor: "pointer",
                                             flexShrink: 0,
-                                            flexGrow: 0,
-                                            height: "auto",
-                                            width: `${cardWidth}px`
+                                            flex: 1,
+                                            height: "auto"
                                         }}
                                         onClick={() => {
-                                            navigate(
-                                                "/levels/" + sel_level?.level_id + "/"
-                                            );
+                                            navigate("/levels/" + sel_level?.level_id + "/");
                                         }}
+                                        ref={index === 0 ? cardRef : null}
                                     >
                                         <CardContent sx={{ height: "100%" }}>
                                             <Stack
@@ -356,7 +217,9 @@ function Home() {
                                                             }
                                                             sx={{
                                                                 color: "black",
-                                                                "&:hover": { textDecorationColor: "black" }
+                                                                "&:hover": {
+                                                                    textDecorationColor: "black"
+                                                                }
                                                             }}
                                                         >
                                                             {sel_level.level_name}
@@ -366,35 +229,35 @@ function Home() {
                                                                 diff && diff[3] < 0.5
                                                                     ? diff[0] === 0
                                                                         ? {
-                                                                            1: "auto",
-                                                                            2: "easy",
-                                                                            3: "normal",
-                                                                            4: "hard",
-                                                                            5: "hard",
-                                                                            6: "harder",
-                                                                            7: "harder",
-                                                                            8: "insane",
-                                                                            9: "insane"
-                                                                        }[Math.round(diff[1])]
+                                                                              1: "auto",
+                                                                              2: "easy",
+                                                                              3: "normal",
+                                                                              4: "hard",
+                                                                              5: "hard",
+                                                                              6: "harder",
+                                                                              7: "harder",
+                                                                              8: "insane",
+                                                                              9: "insane"
+                                                                          }[Math.round(diff[1])]
                                                                         : diff[1] <= 5
-                                                                        ? "demon-easy"
-                                                                        : diff[1] <= 10
+                                                                          ? "demon-easy"
+                                                                          : diff[1] <= 10
                                                                             ? "demon-medium"
                                                                             : diff[1] <= 15
-                                                                            ? "demon-hard"
-                                                                            : diff[1] <= 20
+                                                                              ? "demon-hard"
+                                                                              : diff[1] <= 20
                                                                                 ? "demon-insane"
                                                                                 : "demon-extreme"
                                                                     : "unrated"
                                                             }${
                                                                 diff && diff[3] < 0.5
                                                                     ? {
-                                                                        0: "",
-                                                                        1: "-featured",
-                                                                        2: "-epic",
-                                                                        3: "-legendary",
-                                                                        4: "-mythic"
-                                                                    }[Math.round(diff[2])]
+                                                                          0: "",
+                                                                          1: "-featured",
+                                                                          2: "-epic",
+                                                                          3: "-legendary",
+                                                                          4: "-mythic"
+                                                                      }[Math.round(diff[2])]
                                                                     : ""
                                                             }.png`}
                                                             width="30px"
@@ -413,23 +276,186 @@ function Home() {
                                     </Card>
                                 ) : null;
                             })}
+                        <IconButton
+                            variant="plain"
+                            disabled={recentPage === 10}
+                            onClick={() => {
+                                setRecentPage(recentPage + 1);
+                            }}
+                        >
+                            <Box sx={{ transform: "rotate(270deg)" }}>
+                                <ExpandMoreIcon />
+                            </Box>
+                        </IconButton>
+                    </Stack>
+                    {levels.filter((text) => Object.keys(text.difficulty_votes).length === 0)
+                        .length !== 0 ? (
+                        <Typography level="h3">미레이팅 레벨</Typography>
+                    ) : null}
+                    {levels.filter((text) => Object.keys(text.difficulty_votes).length === 0)
+                        .length !== 0 ? (
+                        <Stack
+                            sx={{
+                                overflowY: "visible",
+                                height: "fit-content",
+                                alignItems: "stretch",
+                                display: "flex"
+                            }}
+                            direction="row"
+                            spacing={2}
+                        >
+                            <IconButton
+                                variant="plain"
+                                disabled={unratedPage === 1}
+                                onClick={() => {
+                                    setUnratedPage(unratedPage - 1);
+                                }}
+                            >
+                                <Box sx={{ transform: "rotate(90deg)" }}>
+                                    <ExpandMoreIcon />
+                                </Box>
+                            </IconButton>
+                            {levels
+                                .filter((text) => Object.keys(text.difficulty_votes).length === 0)
+                                .toSorted(
+                                    (a, b) =>
+                                        new Date(b.upload_time).getTime() -
+                                        new Date(a.upload_time).getTime()
+                                )
+                                .slice(unratedPage - 1, unratedPage + count - 1)
+                                .map((sel_level, index) => {
+                                    let diff = cdavg(sel_level?.difficulty_votes);
+                                    return sel_level ? (
+                                        <Card
+                                            key={`map-card-${index}`}
+                                            sx={{
+                                                display: "flex",
+                                                justifySelf: "center",
+                                                my: 5,
+                                                overflow: "hidden",
+                                                p: 0,
+                                                cursor: "pointer",
+                                                flexShrink: 0,
+                                                flexGrow: 0,
+                                                height: "auto",
+                                                width: `${cardWidth}px`
+                                            }}
+                                            onClick={() => {
+                                                navigate("/levels/" + sel_level?.level_id + "/");
+                                            }}
+                                        >
+                                            <CardContent sx={{ height: "100%" }}>
+                                                <Stack
+                                                    spacing={1}
+                                                    direction="column"
+                                                    sx={{ height: "100%" }}
+                                                >
+                                                    <Box
+                                                        component="img"
+                                                        src={sel_level.image}
+                                                        sx={{
+                                                            aspectRatio: "16 / 9",
+                                                            width: "100%"
+                                                        }}
+                                                    />
+                                                    <Stack spacing={1} sx={{ p: 2 }}>
+                                                        <Stack
+                                                            spacing={1}
+                                                            direction="row"
+                                                            width="100%"
+                                                        >
+                                                            <Link
+                                                                level="h4"
+                                                                fontWeight="xl"
+                                                                href={
+                                                                    "/gff/#/levels/" +
+                                                                    sel_level?.level_id +
+                                                                    "/"
+                                                                }
+                                                                sx={{
+                                                                    color: "black",
+                                                                    "&:hover": {
+                                                                        textDecorationColor: "black"
+                                                                    }
+                                                                }}
+                                                            >
+                                                                {sel_level.level_name}
+                                                            </Link>
+                                                            <img
+                                                                src={`/gff/assets/${
+                                                                    diff && diff[3] < 0.5
+                                                                        ? diff[0] === 0
+                                                                            ? {
+                                                                                  1: "auto",
+                                                                                  2: "easy",
+                                                                                  3: "normal",
+                                                                                  4: "hard",
+                                                                                  5: "hard",
+                                                                                  6: "harder",
+                                                                                  7: "harder",
+                                                                                  8: "insane",
+                                                                                  9: "insane"
+                                                                              }[Math.round(diff[1])]
+                                                                            : diff[1] <= 5
+                                                                              ? "demon-easy"
+                                                                              : diff[1] <= 10
+                                                                                ? "demon-medium"
+                                                                                : diff[1] <= 15
+                                                                                  ? "demon-hard"
+                                                                                  : diff[1] <= 20
+                                                                                    ? "demon-insane"
+                                                                                    : "demon-extreme"
+                                                                        : "unrated"
+                                                                }${
+                                                                    diff && diff[3] < 0.5
+                                                                        ? {
+                                                                              0: "",
+                                                                              1: "-featured",
+                                                                              2: "-epic",
+                                                                              3: "-legendary",
+                                                                              4: "-mythic"
+                                                                          }[Math.round(diff[2])]
+                                                                        : ""
+                                                                }.png`}
+                                                                width="30px"
+                                                                height="30px"
+                                                            />
+                                                        </Stack>
+                                                        <Typography
+                                                            level="title-sm"
+                                                            fontWeight="lg"
+                                                        >
+                                                            {`Host: ${sel_level.host} / Verify: ${sel_level.verifier}`}
+                                                        </Typography>
+                                                        <Typography level="body-sm" fontWeight="md">
+                                                            {`ID: ${sel_level.level_id}`}
+                                                        </Typography>
+                                                    </Stack>
+                                                </Stack>
+                                            </CardContent>
+                                        </Card>
+                                    ) : null;
+                                })}
                             <IconButton
                                 variant="plain"
                                 disabled={
-                                    unratedPage === 10
-                                    || unratedPage === levels
-                                        .filter((text) => Object.keys(text.difficulty_votes).length === 0)
-                                        .length
+                                    unratedPage === 10 ||
+                                    unratedPage ===
+                                        levels.filter(
+                                            (text) =>
+                                                Object.keys(text.difficulty_votes).length === 0
+                                        ).length
                                 }
-                                onClick={() => { setUnratedPage(unratedPage + 1) }}
+                                onClick={() => {
+                                    setUnratedPage(unratedPage + 1);
+                                }}
                             >
                                 <Box sx={{ transform: "rotate(270deg)" }}>
                                     <ExpandMoreIcon />
                                 </Box>
                             </IconButton>
                         </Stack>
-                        : null
-                    }
+                    ) : null}
                     <Typography level="h3">둘러보기</Typography>
                     <AccordionGroup
                         sx={{

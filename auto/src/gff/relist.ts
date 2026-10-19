@@ -49,38 +49,41 @@ const CLL = lists.find((text) => text.name === "CLL");
 const ULL = lists.find((text) => text.name === "ULL");
 
 const users = (userResult!.data as UserInterface[])
-    .map(row => ({
+    .map((row) => ({
         "gff:id": row.user_metadata["gff:id"],
         "gff:accid": row.user_metadata["gff:accid"]
     }))
-    .filter(row => row["gff:id"] && row["gff:accid"])
+    .filter((row) => row["gff:id"] && row["gff:accid"]);
 for (const user of users) {
     const headers = {
         "User-Agent": ""
     };
     const data = {
-        "type": 5,
-        "secret": "Wmfd2893gb7",
-        "str": user["gff:accid"]
+        type: 5,
+        secret: "Wmfd2893gb7",
+        str: user["gff:accid"]
     };
     let response: Record<string, string>[] | null = null;
     for (let i = 0; i < 3; i++) {
         try {
-            response = (await (await fetch(
-                "http://www.boomlings.com/database/getGJLevels21.php",
-                {
-                    method: "post",
-                    headers: headers,
-                    body: JSON.stringify(data)
-                }
-            ))
-                .text())
+            response = (
+                await (
+                    await fetch("http://www.boomlings.com/database/getGJLevels21.php", {
+                        method: "post",
+                        headers: headers,
+                        body: JSON.stringify(data)
+                    })
+                ).text()
+            )
                 .split("#")[0]
                 .split("|")
                 .map((val) => {
                     const vals = val.split(":");
                     return Object.fromEntries(
-                        Array.from({ length: vals.length / 2 }, (_, x) => [vals[x * 2], vals[x * 2 + 1]])
+                        Array.from({ length: vals.length / 2 }, (_, x) => [
+                            vals[x * 2],
+                            vals[x * 2 + 1]
+                        ])
                     );
                 });
             await sleep(1000);
@@ -98,7 +101,7 @@ for (const user of users) {
         if (level["15"] === "0") {
             continue;
         }
-        if (levels.find(val => val.level_id === +level["1"])) {
+        if (levels.find((val) => val.level_id === +level["1"])) {
             continue;
         }
         const newLevel = {
