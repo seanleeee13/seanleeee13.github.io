@@ -465,10 +465,10 @@ function Home() {
                             </IconButton>
                         </Stack>
                     ) : null}
-                    {bLevels.length !== 0 ? (
+                    {bLevels.filter((text) => text.victory.length !== 0).length !== 0 ? (
                         <Typography level="h3">최근 깨진 레벨</Typography>
                     ) : null}
-                    {bLevels.length !== 0 ? (
+                    {bLevels.filter((text) => text.victory.length !== 0).length !== 0 ? (
                         <Stack
                             sx={{
                                 overflowY: "visible",
@@ -491,6 +491,7 @@ function Home() {
                                 </Box>
                             </IconButton>
                             {bLevels
+                                .filter((text) => text.victory.length !== 0)
                                 .toSorted(
                                     (a, b) =>
                                         new Date(b.upload_time).getTime() -

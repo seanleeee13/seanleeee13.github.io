@@ -24,3 +24,5 @@ dist
 tools/
 test/
 **/.env
+
+test/
