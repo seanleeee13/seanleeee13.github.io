@@ -269,7 +269,7 @@ function Home() {
                                                                       }[Math.round(diff[2])]
                                                                     : ""
                                                             }.png`}
-                                                            width="30px"
+                                                            width="auto"
                                                             height="30px"
                                                         />
                                                     </Stack>
@@ -426,7 +426,7 @@ function Home() {
                                                                           }[Math.round(diff[2])]
                                                                         : ""
                                                                 }.png`}
-                                                                width="30px"
+                                                                width="auto"
                                                                 height="30px"
                                                             />
                                                         </Stack>
@@ -465,159 +465,159 @@ function Home() {
                             </IconButton>
                         </Stack>
                     ) : null}
-                    <Typography level="h3">최근 깨진 레벨</Typography>
-                    <Stack
-                        sx={{
-                            overflowY: "visible",
-                            height: "fit-content",
-                            alignItems: "stretch",
-                            display: "flex"
-                        }}
-                        direction="row"
-                        spacing={2}
-                    >
-                        <IconButton
-                            variant="plain"
-                            disabled={beatenPage === 1}
-                            onClick={() => {
-                                setBeatenPage(beatenPage - 1);
+                    {bLevels.length !== 0 ? (
+                        <Typography level="h3">최근 깨진 레벨</Typography>
+                    ) : null}
+                    {bLevels.length !== 0 ? (
+                        <Stack
+                            sx={{
+                                overflowY: "visible",
+                                height: "fit-content",
+                                alignItems: "stretch",
+                                display: "flex"
                             }}
+                            direction="row"
+                            spacing={2}
                         >
-                            <Box sx={{ transform: "rotate(90deg)" }}>
-                                <ExpandMoreIcon />
-                            </Box>
-                        </IconButton>
-                        {bLevels
-                            .toSorted(
-                                (a, b) =>
-                                    new Date(b.upload_time).getTime() -
-                                    new Date(a.upload_time).getTime()
-                            )
-                            .slice(beatenPage - 1, beatenPage + count - 1)
-                            .map((sel_level, index) => {
-                                let diff = cdavg(sel_level?.difficulty_votes);
-                                return sel_level ? (
-                                    <Card
-                                        key={`map-card-${index}`}
-                                        sx={{
-                                            display: "flex",
-                                            justifySelf: "center",
-                                            my: 5,
-                                            overflow: "hidden",
-                                            p: 0,
-                                            cursor: "pointer",
-                                            flexShrink: 0,
-                                            flexGrow: 0,
-                                            height: "auto",
-                                            width: `${cardWidth}px`
-                                        }}
-                                        onClick={() => {
-                                            navigate("/blevels/" + sel_level?.level_id + "/");
-                                        }}
-                                    >
-                                        <CardContent sx={{ height: "100%" }}>
-                                            <Stack
-                                                spacing={1}
-                                                direction="column"
-                                                sx={{ height: "100%" }}
-                                            >
-                                                <Box
-                                                    component="img"
-                                                    src={sel_level.image}
-                                                    sx={{
-                                                        aspectRatio: "16 / 9",
-                                                        width: "100%"
-                                                    }}
-                                                />
-                                                <Stack spacing={1} sx={{ p: 2 }}>
-                                                    <Stack spacing={1} direction="row" width="100%">
-                                                        <Link
-                                                            level="h4"
-                                                            fontWeight="xl"
-                                                            href={
-                                                                "/gff/#/blevels/" +
-                                                                sel_level?.level_id +
-                                                                "/"
-                                                            }
-                                                            sx={{
-                                                                color: "black",
-                                                                "&:hover": {
-                                                                    textDecorationColor: "black"
+                            <IconButton
+                                variant="plain"
+                                disabled={beatenPage === 1}
+                                onClick={() => {
+                                    setBeatenPage(beatenPage - 1);
+                                }}
+                            >
+                                <Box sx={{ transform: "rotate(90deg)" }}>
+                                    <ExpandMoreIcon />
+                                </Box>
+                            </IconButton>
+                            {bLevels
+                                .toSorted(
+                                    (a, b) =>
+                                        new Date(b.upload_time).getTime() -
+                                        new Date(a.upload_time).getTime()
+                                )
+                                .slice(beatenPage - 1, beatenPage + count - 1)
+                                .map((sel_level, index) => {
+                                    let diff = cdavg(sel_level?.difficulty_votes);
+                                    return sel_level ? (
+                                        <Card
+                                            key={`map-card-${index}`}
+                                            sx={{
+                                                display: "flex",
+                                                justifySelf: "center",
+                                                my: 5,
+                                                overflow: "hidden",
+                                                p: 0,
+                                                cursor: "pointer",
+                                                flexShrink: 0,
+                                                flexGrow: 0,
+                                                height: "auto",
+                                                width: `${cardWidth}px`
+                                            }}
+                                            onClick={() => {
+                                                navigate("/blevels/" + sel_level?.level_id + "/");
+                                            }}
+                                        >
+                                            <CardContent sx={{ height: "100%" }}>
+                                                <Stack
+                                                    spacing={1}
+                                                    direction="column"
+                                                    sx={{ height: "100%" }}
+                                                >
+                                                    <Box
+                                                        component="img"
+                                                        src={sel_level.image}
+                                                        sx={{
+                                                            aspectRatio: "16 / 9",
+                                                            width: "100%"
+                                                        }}
+                                                    />
+                                                    <Stack spacing={1} sx={{ p: 2 }}>
+                                                        <Stack spacing={1} direction="row" width="100%">
+                                                            <Link
+                                                                level="h4"
+                                                                fontWeight="xl"
+                                                                href={
+                                                                    "/gff/#/blevels/" +
+                                                                    sel_level?.level_id +
+                                                                    "/"
                                                                 }
-                                                            }}
-                                                        >
-                                                            {sel_level.level_name}
-                                                        </Link>
-                                                        <img
-                                                            src={`/gff/assets/${
-                                                                diff && diff[3] < 0.5
-                                                                    ? diff[0] === 0
+                                                                sx={{
+                                                                    color: "black",
+                                                                    "&:hover": {
+                                                                        textDecorationColor: "black"
+                                                                    }
+                                                                }}
+                                                            >
+                                                                {sel_level.level_name}
+                                                            </Link>
+                                                            <img
+                                                                src={`/gff/assets/${
+                                                                    diff && diff[3] < 0.5
+                                                                        ? diff[0] === 0
+                                                                            ? {
+                                                                                1: "auto",
+                                                                                2: "easy",
+                                                                                3: "normal",
+                                                                                4: "hard",
+                                                                                5: "hard",
+                                                                                6: "harder",
+                                                                                7: "harder",
+                                                                                8: "insane",
+                                                                                9: "insane"
+                                                                            }[Math.round(diff[1])]
+                                                                            : diff[1] <= 5
+                                                                            ? "demon-easy"
+                                                                            : diff[1] <= 10
+                                                                                ? "demon-medium"
+                                                                                : diff[1] <= 15
+                                                                                ? "demon-hard"
+                                                                                : diff[1] <= 20
+                                                                                    ? "demon-insane"
+                                                                                    : "demon-extreme"
+                                                                        : "unrated"
+                                                                }${
+                                                                    diff && diff[3] < 0.5
                                                                         ? {
-                                                                              1: "auto",
-                                                                              2: "easy",
-                                                                              3: "normal",
-                                                                              4: "hard",
-                                                                              5: "hard",
-                                                                              6: "harder",
-                                                                              7: "harder",
-                                                                              8: "insane",
-                                                                              9: "insane"
-                                                                          }[Math.round(diff[1])]
-                                                                        : diff[1] <= 5
-                                                                          ? "demon-easy"
-                                                                          : diff[1] <= 10
-                                                                            ? "demon-medium"
-                                                                            : diff[1] <= 15
-                                                                              ? "demon-hard"
-                                                                              : diff[1] <= 20
-                                                                                ? "demon-insane"
-                                                                                : "demon-extreme"
-                                                                    : "unrated"
-                                                            }${
-                                                                diff && diff[3] < 0.5
-                                                                    ? {
-                                                                          0: "",
-                                                                          1: "-featured",
-                                                                          2: "-epic",
-                                                                          3: "-legendary",
-                                                                          4: "-mythic"
-                                                                      }[Math.round(diff[2])]
-                                                                    : ""
-                                                            }.png`}
-                                                            width="30px"
-                                                            height="30px"
-                                                        />
+                                                                            0: "",
+                                                                            1: "-featured",
+                                                                            2: "-epic",
+                                                                            3: "-legendary",
+                                                                            4: "-mythic"
+                                                                        }[Math.round(diff[2])]
+                                                                        : ""
+                                                                }.png`}
+                                                                width="auto"
+                                                                height="30px"
+                                                            />
+                                                        </Stack>
+                                                        <Typography level="title-sm" fontWeight="lg">
+                                                            {`Host: ${sel_level.host} / Verify: ${sel_level.verifier}`}
+                                                        </Typography>
+                                                        <Typography level="body-sm" fontWeight="md">
+                                                            {`ID: ${Math.abs(sel_level.level_id)}`}
+                                                        </Typography>
                                                     </Stack>
-                                                    <Typography level="title-sm" fontWeight="lg">
-                                                        {`Host: ${sel_level.host} / Verify: ${sel_level.verifier}`}
-                                                    </Typography>
-                                                    <Typography level="body-sm" fontWeight="md">
-                                                        {`ID: ${Math.abs(sel_level.level_id)}`}
-                                                    </Typography>
                                                 </Stack>
-                                            </Stack>
-                                        </CardContent>
-                                    </Card>
-                                ) : null;
-                            })}
-                        <IconButton
-                            variant="plain"
-                            disabled={
-                                beatenPage === 10 ||
-                                beatenPage ===
-                                    levels.filter(
-                                        (text) => Object.keys(text.difficulty_votes).length === 0
-                                    ).length
-                            }
-                            onClick={() => {
-                                setBeatenPage(beatenPage + 1);
-                            }}
-                        >
-                            <Box sx={{ transform: "rotate(270deg)" }}>
-                                <ExpandMoreIcon />
-                            </Box>
-                        </IconButton>
-                    </Stack>
+                                            </CardContent>
+                                        </Card>
+                                    ) : null;
+                                })}
+                            <IconButton
+                                variant="plain"
+                                disabled={
+                                    beatenPage === bLevels.length
+                                }
+                                onClick={() => {
+                                    setBeatenPage(beatenPage + 1);
+                                }}
+                            >
+                                <Box sx={{ transform: "rotate(270deg)" }}>
+                                    <ExpandMoreIcon />
+                                </Box>
+                            </IconButton>
+                        </Stack>
+                    ) : null}
                     <Typography level="h3">둘러보기</Typography>
                     <AccordionGroup
                         sx={{

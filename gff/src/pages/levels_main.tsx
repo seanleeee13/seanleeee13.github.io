@@ -476,7 +476,7 @@ function LevelsMain() {
                                                                       }[Math.round(diff[2])]
                                                                     : ""
                                                             }.png`}
-                                                            width="30px"
+                                                            width="auto"
                                                             height="30px"
                                                         />
                                                     </Stack>

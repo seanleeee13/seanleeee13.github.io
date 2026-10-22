@@ -5,7 +5,7 @@ import supabase, {
 } from "../components/utils/supabase_key.ts";
 import { cdavg } from "./utils/calculate_difficulty_avg.ts";
 
-let levelResult, listResult, userResult;
+let levelResult, bLevelResult, listResult, userResult;
 
 const sleep = (ms: number): Promise<void> => {
     return new Promise((resolve) => setTimeout(resolve, ms));
@@ -13,12 +13,16 @@ const sleep = (ms: number): Promise<void> => {
 
 for (let i = 0; i < 5; i++) {
     await sleep(1000);
-    [levelResult, listResult, userResult] = await Promise.all([
+    [levelResult, bLevelResult, listResult, userResult] = await Promise.all([
         supabase.from("level").select("*"),
+        supabase.from("blevel").select("*"),
         supabase.from("list").select("*").order("id"),
         supabase.from("user").select("user_metadata")
     ]);
     if (levelResult.error) {
+        continue;
+    }
+    if (bLevelResult.error) {
         continue;
     }
     if (listResult.error) {
@@ -33,6 +37,9 @@ for (let i = 0; i < 5; i++) {
 if (levelResult!.error) {
     process.exit(1);
 }
+if (bLevelResult!.error) {
+    process.exit(1);
+}
 if (listResult!.error) {
     process.exit(1);
 }
@@ -41,12 +48,14 @@ if (userResult!.error) {
 }
 
 let levels = levelResult!.data as LevelInterface[];
+let blevels = bLevelResult!.data as LevelInterface[];
 const newLevels: LevelInterface[] = [];
 const lists = listResult!.data as ListInterface[];
 const TLL = lists.find((text) => text.name === "TLL");
 const NLL = lists.find((text) => text.name === "NLL");
 const CLL = lists.find((text) => text.name === "CLL");
 const ULL = lists.find((text) => text.name === "ULL");
+const BDL = lists.find((text) => text.name === "BDL");
 
 const users = (userResult!.data as UserInterface[])
     .map((row) => ({
@@ -131,7 +140,7 @@ for (const user of users) {
 levels = [...levels, ...newLevels];
 
 const levelMap = new Map<number, LevelInterface>();
-for (const level of levels) {
+for (const level of [...levels, ...blevels]) {
     levelMap.set(level.level_id, level);
 }
 
@@ -165,10 +174,75 @@ for (const level of levels) {
     }
 }
 
+for (const level of blevels) {
+    if (level.level_id < 0) {
+        continue;
+    }
+    let response;
+    for (let i = 0; i < 3; i++) {
+        response = await fetch(`https://gdladder.com/api/levels/${level.level_id}`);
+        if (response.ok) {
+            break;
+        }
+    }
+    if (!response!.ok) {
+        continue;
+    }
+    const data = await response!.json();
+    const rating = data.Rating;
+    const headers = {
+        "User-Agent": ""
+    };
+    const sendData = {
+        type: 0,
+        secret: "Wmfd2893gb7",
+        str: level.level_id
+    };
+    let response2: Record<string, string> | null = null;
+    for (let i = 0; i < 3; i++) {
+        try {
+            response2 = (
+                await (
+                    await fetch("http://www.boomlings.com/database/getGJLevels21.php", {
+                        method: "post",
+                        headers: headers,
+                        body: JSON.stringify(sendData)
+                    })
+                ).text()
+            )
+                .split("#")[0]
+                .split("|")
+                .map((val) => {
+                    const vals = val.split(":");
+                    return Object.fromEntries(
+                        Array.from({ length: vals.length / 2 }, (_, x) => [
+                            vals[x * 2],
+                            vals[x * 2 + 1]
+                        ])
+                    );
+                })[0];
+            await sleep(1000);
+        } catch {
+            continue;
+        }
+    }
+    if (!response2) {
+        continue;
+    }
+    if (rating) {
+        await supabase.from("blevel").update({ difficulty_votes: { GD: [1, rating, response2["42"], 0] } });
+    }
+    if (response2["43"] && response2["43"] !== "3") {
+        if (BDL && !BDL.levels.some((text) => text[0] === level.level_id)) {
+            BDL.levels.push([level.level_id, ""]);
+        }
+    }
+}
+
 const today = new Date();
 const date = `${today.getFullYear()}-${today.getMonth() + 1}-${today.getDate()}`;
 
-for (const list of [TLL, NLL, CLL, ULL].filter(Boolean)) {
+for (const list of [TLL, NLL, CLL, ULL, BDL].filter(Boolean)) {
     list!.levels.sort((a, b) => {
         const ao = levelMap.get(a[0])!;
         const bo = levelMap.get(b[0])!;

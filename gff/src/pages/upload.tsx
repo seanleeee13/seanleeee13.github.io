@@ -6,7 +6,7 @@ import Stack from "@mui/joy/Stack";
 import FormControl from "@mui/joy/FormControl";
 import Box from "@mui/joy/Box";
 import CircularProgress from "@mui/joy/CircularProgress";
-import { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import {
     supabase,
     type LevelInterface,
@@ -16,14 +16,16 @@ import {
 } from "components/utils";
 import Checkbox from "@mui/joy/Checkbox";
 import { AppBar } from "components";
-import { Button, IconButton, Modal, ModalClose, ModalDialog, Textarea } from "@mui/joy";
-import { ClearIcon, UploadIcon } from "components/assets";
+import { Button, IconButton, Modal, ModalClose, ModalDialog, Textarea, Radio, FormLabel, RadioGroup, Chip } from "@mui/joy";
+import { CheckIcon, ClearIcon, UploadIcon } from "components/assets";
 import uploadImage from "../utils/upload_image";
 import { useNavigate } from "react-router-dom";
 
 function Upload() {
+    const [isBeaten, setIsBeaten] = useState<"self-made" | "beaten">("self-made");
     const [open, setOpen] = useState(false);
     const [level, setLevels] = useState<LevelInterface[]>([]);
+    const [bLevel, setBLevels] = useState<LevelInterface[]>([]);
     const [lists, setLists] = useState<ListInterface[]>([]);
     const [plists, setPLists] = useState<PListInterface[]>([]);
     const [users, setUsers] = useState<UserInterface | null>(null);
@@ -68,6 +70,7 @@ function Upload() {
         song: false
     });
     const [loading, setLoading] = useState<boolean>(true);
+    const [co_creator, setCo_Creator] = useState("");
     const isGFFAdmin = (users?.role ?? []).find(
         (text) => text[0] === "admin" || text[0] === "gff:admin"
     );
@@ -79,9 +82,10 @@ function Upload() {
                     data: { session }
                 } = await supabase.auth.getSession();
                 if (session?.user) {
-                    const [levelResult, listResult, plistResult, userResult, userListResult] =
+                    const [levelResult, bLevelResult, listResult, plistResult, userResult, userListResult] =
                         await Promise.all([
                             supabase.from("level").select("*"),
+                            supabase.from("blevel").select("*"),
                             supabase.from("list").select("*").order("id"),
                             supabase.from("plist").select("*").order("id"),
                             supabase.from("user").select("*").eq("id", session.user.id).single(),
@@ -89,6 +93,9 @@ function Upload() {
                         ]);
                     if (levelResult.error) {
                         throw levelResult.error;
+                    }
+                    if (bLevelResult.error) {
+                        throw bLevelResult.error;
                     }
                     if (listResult.error) {
                         throw listResult.error;
@@ -104,6 +111,9 @@ function Upload() {
                     }
                     if (levelResult.data) {
                         setLevels(levelResult.data as LevelInterface[]);
+                    }
+                    if (bLevelResult.data) {
+                        setBLevels(levelResult.data as LevelInterface[]);
                     }
                     if (listResult.data) {
                         setLists(listResult.data as ListInterface[]);
@@ -205,7 +215,7 @@ function Upload() {
             return;
         }
         if (
-            level.find(
+            (isBeaten === "beaten" ? bLevel : level).find(
                 (text) =>
                     f.get("id") === text.level_id ||
                     +d["id"] === text.main_id ||
@@ -215,7 +225,7 @@ function Upload() {
             return;
         }
         const filePath =
-            (await uploadImage(
+            (f.get("thumbnail") as File === null ? null : await uploadImage(
                 f.get("thumbnail") as File,
                 (f.get("name") as string).replaceAll(" ", "_") +
                     "." +
@@ -241,12 +251,12 @@ function Upload() {
         u.set("original", f.get("original"));
         u.set("song", f.get("song"));
         const { error } = await supabase
-            .from("level")
+            .from(`${isBeaten === "beaten" ? "b" : ""}level`)
             .insert([Object.fromEntries(u) as unknown as LevelInterface]);
         if (error) {
             console.log("Level upload error:", error);
         } else {
-            navigate(`/levels/${f.get("id")}/`);
+            navigate(`/${isBeaten === "beaten" ? "b" : ""}levels/${f.get("id")}/`);
         }
     };
     let text_val;
@@ -271,6 +281,24 @@ function Upload() {
         );
     }
     type MenuListType = [string, [string, string][]][];
+    const addCoCreator = () => {
+        if (co_creator.trim().length === 0) {
+            return;
+        }
+        setLevelUploadInputData({
+            ...levelUploadInputData,
+            co_creators: [...new Set([
+                ...levelUploadInputData.co_creators,
+                co_creator.trim()
+            ])]
+        });
+        setCo_Creator("");
+    }
+    const handleCoCreatorAdd = (event: React.KeyboardEvent<HTMLInputElement>) => {
+        if (event.key === "Enter") {
+            addCoCreator();
+        }
+    }
     return (
         <>
             <AppBar
@@ -307,9 +335,6 @@ function Upload() {
             >
                 <Stack sx={{ p: 4, mx: "auto", my: 5, maxWidth: 1000 }} spacing={3}>
                     <Typography level="h1">레벨 업로드하기</Typography>
-                    <Typography level="h3">
-                        지난 3달간 여러분이 원하던 바로 그 기능이 추가되었습니다.
-                    </Typography>
                     <Stack spacing={2}>
                         <Typography level="h4">
                             다음 칸들을 모두 채워넣어 레벨을 업로드하세요.
@@ -320,6 +345,18 @@ function Upload() {
                         <br />
                         <Box alignItems="center" width="100%">
                             <Stack spacing={2} maxWidth={500} width="auto" mx="auto">
+                                <FormControl>
+                                    <FormLabel>Is Beaten</FormLabel>
+                                    <RadioGroup
+                                        value={isBeaten}
+                                        onChange={(event) => {
+                                            setIsBeaten(event.target.value as "self-made" | "beaten");
+                                        }}
+                                    >
+                                        <Radio label="Self Made" variant="outlined" value="self-made" />
+                                        <Radio label="Beaten" variant="outlined" value="beaten" />
+                                    </RadioGroup>
+                                </FormControl>
                                 <Stack spacing={2} direction="row" alignItems="center">
                                     <Checkbox
                                         label="Is Main"
@@ -449,101 +486,219 @@ function Upload() {
                                         });
                                     }}
                                 />
-                                <FormControl error={levelUploadErrorData.host}>
-                                    <Select
+                                {
+                                    isBeaten === "beaten"
+                                    ? <Input
                                         placeholder="Host"
                                         endDecorator={<Typography textColor="red">*</Typography>}
-                                        value={levelUploadInputData.host}
-                                        onChange={(__, newValue) => {
+                                        error={levelUploadErrorData.host}
+                                        value={levelUploadInputData.host ?? ""}
+                                        onChange={(event) => {
                                             setLevelUploadInputData({
                                                 ...levelUploadInputData,
-                                                host: newValue as string
+                                                host: event.target.value
                                             });
                                             setLevelUploadErrorData({
                                                 ...levelUploadErrorData,
                                                 host: false
                                             });
                                         }}
-                                    >
-                                        {(isGFFAdmin
-                                            ? userNameList
-                                            : [users?.user_metadata?.["gff:id"]]
-                                        ).map((text) => (
-                                            <Option key={`option-host-${text}`} value={text}>
-                                                {text}
-                                            </Option>
-                                        ))}
-                                    </Select>
-                                </FormControl>
-                                <FormControl error={levelUploadErrorData.publish}>
-                                    <Select
+                                    />
+                                    : <FormControl error={levelUploadErrorData.host}>
+                                        <Select
+                                            placeholder="Host"
+                                            endDecorator={<Typography textColor="red">*</Typography>}
+                                            value={levelUploadInputData.host}
+                                            onChange={(__, newValue) => {
+                                                setLevelUploadInputData({
+                                                    ...levelUploadInputData,
+                                                    host: newValue as string
+                                                });
+                                                setLevelUploadErrorData({
+                                                    ...levelUploadErrorData,
+                                                    host: false
+                                                });
+                                            }}
+                                        >
+                                            {(isGFFAdmin
+                                                ? userNameList
+                                                : [users?.user_metadata?.["gff:id"]]
+                                            ).map((text) => (
+                                                <Option key={`option-host-${text}`} value={text}>
+                                                    {text}
+                                                </Option>
+                                            ))}
+                                        </Select>
+                                    </FormControl>
+                                }
+                                {
+                                    isBeaten === "beaten"
+                                    ? <Input
                                         placeholder="Publish"
                                         endDecorator={<Typography textColor="red">*</Typography>}
-                                        value={levelUploadInputData.publish}
-                                        onChange={(__, newValue) => {
+                                        error={levelUploadErrorData.publish}
+                                        value={levelUploadInputData.publish ?? ""}
+                                        onChange={(event) => {
                                             setLevelUploadInputData({
                                                 ...levelUploadInputData,
-                                                publish: newValue as string
+                                                publish: event.target.value
                                             });
                                             setLevelUploadErrorData({
                                                 ...levelUploadErrorData,
                                                 publish: false
                                             });
                                         }}
-                                    >
-                                        {userNameList.map((text) => (
-                                            <Option key={`option-publish-${text}`} value={text}>
-                                                {text}
-                                            </Option>
-                                        ))}
-                                    </Select>
-                                </FormControl>
-                                <FormControl error={levelUploadErrorData.co_creators}>
-                                    <Select
+                                    />
+                                    : <FormControl error={levelUploadErrorData.publish}>
+                                        <Select
+                                            placeholder="Publish"
+                                            endDecorator={<Typography textColor="red">*</Typography>}
+                                            value={levelUploadInputData.publish}
+                                            onChange={(__, newValue) => {
+                                                setLevelUploadInputData({
+                                                    ...levelUploadInputData,
+                                                    publish: newValue as string
+                                                });
+                                                setLevelUploadErrorData({
+                                                    ...levelUploadErrorData,
+                                                    publish: false
+                                                });
+                                            }}
+                                        >
+                                            {userNameList.map((text) => (
+                                                <Option key={`option-publish-${text}`} value={text}>
+                                                    {text}
+                                                </Option>
+                                            ))}
+                                        </Select>
+                                    </FormControl>
+                                }
+                                {
+                                    isBeaten === "beaten"
+                                    ? <Input
                                         placeholder="Co-creators"
-                                        multiple
-                                        value={levelUploadInputData.co_creators}
-                                        onChange={(__, newValue) => {
-                                            setLevelUploadInputData({
-                                                ...levelUploadInputData,
-                                                co_creators: newValue as string[]
-                                            });
+                                        endDecorator={
+                                            <Stack direction="row" spacing={1}>
+                                                <IconButton onClick={addCoCreator}>
+                                                    <CheckIcon />
+                                                </IconButton>
+                                                <Typography textColor="red">*</Typography>
+                                            </Stack>
+                                        }
+                                        error={levelUploadErrorData.co_creators}
+                                        value={co_creator ?? ""}
+                                        onChange={(event) => {
+                                            setCo_Creator(event.target.value);
                                             setLevelUploadErrorData({
                                                 ...levelUploadErrorData,
                                                 co_creators: false
                                             });
                                         }}
-                                    >
-                                        {userNameList.map((text) => (
-                                            <Option key={`option-co-creators-${text}`} value={text}>
-                                                {text}
-                                            </Option>
-                                        ))}
-                                    </Select>
-                                </FormControl>
-                                <FormControl error={levelUploadErrorData.verifier}>
-                                    <Select
+                                        onKeyDown={handleCoCreatorAdd}
+                                        slotProps={{
+                                            startDecorator: {
+                                                sx: { mr: 0 }
+                                            }
+                                        }}
+                                        startDecorator={
+                                            <Box maxWidth="250px" sx={{
+                                                my: "4.44px",
+                                                mr: levelUploadInputData.co_creators.length === 0 ? "0px" : "8px"
+                                            }}>
+                                                {levelUploadInputData.co_creators.map((creator, index) => (
+                                                    <Chip
+                                                        key={`chip-${creator}-${index}`}
+                                                        onClick={() => {
+                                                            setLevelUploadInputData(
+                                                                {
+                                                                    ...levelUploadInputData,
+                                                                    co_creators: [
+                                                                        ...levelUploadInputData.co_creators.slice(0, index),
+                                                                        ...levelUploadInputData.co_creators.slice(index + 1)
+                                                                    ]
+                                                                }
+                                                            );
+                                                        }}
+                                                        sx={{
+                                                            maxWidth: "250px",
+                                                            whiteSpace: "nowrap",
+                                                            overflow: "hidden",
+                                                            textOverflow: "ellipsis",
+                                                            mx: "1.802px"
+                                                        }}
+                                                    >
+                                                        {creator}
+                                                    </Chip>
+                                                ))}
+                                            </Box>
+                                        }
+                                    />
+                                    : <FormControl error={levelUploadErrorData.co_creators}>
+                                        <Select
+                                            placeholder="Co-creators"
+                                            multiple
+                                            value={levelUploadInputData.co_creators}
+                                            onChange={(__, newValue) => {
+                                                setLevelUploadInputData({
+                                                    ...levelUploadInputData,
+                                                    co_creators: newValue as string[]
+                                                });
+                                                setLevelUploadErrorData({
+                                                    ...levelUploadErrorData,
+                                                    co_creators: false
+                                                });
+                                            }}
+                                        >
+                                            {userNameList.map((text) => (
+                                                <Option key={`option-co-creators-${text}`} value={text}>
+                                                    {text}
+                                                </Option>
+                                            ))}
+                                        </Select>
+                                    </FormControl>
+                                }
+                                {
+                                    isBeaten === "beaten"
+                                    ? <Input
                                         placeholder="Verifier"
                                         endDecorator={<Typography textColor="red">*</Typography>}
-                                        value={levelUploadInputData.verifier}
-                                        onChange={(__, newValue) => {
+                                        error={levelUploadErrorData.verifier}
+                                        value={levelUploadInputData.verifier ?? ""}
+                                        onChange={(event) => {
                                             setLevelUploadInputData({
                                                 ...levelUploadInputData,
-                                                verifier: newValue as string
+                                                verifier: event.target.value
                                             });
                                             setLevelUploadErrorData({
                                                 ...levelUploadErrorData,
                                                 verifier: false
                                             });
                                         }}
-                                    >
-                                        {userNameList.map((text) => (
-                                            <Option key={`option-verifier-${text}`} value={text}>
-                                                {text}
-                                            </Option>
-                                        ))}
-                                    </Select>
-                                </FormControl>
+                                    />
+                                    : <FormControl error={levelUploadErrorData.verifier}>
+                                        <Select
+                                            placeholder="Verifier"
+                                            endDecorator={<Typography textColor="red">*</Typography>}
+                                            value={levelUploadInputData.verifier}
+                                            onChange={(__, newValue) => {
+                                                setLevelUploadInputData({
+                                                    ...levelUploadInputData,
+                                                    verifier: newValue as string
+                                                });
+                                                setLevelUploadErrorData({
+                                                    ...levelUploadErrorData,
+                                                    verifier: false
+                                                });
+                                            }}
+                                        >
+                                            {userNameList.map((text) => (
+                                                <Option key={`option-verifier-${text}`} value={text}>
+                                                    {text}
+                                                </Option>
+                                            ))}
+                                        </Select>
+                                    </FormControl>
+                                }
                                 <Stack spacing={1} direction="row" alignItems="center">
                                     <Checkbox
                                         label="Verified"
