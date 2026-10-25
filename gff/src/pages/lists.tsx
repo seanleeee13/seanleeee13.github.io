@@ -5,7 +5,7 @@ import Card from "@mui/joy/Card";
 import CardContent from "@mui/joy/CardContent";
 import Link from "@mui/joy/Link";
 import CircularProgress from "@mui/joy/CircularProgress";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router";
 import { useState, useEffect } from "react";
 import {
     supabase,

@@ -5,6 +5,7 @@ on:
       - main
     paths:
       - "gff/**"
+      - "components/**"
       - "pnpm-lock.yaml"
       - ".github/workflows/deploy-gff.yaml"
       - "apply-change.txt"

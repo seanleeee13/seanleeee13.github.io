@@ -8,13 +8,12 @@ import Divider from "@mui/joy/Divider";
 import FormControl from "@mui/joy/FormControl";
 import FormHelperText from "@mui/joy/FormHelperText";
 import Card from "@mui/joy/Card";
-import { useNavigate, useSearchParams } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router";
 import Input from "@mui/joy/Input";
 import Snackbar from "@mui/joy/Snackbar";
 import Link from "@mui/joy/Link";
-import { GetLoggedIn, query } from "components/utils";
+import { GetLoggedIn, query, usable } from "components/utils";
 import { AppBar } from "components";
-import { usable } from "../utils/contents.ts";
 import { GithubIcon } from "components/assets";
 
 function Login() {
@@ -78,6 +77,7 @@ function Login() {
                     [
                         "공통 기능",
                         [
+                            ["Posts", "/post/"],
                             ["Sign Up", "q:/#/signup/"],
                             ["Log In", "q:/#/login/"]
                         ]

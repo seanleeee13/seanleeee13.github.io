@@ -26,7 +26,7 @@ import {
 import { cdavg } from "../utils/calculate_difficulty_avg.ts";
 import { ExpandMoreIcon, FilterListIcon, SearchIcon } from "components/assets";
 import { AppBar } from "components";
-import { useNavigate, useSearchParams } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router";
 import { Checkbox } from "@mui/joy";
 
 function LevelsMain() {

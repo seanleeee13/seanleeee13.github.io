@@ -24,5 +24,4 @@ dist
 tools/
 test/
 **/.env
-
 _posts/

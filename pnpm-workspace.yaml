@@ -5,5 +5,13 @@ packages:
   - 'stage'
   - 'components'
   - 'auto'
+  - 'post'
 
 minimumReleaseAge: 0
+
+permissions:
+  dotenv:
+    skills: true
+
+skills:
+  dirs: []

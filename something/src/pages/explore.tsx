@@ -3,7 +3,7 @@ import Stack from "@mui/joy/Stack";
 import { AppBar } from "components";
 import { Box, Button, Card, Divider, Tooltip } from "@mui/joy";
 import { AIDataList } from "../utils/ai";
-import { useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router";
 
 function Explore() {
     const navigate = useNavigate();

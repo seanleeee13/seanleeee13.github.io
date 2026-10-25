@@ -3,7 +3,7 @@ import "./App.css";
 import { extendTheme, CssVarsProvider } from "@mui/joy";
 import CssBaseline from "@mui/joy/CssBaseline";
 
-const someTheme = extendTheme({
+const theme = extendTheme({
     fontFamily: {
         body: "'Mona Sans Variable', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji'",
         display:
@@ -20,7 +20,7 @@ const someTheme = extendTheme({
 
 function App() {
     return (
-        <CssVarsProvider theme={someTheme}>
+        <CssVarsProvider theme={theme}>
             <CssBaseline />
             <Router />
         </CssVarsProvider>

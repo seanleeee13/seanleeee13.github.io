@@ -42,6 +42,18 @@ export default defineConfig({
                         }
                     });
                 }
+            },
+            "/post": {
+                target: "http://localhost:5177",
+                changeOrigin: true,
+                configure: (proxy, _) => {
+                    proxy.on("proxyReq", (__, req, res) => {
+                        if (req.url === "/post") {
+                            res.writeHead(301, { Location: "/post/" });
+                            res.end();
+                        }
+                    });
+                }
             }
         }
     }

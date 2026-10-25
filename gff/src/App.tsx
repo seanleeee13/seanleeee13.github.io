@@ -3,7 +3,7 @@ import Router from "./route.tsx";
 import { extendTheme, CssVarsProvider } from "@mui/joy";
 import "./App.css";
 
-const gffTheme = extendTheme({
+const theme = extendTheme({
     fontFamily: {
         body: "'Mona Sans Variable', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji'",
         display:
@@ -20,7 +20,7 @@ const gffTheme = extendTheme({
 
 function App() {
     return (
-        <CssVarsProvider theme={gffTheme}>
+        <CssVarsProvider theme={theme}>
             <CssBaseline />
             <Router />
         </CssVarsProvider>

@@ -230,7 +230,9 @@ for (const level of blevels) {
         continue;
     }
     if (rating) {
-        await supabase.from("blevel").update({ difficulty_votes: { GD: [1, rating, response2["42"], 0] } });
+        await supabase
+            .from("blevel")
+            .update({ difficulty_votes: { GD: [1, rating, response2["42"], 0] } });
     }
     if (response2["43"] && response2["43"] !== "3") {
         if (BDL && !BDL.levels.some((text) => text[0] === level.level_id)) {

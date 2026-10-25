@@ -3,7 +3,7 @@ import Stack from "@mui/joy/Stack";
 import Button from "@mui/joy/Button";
 import Box from "@mui/joy/Box";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { useNavigate, useSearchParams } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router";
 import Radio from "@mui/joy/Radio";
 import FormControl from "@mui/joy/FormControl";
 import FormLabel from "@mui/joy/FormLabel";

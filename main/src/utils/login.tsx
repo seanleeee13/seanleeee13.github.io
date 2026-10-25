@@ -1,4 +1,4 @@
-import { supabase } from "./supabase_key.tsx";
+import { supabase } from "components/utils";
 
 export const loginWithEmail = async (email: string, password: string) => {
     const { data, error } = await supabase.auth.signInWithPassword({

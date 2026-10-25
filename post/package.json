@@ -1,0 +1,36 @@
+{
+    "name": "post",
+    "version": "0.0.0",
+    "private": true,
+    "type": "module",
+    "scripts": {
+        "dev": "vite",
+        "build": "tsc -b && vite build",
+        "lint": "oxlint",
+        "format": "oxfmt --write .",
+        "preview": "vite preview"
+    },
+    "dependencies": {
+        "@emotion/react": "^11.14.0",
+        "@emotion/styled": "^11.14.1",
+        "@fontsource-variable/mona-sans": "^5.2.8",
+        "@mui/joy": "^5.0.0-beta.52",
+        "@react-router/dev": "^8.5.0",
+        "components": "workspace:*",
+        "react": "^19.3.1",
+        "react-dom": "^19.3.1",
+        "react-router": "^8.5.0"
+    },
+    "devDependencies": {
+        "@types/node": "^26.6.5",
+        "@types/react": "^19.2.14",
+        "@types/react-dom": "^19.2.3",
+        "@vitejs/plugin-react": "^6.1.2",
+        "gh-pages": "^6.3.0",
+        "globals": "^17.13.0",
+        "oxfmt": "^0.74.0",
+        "oxlint": "^1.89.0",
+        "typescript": "~7.0.2",
+        "vite": "^8.3.5"
+    }
+}

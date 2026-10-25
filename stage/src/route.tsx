@@ -1,4 +1,4 @@
-import { createHashRouter, RouterProvider } from "react-router-dom";
+import { createHashRouter, RouterProvider } from "react-router";
 import { useState, useEffect } from "react";
 import Home from "./pages/home.tsx";
 import Typography from "@mui/joy/Typography";

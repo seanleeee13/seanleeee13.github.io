@@ -16,10 +16,21 @@ import {
 } from "components/utils";
 import Checkbox from "@mui/joy/Checkbox";
 import { AppBar } from "components";
-import { Button, IconButton, Modal, ModalClose, ModalDialog, Textarea, Radio, FormLabel, RadioGroup, Chip } from "@mui/joy";
+import {
+    Button,
+    IconButton,
+    Modal,
+    ModalClose,
+    ModalDialog,
+    Textarea,
+    Radio,
+    FormLabel,
+    RadioGroup,
+    Chip
+} from "@mui/joy";
 import { CheckIcon, ClearIcon, UploadIcon } from "components/assets";
 import uploadImage from "../utils/upload_image";
-import { useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router";
 
 function Upload() {
     const [isBeaten, setIsBeaten] = useState<"self-made" | "beaten">("self-made");
@@ -82,15 +93,21 @@ function Upload() {
                     data: { session }
                 } = await supabase.auth.getSession();
                 if (session?.user) {
-                    const [levelResult, bLevelResult, listResult, plistResult, userResult, userListResult] =
-                        await Promise.all([
-                            supabase.from("level").select("*"),
-                            supabase.from("blevel").select("*"),
-                            supabase.from("list").select("*").order("id"),
-                            supabase.from("plist").select("*").order("id"),
-                            supabase.from("user").select("*").eq("id", session.user.id).single(),
-                            supabase.from("user").select("user_metadata")
-                        ]);
+                    const [
+                        levelResult,
+                        bLevelResult,
+                        listResult,
+                        plistResult,
+                        userResult,
+                        userListResult
+                    ] = await Promise.all([
+                        supabase.from("level").select("*"),
+                        supabase.from("blevel").select("*"),
+                        supabase.from("list").select("*").order("id"),
+                        supabase.from("plist").select("*").order("id"),
+                        supabase.from("user").select("*").eq("id", session.user.id).single(),
+                        supabase.from("user").select("user_metadata")
+                    ]);
                     if (levelResult.error) {
                         throw levelResult.error;
                     }
@@ -225,12 +242,14 @@ function Upload() {
             return;
         }
         const filePath =
-            (f.get("thumbnail") as File === null ? null : await uploadImage(
-                f.get("thumbnail") as File,
-                (f.get("name") as string).replaceAll(" ", "_") +
-                    "." +
-                    (f.get("thumbnail") as File).name.split(".").pop()
-            )) ??
+            ((f.get("thumbnail") as File) === null
+                ? null
+                : await uploadImage(
+                      f.get("thumbnail") as File,
+                      (f.get("name") as string).replaceAll(" ", "_") +
+                          "." +
+                          (f.get("thumbnail") as File).name.split(".").pop()
+                  )) ??
             "https://jtomgrgfszuhfqbrqgst.supabase.co/storage/v1/object/public/gd-thumbnail/placeholder.webp";
         const u = new Map<keyof LevelInterface, unknown>();
         u.set("level_id", f.get("id"));
@@ -287,18 +306,15 @@ function Upload() {
         }
         setLevelUploadInputData({
             ...levelUploadInputData,
-            co_creators: [...new Set([
-                ...levelUploadInputData.co_creators,
-                co_creator.trim()
-            ])]
+            co_creators: [...new Set([...levelUploadInputData.co_creators, co_creator.trim()])]
         });
         setCo_Creator("");
-    }
+    };
     const handleCoCreatorAdd = (event: React.KeyboardEvent<HTMLInputElement>) => {
         if (event.key === "Enter") {
             addCoCreator();
         }
-    }
+    };
     return (
         <>
             <AppBar
@@ -350,10 +366,16 @@ function Upload() {
                                     <RadioGroup
                                         value={isBeaten}
                                         onChange={(event) => {
-                                            setIsBeaten(event.target.value as "self-made" | "beaten");
+                                            setIsBeaten(
+                                                event.target.value as "self-made" | "beaten"
+                                            );
                                         }}
                                     >
-                                        <Radio label="Self Made" variant="outlined" value="self-made" />
+                                        <Radio
+                                            label="Self Made"
+                                            variant="outlined"
+                                            value="self-made"
+                                        />
                                         <Radio label="Beaten" variant="outlined" value="beaten" />
                                     </RadioGroup>
                                 </FormControl>
@@ -486,9 +508,8 @@ function Upload() {
                                         });
                                     }}
                                 />
-                                {
-                                    isBeaten === "beaten"
-                                    ? <Input
+                                {isBeaten === "beaten" ? (
+                                    <Input
                                         placeholder="Host"
                                         endDecorator={<Typography textColor="red">*</Typography>}
                                         error={levelUploadErrorData.host}
@@ -504,10 +525,13 @@ function Upload() {
                                             });
                                         }}
                                     />
-                                    : <FormControl error={levelUploadErrorData.host}>
+                                ) : (
+                                    <FormControl error={levelUploadErrorData.host}>
                                         <Select
                                             placeholder="Host"
-                                            endDecorator={<Typography textColor="red">*</Typography>}
+                                            endDecorator={
+                                                <Typography textColor="red">*</Typography>
+                                            }
                                             value={levelUploadInputData.host}
                                             onChange={(__, newValue) => {
                                                 setLevelUploadInputData({
@@ -530,10 +554,9 @@ function Upload() {
                                             ))}
                                         </Select>
                                     </FormControl>
-                                }
-                                {
-                                    isBeaten === "beaten"
-                                    ? <Input
+                                )}
+                                {isBeaten === "beaten" ? (
+                                    <Input
                                         placeholder="Publish"
                                         endDecorator={<Typography textColor="red">*</Typography>}
                                         error={levelUploadErrorData.publish}
@@ -549,10 +572,13 @@ function Upload() {
                                             });
                                         }}
                                     />
-                                    : <FormControl error={levelUploadErrorData.publish}>
+                                ) : (
+                                    <FormControl error={levelUploadErrorData.publish}>
                                         <Select
                                             placeholder="Publish"
-                                            endDecorator={<Typography textColor="red">*</Typography>}
+                                            endDecorator={
+                                                <Typography textColor="red">*</Typography>
+                                            }
                                             value={levelUploadInputData.publish}
                                             onChange={(__, newValue) => {
                                                 setLevelUploadInputData({
@@ -572,10 +598,9 @@ function Upload() {
                                             ))}
                                         </Select>
                                     </FormControl>
-                                }
-                                {
-                                    isBeaten === "beaten"
-                                    ? <Input
+                                )}
+                                {isBeaten === "beaten" ? (
+                                    <Input
                                         placeholder="Co-creators"
                                         endDecorator={
                                             <Stack direction="row" spacing={1}>
@@ -601,39 +626,52 @@ function Upload() {
                                             }
                                         }}
                                         startDecorator={
-                                            <Box maxWidth="250px" sx={{
-                                                my: "4.44px",
-                                                mr: levelUploadInputData.co_creators.length === 0 ? "0px" : "8px"
-                                            }}>
-                                                {levelUploadInputData.co_creators.map((creator, index) => (
-                                                    <Chip
-                                                        key={`chip-${creator}-${index}`}
-                                                        onClick={() => {
-                                                            setLevelUploadInputData(
-                                                                {
+                                            <Box
+                                                maxWidth="250px"
+                                                sx={{
+                                                    my: "4.44px",
+                                                    mr:
+                                                        levelUploadInputData.co_creators.length ===
+                                                        0
+                                                            ? "0px"
+                                                            : "8px"
+                                                }}
+                                            >
+                                                {levelUploadInputData.co_creators.map(
+                                                    (creator, index) => (
+                                                        <Chip
+                                                            key={`chip-${creator}-${index}`}
+                                                            onClick={() => {
+                                                                setLevelUploadInputData({
                                                                     ...levelUploadInputData,
                                                                     co_creators: [
-                                                                        ...levelUploadInputData.co_creators.slice(0, index),
-                                                                        ...levelUploadInputData.co_creators.slice(index + 1)
+                                                                        ...levelUploadInputData.co_creators.slice(
+                                                                            0,
+                                                                            index
+                                                                        ),
+                                                                        ...levelUploadInputData.co_creators.slice(
+                                                                            index + 1
+                                                                        )
                                                                     ]
-                                                                }
-                                                            );
-                                                        }}
-                                                        sx={{
-                                                            maxWidth: "250px",
-                                                            whiteSpace: "nowrap",
-                                                            overflow: "hidden",
-                                                            textOverflow: "ellipsis",
-                                                            mx: "1.802px"
-                                                        }}
-                                                    >
-                                                        {creator}
-                                                    </Chip>
-                                                ))}
+                                                                });
+                                                            }}
+                                                            sx={{
+                                                                maxWidth: "250px",
+                                                                whiteSpace: "nowrap",
+                                                                overflow: "hidden",
+                                                                textOverflow: "ellipsis",
+                                                                mx: "1.802px"
+                                                            }}
+                                                        >
+                                                            {creator}
+                                                        </Chip>
+                                                    )
+                                                )}
                                             </Box>
                                         }
                                     />
-                                    : <FormControl error={levelUploadErrorData.co_creators}>
+                                ) : (
+                                    <FormControl error={levelUploadErrorData.co_creators}>
                                         <Select
                                             placeholder="Co-creators"
                                             multiple
@@ -650,16 +688,18 @@ function Upload() {
                                             }}
                                         >
                                             {userNameList.map((text) => (
-                                                <Option key={`option-co-creators-${text}`} value={text}>
+                                                <Option
+                                                    key={`option-co-creators-${text}`}
+                                                    value={text}
+                                                >
                                                     {text}
                                                 </Option>
                                             ))}
                                         </Select>
                                     </FormControl>
-                                }
-                                {
-                                    isBeaten === "beaten"
-                                    ? <Input
+                                )}
+                                {isBeaten === "beaten" ? (
+                                    <Input
                                         placeholder="Verifier"
                                         endDecorator={<Typography textColor="red">*</Typography>}
                                         error={levelUploadErrorData.verifier}
@@ -675,10 +715,13 @@ function Upload() {
                                             });
                                         }}
                                     />
-                                    : <FormControl error={levelUploadErrorData.verifier}>
+                                ) : (
+                                    <FormControl error={levelUploadErrorData.verifier}>
                                         <Select
                                             placeholder="Verifier"
-                                            endDecorator={<Typography textColor="red">*</Typography>}
+                                            endDecorator={
+                                                <Typography textColor="red">*</Typography>
+                                            }
                                             value={levelUploadInputData.verifier}
                                             onChange={(__, newValue) => {
                                                 setLevelUploadInputData({
@@ -692,13 +735,16 @@ function Upload() {
                                             }}
                                         >
                                             {userNameList.map((text) => (
-                                                <Option key={`option-verifier-${text}`} value={text}>
+                                                <Option
+                                                    key={`option-verifier-${text}`}
+                                                    value={text}
+                                                >
                                                     {text}
                                                 </Option>
                                             ))}
                                         </Select>
                                     </FormControl>
-                                }
+                                )}
                                 <Stack spacing={1} direction="row" alignItems="center">
                                     <Checkbox
                                         label="Verified"

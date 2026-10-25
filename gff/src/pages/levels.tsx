@@ -4,7 +4,7 @@ import CircularProgress from "@mui/joy/CircularProgress";
 import Stack from "@mui/joy/Stack";
 import Table from "@mui/joy/Table";
 import Tooltip from "@mui/joy/Tooltip";
-import { useParams } from "react-router-dom";
+import { useParams } from "react-router";
 import { useEffect, useState } from "react";
 import {
     supabase,

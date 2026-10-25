@@ -1,25 +1,21 @@
 import Typography from "@mui/joy/Typography";
 import Button from "@mui/joy/Button";
 import Stack from "@mui/joy/Stack";
-import Sheet from "@mui/joy/Sheet";
 import Input from "@mui/joy/Input";
-import ModalClose from "@mui/joy/ModalClose";
 import { useState, useEffect } from "react";
-import { GetLoggedIn, supabase, type UserInterface } from "components/utils";
-import { Box, Card, Modal } from "@mui/joy";
+import { GetLoggedIn, supabase, type UserInterface, imagemap, descriptionmap, usable, getContents } from "components/utils";
+import { Box, Card } from "@mui/joy";
 import FormControl from "@mui/joy/FormControl";
 import FormHelperText from "@mui/joy/FormHelperText";
 import { AppBar } from "components";
-import { imagemap, descriptionmap, sourcemap, usable } from "../utils/contents.ts";
 
 function MyPage() {
-    const [modalOpen, setModalOpen] = useState(false);
     const [loading, setLoading] = useState(true);
     const [users, setUsers] = useState<UserInterface>();
     const [value, setValue] = useState("");
     const [error, setError] = useState(false);
     const [errorMessage, setErrorMessage] = useState("");
-    const content = [...(users?.role ?? []), ...(users?.vrole ?? []), ...usable];
+    const [content, setContent] = useState<string[][]>(usable);
     useEffect(() => {
         const fetchTableData = async () => {
             try {
@@ -39,6 +35,7 @@ function MyPage() {
                         setUsers(userResult.data as UserInterface);
                     }
                 }
+                setContent(await getContents());
             } catch (err) {
                 console.error("Error while loading list data: ", err);
             } finally {
@@ -82,7 +79,7 @@ function MyPage() {
                     link={[]}
                     list={[
                         ["컨텐츠", content.map(([id, name]) => [name, `/${id}/`])],
-                        ["공통 기능", [["Log Out", "/#/logout/"]]]
+                        ["공통 기능", [["Posts", "/post/"], ["Log Out", "/#/logout/"]]]
                     ]}
                 />
                 <Box
@@ -147,7 +144,7 @@ function MyPage() {
                 link={[]}
                 list={[
                     ["컨텐츠", content.map(([id, name]) => [name, `/${id}/`])],
-                    ["공통 기능", [["Log Out", "/#/logout/"]]]
+                    ["공통 기능", [["Posts", "/post/"], ["Log Out", "/#/logout/"]]]
                 ]}
             />
             <Box
@@ -213,42 +210,6 @@ function MyPage() {
                             }
                         )}
                     </Stack>
-                    <Button
-                        variant="plain"
-                        color="neutral"
-                        sx={{ maxWidth: 100, bottom: 16, right: 16, position: "fixed" }}
-                        onClick={(_) => {
-                            setModalOpen(true);
-                        }}
-                    >
-                        이미지 출처
-                    </Button>
-                    <Modal
-                        aria-labelledby="modal-title"
-                        aria-describedby="modal-desc"
-                        open={modalOpen}
-                        onClose={() => setModalOpen(false)}
-                        sx={{ display: "flex", justifyContent: "center", alignItems: "center" }}
-                    >
-                        <Sheet
-                            variant="outlined"
-                            sx={{ maxWidth: 500, borderRadius: "md", p: 3, boxShadow: "lg" }}
-                        >
-                            <ModalClose variant="plain" sx={{ m: 1 }} />
-                            <Typography level="h4" sx={{ mb: 1 }}>
-                                이미지 출처
-                            </Typography>
-                            {[...(users?.role ?? []), ...(users?.vrole ?? []), ...usable].map(
-                                ([id, _]) => {
-                                    return (
-                                        <Typography key={`typography-${id}`} sx={{ mb: 1 }}>
-                                            {sourcemap[id]}
-                                        </Typography>
-                                    );
-                                }
-                            )}
-                        </Sheet>
-                    </Modal>
                 </Stack>
             </Box>
         </>
@@ -256,14 +217,13 @@ function MyPage() {
 }
 
 function IntroPage() {
-    const [modalOpen, setModalOpen] = useState(false);
     return (
         <>
             <AppBar
                 link={[]}
                 list={[
                     ["컨텐츠", usable.map(([id, name]) => [name, `/${id}/`])],
-                    ["공통 기능", [["Log Out", "/#/logout/"]]]
+                    ["공통 기능", [["Posts", "/post/"], ["Sign Up", "/#/signup/"], ["Log In", "/#/login/"]]]
                 ]}
             />
             <Box
@@ -315,40 +275,6 @@ function IntroPage() {
                             );
                         })}
                     </Stack>
-                    <Button
-                        variant="plain"
-                        color="neutral"
-                        sx={{ maxWidth: 100, bottom: 16, right: 16, position: "fixed" }}
-                        onClick={(_) => {
-                            setModalOpen(true);
-                        }}
-                    >
-                        이미지 출처
-                    </Button>
-                    <Modal
-                        aria-labelledby="modal-title"
-                        aria-describedby="modal-desc"
-                        open={modalOpen}
-                        onClose={() => setModalOpen(false)}
-                        sx={{ display: "flex", justifyContent: "center", alignItems: "center" }}
-                    >
-                        <Sheet
-                            variant="outlined"
-                            sx={{ maxWidth: 500, borderRadius: "md", p: 3, boxShadow: "lg" }}
-                        >
-                            <ModalClose variant="plain" sx={{ m: 1 }} />
-                            <Typography level="h4" sx={{ mb: 1 }}>
-                                이미지 출처
-                            </Typography>
-                            {usable.map(([id, _]) => {
-                                return (
-                                    <Typography key={`typography-${id}`} sx={{ mb: 1 }}>
-                                        {sourcemap[id]}
-                                    </Typography>
-                                );
-                            })}
-                        </Sheet>
-                    </Modal>
                 </Stack>
             </Box>
         </>

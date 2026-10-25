@@ -1,4 +1,4 @@
-import { createHashRouter, RouterProvider } from "react-router-dom";
+import { createHashRouter, RouterProvider } from "react-router";
 import Home from "./pages/home.tsx";
 import Play from "./pages/play.tsx";
 import Explore from "./pages/explore.tsx";

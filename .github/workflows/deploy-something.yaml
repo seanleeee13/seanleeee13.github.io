@@ -5,6 +5,7 @@ on:
       - main
     paths:
       - "something/**"
+      - "components/**"
       - "pnpm-lock.yaml"
       - ".github/workflows/deploy-something.yaml"
       - "apply-change.txt"
