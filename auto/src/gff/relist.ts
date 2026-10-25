@@ -265,7 +265,12 @@ for (const level of blevels) {
         song: response2["35"] === "0" ? +response2["12"] : +response2["35"]
     } as LevelInterface;
     await supabase.from("blevel").update(levelData).eq("level_id", level.level_id);
-    if (!rating) {
+    if (response2["8"] === "0") {
+        await supabase
+            .from("blevel")
+            .update({ difficulty_votes: {} })
+            .eq("level_id", level.level_id);
+    } else if (!rating) {
         await supabase
             .from("blevel")
             .update({ difficulty_votes: { GD: [0, +response2["18"], +response2["42"], 0] } })
