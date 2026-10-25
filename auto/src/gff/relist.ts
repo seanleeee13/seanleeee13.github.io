@@ -101,6 +101,7 @@ for (const user of users) {
         }
     }
     if (!response) {
+        console.log(user, "data fetch (gd) failed");
         continue;
     }
     for (const level of response) {
@@ -186,6 +187,7 @@ for (const level of blevels) {
         }
     }
     if (!response!.ok) {
+        console.log(level, "data fetch (gddl) failed");
         continue;
     }
     const data = await response!.json();
@@ -227,6 +229,7 @@ for (const level of blevels) {
         }
     }
     if (!response2) {
+        console.log(level, "data fetch (bgd) failed");
         continue;
     }
     if (rating) {
