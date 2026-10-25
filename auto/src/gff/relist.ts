@@ -78,17 +78,15 @@ for (const user of users) {
             str: `${user["gff:accid"]}`,
             page: `${i}`
         };
-        for (let j = 0; j < 3; i++) {
+        for (let j = 0; j < 3; j++) {
             try {
-                let x = (
-                    await (
-                        await fetch("http://www.boomlings.com/database/getGJLevels21.php", {
-                            method: "post",
-                            headers: headers,
-                            body: new URLSearchParams(data).toString()
-                        })
-                    ).text()
-                );
+                let x = await (
+                    await fetch("http://www.boomlings.com/database/getGJLevels21.php", {
+                        method: "post",
+                        headers: headers,
+                        body: new URLSearchParams(data).toString()
+                    })
+                ).text();
                 if (x === "-1") {
                     continue;
                 }
@@ -98,9 +96,9 @@ for (const user of users) {
                     .map((val) => {
                         const vals = val.split(":");
                         return Object.fromEntries(
-                            Array.from({ length: vals.length / 2 }, (_, x) => [
-                                vals[x * 2],
-                                vals[x * 2 + 1]
+                            Array.from({ length: vals.length / 2 }, (_, a) => [
+                                vals[a * 2],
+                                vals[a * 2 + 1]
                             ])
                         );
                     });
@@ -194,10 +192,12 @@ for (const level of blevels) {
     }
     let response;
     const header = {
-        "Authorization": `Bearer ${process.env.GDDL_API_KEY}`
-    }
+        Authorization: `Bearer ${process.env.GDDL_API_KEY}`
+    };
     for (let i = 0; i < 3; i++) {
-        response = await fetch(`https://gdladder.com/api/levels/${level.level_id}`, { headers: header });
+        response = await fetch(`https://gdladder.com/api/levels/${level.level_id}`, {
+            headers: header
+        });
         if (response.ok) {
             break;
         }
@@ -219,16 +219,13 @@ for (const level of blevels) {
     let response2: Record<string, string> | null = null;
     for (let i = 0; i < 3; i++) {
         try {
-            response2
-            let x = (
-                await (
-                    await fetch("http://www.boomlings.com/database/getGJLevels21.php", {
-                        method: "post",
-                        headers: headers,
-                        body: new URLSearchParams(sendData).toString()
-                    })
-                ).text()
-            );
+            let x = await (
+                await fetch("http://www.boomlings.com/database/getGJLevels21.php", {
+                    method: "post",
+                    headers: headers,
+                    body: new URLSearchParams(sendData).toString()
+                })
+            ).text();
             if (x === "-1") {
                 continue;
             }
@@ -238,9 +235,9 @@ for (const level of blevels) {
                 .map((val) => {
                     const vals = val.split(":");
                     return Object.fromEntries(
-                        Array.from({ length: vals.length / 2 }, (_, x) => [
-                            vals[x * 2],
-                            vals[x * 2 + 1]
+                        Array.from({ length: vals.length / 2 }, (_, a) => [
+                            vals[a * 2],
+                            vals[a * 2 + 1]
                         ])
                     );
                 })[0];

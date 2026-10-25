@@ -16,7 +16,9 @@ const descriptionmap: Record<string, string> = {
 const usable: [string, string][] = [["something", "Something"]];
 
 const getContents = async () => {
-    const { data: { session } } = await supabase.auth.getSession();
+    const {
+        data: { session }
+    } = await supabase.auth.getSession();
     if (!session?.user) {
         return usable;
     }
@@ -26,6 +28,6 @@ const getContents = async () => {
     }
     const user = users.data as UserInterface;
     return [...(user?.role ?? []), ...(user?.vrole ?? []), ...usable];
-}
+};
 
 export { imagemap, descriptionmap, usable, getContents };

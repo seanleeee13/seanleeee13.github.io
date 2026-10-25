@@ -9,11 +9,7 @@ function StagePost1() {
                 scrollbarGutter: "stable both-edges"
             }}
         >
-            <Stack
-                direction="column"
-                spacing={5}
-                sx={{ p: 4, mx: "auto", my: 5, maxWidth: 1000 }}
-            >
+            <Stack direction="column" spacing={5} sx={{ p: 4, mx: "auto", my: 5, maxWidth: 1000 }}>
                 <Typography level="h1">[Stage] 개인정보 수집, 이용 안내 & 저작권 고지</Typography>
                 <Stack direction="column" spacing={1}>
                     <Typography level="h3">1. 개인정보 수집</Typography>

@@ -3,7 +3,15 @@ import Button from "@mui/joy/Button";
 import Stack from "@mui/joy/Stack";
 import Input from "@mui/joy/Input";
 import { useState, useEffect } from "react";
-import { GetLoggedIn, supabase, type UserInterface, imagemap, descriptionmap, usable, getContents } from "components/utils";
+import {
+    GetLoggedIn,
+    supabase,
+    type UserInterface,
+    imagemap,
+    descriptionmap,
+    usable,
+    getContents
+} from "components/utils";
 import { Box, Card } from "@mui/joy";
 import FormControl from "@mui/joy/FormControl";
 import FormHelperText from "@mui/joy/FormHelperText";
@@ -79,7 +87,13 @@ function MyPage() {
                     link={[]}
                     list={[
                         ["컨텐츠", content.map(([id, name]) => [name, `/${id}/`])],
-                        ["공통 기능", [["Posts", "/post/"], ["Log Out", "/#/logout/"]]]
+                        [
+                            "공통 기능",
+                            [
+                                ["Posts", "/post/"],
+                                ["Log Out", "/#/logout/"]
+                            ]
+                        ]
                     ]}
                 />
                 <Box
@@ -144,7 +158,13 @@ function MyPage() {
                 link={[]}
                 list={[
                     ["컨텐츠", content.map(([id, name]) => [name, `/${id}/`])],
-                    ["공통 기능", [["Posts", "/post/"], ["Log Out", "/#/logout/"]]]
+                    [
+                        "공통 기능",
+                        [
+                            ["Posts", "/post/"],
+                            ["Log Out", "/#/logout/"]
+                        ]
+                    ]
                 ]}
             />
             <Box
@@ -223,7 +243,14 @@ function IntroPage() {
                 link={[]}
                 list={[
                     ["컨텐츠", usable.map(([id, name]) => [name, `/${id}/`])],
-                    ["공통 기능", [["Posts", "/post/"], ["Sign Up", "/#/signup/"], ["Log In", "/#/login/"]]]
+                    [
+                        "공통 기능",
+                        [
+                            ["Posts", "/post/"],
+                            ["Sign Up", "/#/signup/"],
+                            ["Log In", "/#/login/"]
+                        ]
+                    ]
                 ]}
             />
             <Box

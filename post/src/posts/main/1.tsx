@@ -9,11 +9,7 @@ function MainPost1() {
                 scrollbarGutter: "stable both-edges"
             }}
         >
-            <Stack
-                direction="column"
-                spacing={3}
-                sx={{ p: 4, mx: "auto", my: 5, maxWidth: 1000 }}
-            >
+            <Stack direction="column" spacing={3} sx={{ p: 4, mx: "auto", my: 5, maxWidth: 1000 }}>
                 <Typography level="h1">[Main] 개인정보 수집, 이용 안내 & 저작권 고지</Typography>
                 <Typography level="h3">1. 개인정보 수집</Typography>
                 <Stack direction="column" spacing={1}>
@@ -23,7 +19,12 @@ function MainPost1() {
                 </Stack>
                 <Stack direction="column" spacing={1}>
                     <Typography level="h3">2. 이미지 저작권 & 출처 고지</Typography>
-                    <Typography level="body-lg">- Admin 배너 이미지: <Link href="https://www.flaticon.com/kr/free-icon/crown_679660">Flaticon</Link></Typography>
+                    <Typography level="body-lg">
+                        - Admin 배너 이미지:{" "}
+                        <Link href="https://www.flaticon.com/kr/free-icon/crown_679660">
+                            Flaticon
+                        </Link>
+                    </Typography>
                 </Stack>
             </Stack>
         </Box>

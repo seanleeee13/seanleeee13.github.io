@@ -7,4 +7,4 @@ export {
     type PListInterface
 } from "./supabase_key.ts";
 export { default as query } from "./get_query.ts";
-export { imagemap, descriptionmap, usable, getContents } from "./contents.ts"
+export { imagemap, descriptionmap, usable, getContents } from "./contents.ts";
