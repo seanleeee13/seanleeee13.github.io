@@ -65,46 +65,59 @@ const users = (userResult!.data as UserInterface[])
     .filter((row) => row["gff:id"] && row["gff:accid"]);
 for (const user of users) {
     const headers = {
-        "User-Agent": ""
-    };
-    const data = {
-        type: 5,
-        secret: "Wmfd2893gb7",
-        str: user["gff:accid"]
+        "User-Agent": "",
+        "Content-Type": "application/x-www-form-urlencoded"
     };
     let response: Record<string, string>[] | null = null;
-    for (let i = 0; i < 3; i++) {
-        try {
-            response = (
-                await (
-                    await fetch("http://www.boomlings.com/database/getGJLevels21.php", {
-                        method: "post",
-                        headers: headers,
-                        body: JSON.stringify(data)
-                    })
-                ).text()
-            )
-                .split("#")[0]
-                .split("|")
-                .map((val) => {
-                    const vals = val.split(":");
-                    return Object.fromEntries(
-                        Array.from({ length: vals.length / 2 }, (_, x) => [
-                            vals[x * 2],
-                            vals[x * 2 + 1]
-                        ])
-                    );
-                });
-            await sleep(1000);
-        } catch {
-            continue;
+    let responseSum: Record<string, string>[] = [];
+    let i = 0;
+    while (response) {
+        const data = {
+            type: "5",
+            secret: "Wmfd2893gb7",
+            str: `${user["gff:accid"]}`,
+            page: `${i}`
+        };
+        for (let j = 0; j < 3; i++) {
+            try {
+                let x = (
+                    await (
+                        await fetch("http://www.boomlings.com/database/getGJLevels21.php", {
+                            method: "post",
+                            headers: headers,
+                            body: new URLSearchParams(data).toString()
+                        })
+                    ).text()
+                );
+                if (x === "-1") {
+                    continue;
+                }
+                response = x
+                    .split("#")[0]
+                    .split("|")
+                    .map((val) => {
+                        const vals = val.split(":");
+                        return Object.fromEntries(
+                            Array.from({ length: vals.length / 2 }, (_, x) => [
+                                vals[x * 2],
+                                vals[x * 2 + 1]
+                            ])
+                        );
+                    });
+                await sleep(1000);
+                if (response) {
+                    break;
+                }
+            } catch {
+                continue;
+            }
         }
+        if (response) {
+            responseSum = [...responseSum, ...response];
+        }
+        i++;
     }
-    if (!response) {
-        console.log(user, "data fetch (gd) failed");
-        continue;
-    }
-    for (const level of response) {
+    for (const level of responseSum) {
         if (Object.entries(level).length <= 1) {
             continue;
         }
@@ -180,38 +193,46 @@ for (const level of blevels) {
         continue;
     }
     let response;
+    const header = {
+        "Authorization": `Bearer ${process.env.GDDL_API_KEY}`
+    }
     for (let i = 0; i < 3; i++) {
-        response = await fetch(`https://gdladder.com/api/levels/${level.level_id}`);
+        response = await fetch(`https://gdladder.com/api/levels/${level.level_id}`, { headers: header });
         if (response.ok) {
             break;
         }
     }
     if (!response!.ok) {
-        console.log(level, "data fetch (gddl) failed");
         continue;
     }
     const data = await response!.json();
     const rating = data.Rating;
     const headers = {
-        "User-Agent": ""
+        "User-Agent": "",
+        "Content-Type": "application/x-www-form-urlencoded"
     };
     const sendData = {
-        type: 0,
+        type: "0",
         secret: "Wmfd2893gb7",
-        str: level.level_id
+        str: `${level.level_id}`
     };
     let response2: Record<string, string> | null = null;
     for (let i = 0; i < 3; i++) {
         try {
-            response2 = (
+            response2
+            let x = (
                 await (
                     await fetch("http://www.boomlings.com/database/getGJLevels21.php", {
                         method: "post",
                         headers: headers,
-                        body: JSON.stringify(sendData)
+                        body: new URLSearchParams(sendData).toString()
                     })
                 ).text()
-            )
+            );
+            if (x === "-1") {
+                continue;
+            }
+            response2 = x
                 .split("#")[0]
                 .split("|")
                 .map((val) => {
@@ -224,22 +245,30 @@ for (const level of blevels) {
                     );
                 })[0];
             await sleep(1000);
+            if (response2) {
+                break;
+            }
         } catch {
             continue;
         }
     }
     if (!response2) {
-        console.log(level, "data fetch (bgd) failed");
         continue;
     }
-    if (rating) {
+    if (!rating) {
         await supabase
             .from("blevel")
-            .update({ difficulty_votes: { GD: [1, rating, response2["42"], 0] } });
-    }
-    if (response2["43"] && response2["43"] !== "3") {
-        if (BDL && !BDL.levels.some((text) => text[0] === level.level_id)) {
-            BDL.levels.push([level.level_id, ""]);
+            .update({ difficulty_votes: { GD: [0, +response2["18"], +response2["42"], 0] } })
+            .eq("level_id", level.level_id);
+    } else {
+        await supabase
+            .from("blevel")
+            .update({ difficulty_votes: { GD: [1, rating, response2["42"], 0] } })
+            .eq("level_id", level.level_id);
+        if (response2["43"] && response2["43"] !== "3") {
+            if (BDL && !BDL.levels.some((text) => text[0] === level.level_id)) {
+                BDL.levels.push([level.level_id, ""]);
+            }
         }
     }
 }
