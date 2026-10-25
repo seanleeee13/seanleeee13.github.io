@@ -255,6 +255,19 @@ for (const level of blevels) {
     if (!response2) {
         continue;
     }
+    const levelData = {
+        level_name: response2["2"],
+        progress: null,
+        description: response2["3"],
+        difficulty_votes: {},
+        victory: [] as string[],
+        gdps_id: null,
+        main_id: +response2["1"],
+        length: +response2["15"],
+        original: +response2["30"],
+        song: response2["35"] === "0" ? +response2["12"] : +response2["35"]
+    } as LevelInterface;
+    await supabase.from("blevel").update(levelData).eq("level_id", level.level_id);
     if (!rating) {
         await supabase
             .from("blevel")
@@ -265,7 +278,7 @@ for (const level of blevels) {
             .from("blevel")
             .update({ difficulty_votes: { GD: [1, rating, response2["42"], 0] } })
             .eq("level_id", level.level_id);
-        if (response2["43"] && response2["43"] !== "3") {
+        if (level.victory.length !== 0 && response2["43"] && response2["43"] !== "3") {
             if (BDL && !BDL.levels.some((text) => text[0] === level.level_id)) {
                 BDL.levels.push([level.level_id, ""]);
             }
