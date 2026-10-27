@@ -31,18 +31,6 @@ export default defineConfig({
                     });
                 }
             },
-            "/stage": {
-                target: "http://localhost:5176",
-                changeOrigin: true,
-                configure: (proxy, _) => {
-                    proxy.on("proxyReq", (__, req, res) => {
-                        if (req.url === "/stage") {
-                            res.writeHead(301, { Location: "/stage/" });
-                            res.end();
-                        }
-                    });
-                }
-            },
             "/post": {
                 target: "http://localhost:5177",
                 changeOrigin: true,

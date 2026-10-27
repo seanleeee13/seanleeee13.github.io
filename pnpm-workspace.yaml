@@ -2,7 +2,6 @@ packages:
   - 'main'
   - 'gff'
   - 'something'
-  - 'stage'
   - 'components'
   - 'auto'
   - 'post'
