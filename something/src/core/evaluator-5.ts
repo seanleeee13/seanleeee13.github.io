@@ -145,7 +145,7 @@ export default function getBestMove(fen: string) {
     let bestMove: string | null = null;
     for (const move of moves) {
         chess.move(move);
-        const score = -negamax(chess, SEARCH_DEPTH - 1, bestScore, INF_SCORE);
+        const score = -negamax(chess, SEARCH_DEPTH - 1, -INF_SCORE, bestScore);
         chess.undo();
         if (score > bestScore) {
             bestScore = score;
