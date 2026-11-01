@@ -469,61 +469,6 @@ importers:
         specifier: ^8.3.5
         version: 8.3.5(@types/node@26.6.5)
 
-  stage:
-    dependencies:
-      '@emotion/react':
-        specifier: ^11.14.0
-        version: 11.14.0(@types/react@19.3.0)(react@19.3.1)
-      '@emotion/styled':
-        specifier: ^11.14.1
-        version: 11.14.1(@emotion/react@11.14.0(@types/react@19.3.0)(react@19.3.1))(@types/react@19.3.0)(react@19.3.1)
-      '@fontsource-variable/mona-sans':
-        specifier: ^5.2.8
-        version: 5.3.0
-      '@mui/joy':
-        specifier: ^5.0.0-beta.52
-        version: 5.0.0-beta.52(@emotion/react@11.14.0(@types/react@19.3.0)(react@19.3.1))(@emotion/styled@11.14.1(@emotion/react@11.14.0(@types/react@19.3.0)(react@19.3.1))(@types/react@19.3.0)(react@19.3.1))(@types/react@19.3.0)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)
-      '@supabase/supabase-js':
-        specifier: ^2.118.0
-        version: 2.118.0
-      components:
-        specifier: workspace:*
-        version: link:../components
-      react:
-        specifier: ^19.3.1
-        version: 19.3.1
-      react-dom:
-        specifier: ^19.3.1
-        version: 19.3.1(react@19.3.1)
-      react-router:
-        specifier: ^8.5.0
-        version: 8.5.0(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)
-    devDependencies:
-      '@types/node':
-        specifier: ^26.6.5
-        version: 26.6.5
-      '@types/react':
-        specifier: ^19.2.17
-        version: 19.3.0
-      '@types/react-dom':
-        specifier: ^19.2.3
-        version: 19.3.0(@types/react@19.3.0)
-      '@vitejs/plugin-react':
-        specifier: ^6.1.2
-        version: 6.1.2(vite@8.3.5(@types/node@26.6.5))
-      oxfmt:
-        specifier: ^0.74.0
-        version: 0.74.0
-      oxlint:
-        specifier: ^1.89.0
-        version: 1.89.0
-      typescript:
-        specifier: ~7.0.2
-        version: 7.0.2
-      vite:
-        specifier: ^8.3.5
-        version: 8.3.5(@types/node@26.6.5)
-
 packages:
 
   '@babel/code-frame@7.29.7':
