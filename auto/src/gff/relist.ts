@@ -71,7 +71,7 @@ for (const user of users) {
     let response: Record<string, string>[] | null = null;
     let responseSum: Record<string, string>[] = [];
     let i = 0;
-    while (response) {
+    do {
         const data = {
             type: "5",
             secret: "Wmfd2893gb7",
@@ -87,7 +87,9 @@ for (const user of users) {
                         body: new URLSearchParams(data).toString()
                     })
                 ).text();
+                await sleep(1000);
                 if (x === "-1") {
+                    response = null;
                     continue;
                 }
                 response = x
@@ -102,7 +104,6 @@ for (const user of users) {
                             ])
                         );
                     });
-                await sleep(1000);
                 if (response) {
                     break;
                 }
@@ -112,9 +113,11 @@ for (const user of users) {
         }
         if (response) {
             responseSum = [...responseSum, ...response];
+        } else {
+            break;
         }
         i++;
-    }
+    } while (response);
     for (const level of responseSum) {
         if (Object.entries(level).length <= 1) {
             continue;
@@ -122,30 +125,25 @@ for (const user of users) {
         if (level["15"] === "0") {
             continue;
         }
-        if (levels.find((val) => val.level_id === +level["1"])) {
-            continue;
-        }
+        const desc = Buffer.from(level["3"], "base64url").toString("utf-8");
+        const oldLevel = levels.find((text) => text.level_id === +level["1"]);
         const newLevel = {
             level_id: +level["1"],
             level_name: level["2"],
-            host: user["gff:id"],
+            host: oldLevel?.host ?? user["gff:id"],
             publish: user["gff:id"],
             co_creators: [] as string[],
-            verifier: user["gff:id"],
-            progress: null,
-            description: level["3"],
-            difficulty_votes: {},
-            victory: [] as string[],
-            image: "https://jtomgrgfszuhfqbrqgst.supabase.co/storage/v1/object/public/gd-thumbnail/placeholder.webp",
-            imbed_image: null,
-            gdps_id: null,
+            verifier: oldLevel?.verifier ?? user["gff:id"],
+            description: desc,
             main_id: +level["1"],
             length: +level["15"],
             original: +level["30"],
             song: level["35"] === "0" ? +level["12"] : +level["35"]
         } as LevelInterface;
-        newLevels.push(newLevel);
-        await supabase.from("level").upsert(newLevel);
+        if (!oldLevel) {
+            newLevels.push(newLevel);
+        }
+        await supabase.from("level").upsert(newLevel, { onConflict: "level_id" });
     }
 }
 
@@ -226,7 +224,9 @@ for (const level of blevels) {
                     body: new URLSearchParams(sendData).toString()
                 })
             ).text();
+            await sleep(1000);
             if (x === "-1") {
+                response = null;
                 continue;
             }
             response2 = x
@@ -241,7 +241,6 @@ for (const level of blevels) {
                         ])
                     );
                 })[0];
-            await sleep(1000);
             if (response2) {
                 break;
             }
@@ -252,10 +251,11 @@ for (const level of blevels) {
     if (!response2) {
         continue;
     }
+    const desc = Buffer.from(response2["3"], "base64url").toString("utf-8");
     const levelData = {
         level_name: response2["2"],
         progress: null,
-        description: response2["3"],
+        description: desc,
         difficulty_votes: {},
         victory: [] as string[],
         gdps_id: null,

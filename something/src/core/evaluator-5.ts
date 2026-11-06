@@ -141,6 +141,9 @@ export default function getBestMove(fen: string) {
         return null;
     }
     const moves = sortMvvlva(chess.moves(), chess);
+    if (moves.includes("e5")) {
+        return "e5";
+    }
     let bestScore = -INF_SCORE * 2;
     let bestMove: string | null = null;
     for (const move of moves) {
