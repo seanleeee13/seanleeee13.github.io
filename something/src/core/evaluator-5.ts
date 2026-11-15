@@ -135,8 +135,11 @@ function negamax(chess: Chess, depth: number, alpha: number, beta: number) {
     return maxScore;
 }
 
-export default function getBestMove(fen: string) {
-    const chess = Chess.createSync(fen);
+export default function getBestMove(movesHistory: string[], initialFen?: string) {
+    const chess = Chess.createSync(initialFen ?? undefined);
+    for (const move of movesHistory) {
+        chess.move(move);
+    }
     if (chess.isGameOver()) {
         return null;
     }

@@ -470,7 +470,8 @@ function PlayChess() {
                                 aiType: players[
                                     chessRef.current.turn() === "w" ? "white" : "black"
                                 ][1],
-                                fen: chessRef.current.fen()
+                                initialFen: undefined,
+                                movesHistory: chessRef.current.history()
                             },
                             {}
                         );
@@ -555,7 +556,8 @@ function PlayChess() {
                     workerRef.current?.postMessage(
                         {
                             aiType: players[chessRef.current.turn() === "w" ? "white" : "black"][1],
-                            fen: chessRef.current.fen()
+                            initialFen: undefined,
+                            movesHistory: chessRef.current.history()
                         },
                         {}
                     );
@@ -594,7 +596,7 @@ function PlayChess() {
     useEffect(() => {
         if (!players.white[0]) {
             workerRef.current?.postMessage(
-                { aiType: players.white[1], fen: chessRef.current.fen() },
+                { aiType: players.white[1], initialFen: undefined, movesHistory: chessRef.current.history() },
                 {}
             );
         }
@@ -644,7 +646,8 @@ function PlayChess() {
         workerRef.current?.postMessage(
             {
                 aiType: players[chessRef.current.turn() === "w" ? "white" : "black"][1],
-                fen: chessRef.current.fen()
+                initialFen: undefined,
+                movesHistory: chessRef.current.history()
             },
             {}
         );
