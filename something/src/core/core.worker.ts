@@ -5,7 +5,8 @@ import { init } from "ultrachess";
 
 export interface AIRequest {
     aiType: string;
-    fen: string;
+    movesHistory: string[];
+    initialFen?: string | undefined;
 }
 
 export interface AIResponse {
@@ -18,12 +19,12 @@ const ctx: WorkerGlobalScope & typeof globalThis = self as unknown as WorkerGlob
 const initPromise = init();
 
 ctx.addEventListener("message", async (event: MessageEvent<AIRequest>) => {
-    const { aiType, fen } = event.data;
+    const { aiType, movesHistory, initialFen } = event.data;
     await initPromise;
     if (!Object.keys(AIFuncList).includes(aiType)) {
         ctx.postMessage({ move: null } as AIResponse, {});
         return;
     }
-    const move = AIFuncList[aiType as keyof typeof AIFuncList](fen);
+    const move = AIFuncList[aiType as keyof typeof AIFuncList](movesHistory, initialFen);
     ctx.postMessage({ move } as AIResponse, {});
 });
