@@ -307,13 +307,10 @@ export default function getBestMove(
     movesHistory: string[],
     initialFen?: string
 ) {
+    console.log(movesHistory, initialFen);
     const chess = Chess.createSync(initialFen);
     for (const move of movesHistory) {
-        chess.move({
-            from: move.slice(0, 2),
-            to: move.slice(2, 4),
-            promotion: PIECE_MAP[move[4] as keyof typeof PIECE_MAP]
-        });
+        chess.move(move);
     }
     if (chess.isGameOver()) {
         return null;
