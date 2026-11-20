@@ -1,13 +1,13 @@
 import { default as evaluator_5 } from "../core/evaluator-5";
-import { default as evaluatorx_6 } from "../core/evaluaorx-6";
+import { default as evaluatorx_5 } from "../core/evaluaorx-5";
 
 export const AIList = {
     "Evaluator-5": "Evaluator-5",
-    "EvaluatorX-6": "EvaluatorX-6"
+    "EvaluatorX-5": "EvaluatorX-5"
 };
 export const AIFuncList = {
     "Evaluator-5": evaluator_5,
-    "EvaluatorX-6": evaluatorx_6
+    "EvaluatorX-5": evaluatorx_5
 };
 export const AIDataList = [
     {
@@ -21,11 +21,11 @@ export const AIDataList = [
         description: "Just a normal AI"
     },
     {
-        id: "EvaluatorX-6",
-        name: "EvaluatorX-6",
+        id: "EvaluatorX-5",
+        name: "EvaluatorX-5",
         developer: ["seanleeee13", "k_hxnsxol"],
         version: "2.0",
-        depth: 6,
+        depth: 5,
         algorithm: "Negamax",
         elo: 1508,
         description: "Now with LMR"

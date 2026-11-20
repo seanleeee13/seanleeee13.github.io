@@ -396,7 +396,7 @@ export default function getBestMove(
             }
             pv = currentTopPvs;
             bestMove = moveToUci(chess.parseSan(pv[0][0][0]));
-            if (currentDepth >= 6) {
+            if (currentDepth >= 5) {
                 break;
             }
             currentDepth++;
