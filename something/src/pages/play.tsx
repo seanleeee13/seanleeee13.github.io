@@ -596,7 +596,11 @@ function PlayChess() {
     useEffect(() => {
         if (!players.white[0]) {
             workerRef.current?.postMessage(
-                { aiType: players.white[1], initialFen: undefined, movesHistory: chessRef.current.history() },
+                {
+                    aiType: players.white[1],
+                    initialFen: undefined,
+                    movesHistory: chessRef.current.history()
+                },
                 {}
             );
         }
